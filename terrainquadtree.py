@@ -52,12 +52,12 @@ class TerrainQuadtree:
         GL.glBindBuffer(GL.GL_ARRAY_BUFFER, self.positionBufferObject)
         GL.glBufferData(GL.GL_ARRAY_BUFFER, self.vertices, GL.GL_STATIC_DRAW)
 
-        GL.glBindBuffer(GL.GL_ARRAY_BUFFER, 0)
-
     def draw(self):
-        self.vbo.bind()
-        glEnableClientState(GL_VERTEX_ARRAY)
-        glVertexPointer(3, GL_FLOAT, 0, None)
-        glDrawArrays(GL_TRIANGLE_FAN, 0)
-        glDisableClientState(GL_VERTEX_ARRAY)
-        self.vbo.unbind()
+        GL.glBindBuffer(GL.GL_ARRAY_BUFFER, self.positionBufferObject)
+        GL.glEnableClientState(GL.GL_VERTEX_ARRAY)
+        GL.glVertexPointer(3, GL.GL_FLOAT, 0, None)
+
+        GL.glEnableClientState(GL.GL_INDEX_ARRAY)
+        GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, self.indexBufferObject)
+
+        GL.glDrawElements(GL.GL_TRIANGLE_STRIP, len(self.indexes), GL.GL_UNSIGNED_SHORT, c_void_p(0))

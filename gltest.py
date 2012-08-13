@@ -15,6 +15,7 @@ name = 'ball_glut'
 lastframe = 0.0
 dt = 0.0
 
+wireframe = False
 planet = None
 camera = Node()
 camera.position = [0.2, 0.2, 3.0]
@@ -53,6 +54,13 @@ def main():
 
 def initialize():
     global planet
+
+    glDepthFunc(GL_LEQUAL);
+    glEnable(GL_DEPTH_TEST);
+    glClearDepth(1.0);
+    glCullFace(GL_BACK);
+    glEnable(GL_CULL_FACE);
+
     planet = Planet(6371, 3)
 
 def changeSize(width, height):
@@ -65,7 +73,7 @@ def changeSize(width, height):
     glLoadIdentity()
 
     glViewport(0, 0, width, height)
-    gluPerspective(60., ratio, 1., 1000.)
+    gluPerspective(45., ratio, 1., 1000.)
 
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
@@ -75,6 +83,9 @@ def keydownhandler(*args):
 
 def keyuphandler(*args):
     keys[ord(args[0])] = False
+
+    if args[0] is 'l':
+        toggleWireframe()
 
 def specialkeydownhandler(*args):
     specialkeys[args[0]] = True
@@ -117,16 +128,29 @@ def step():
         camera.rotate((0., 0., 1.), -25.*dt)
 
     if specialkeys[GLUT_KEY_LEFT] == True:
-        camera.nodes['yaw'].rotate((0., 1., 0.), 25.*dt)
+        camera.rotate((0., 1., 0.), 25.*dt)
 
     if specialkeys[GLUT_KEY_RIGHT] == True:
-        camera.nodes['yaw'].rotate((0., 1., 0.), -25.*dt)
+        camera.rotate((0., 1., 0.), -25.*dt)
 
     if specialkeys[GLUT_KEY_UP] == True:
         camera.rotate((1., 0., 0.), -25.*dt)
 
     if specialkeys[GLUT_KEY_DOWN] == True:
         camera.rotate((1., 0., 0.), 25.*dt)
+        
+
+def toggleWireframe():
+    global wireframe
+
+    if wireframe is True:
+        glPolygonMode(GL_FRONT, GL_FILL)
+        glCull
+        wireframe = False
+    else:
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        wireframe = True
+
 
 def display():
     global cameraquat, position
@@ -140,6 +164,8 @@ def display():
     glTranslatef(-camera.position[0], -camera.position[1], -camera.position[2])
     
     drawAxes()
+
+    glColor3f(1., 1., 1.)
     planet.draw()
     
     glutSwapBuffers()
