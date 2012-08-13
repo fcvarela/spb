@@ -67,7 +67,7 @@ def changeSize(width, height):
     if height == 0:
         height = 1
 
-    ratio = 1.0 * (width/height)
+    ratio = width/height
 
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
@@ -145,7 +145,6 @@ def toggleWireframe():
 
     if wireframe is True:
         glPolygonMode(GL_FRONT, GL_FILL)
-        glCull
         wireframe = False
     else:
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
