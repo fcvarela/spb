@@ -3,8 +3,10 @@
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GLUT import *
+
 from quat import *
 from node import *
+from planet import *
 
 import sys
 
@@ -13,8 +15,10 @@ name = 'ball_glut'
 lastframe = 0.0
 dt = 0.0
 
+planet = None
 camera = Node()
 camera.position = [0.2, 0.2, 3.0]
+camera.nodes = {'yaw': Node()}
 
 keys = []
 specialkeys = []
@@ -43,7 +47,13 @@ def main():
     glutSpecialFunc(specialkeydownhandler)
     glutSpecialUpFunc(specialkeyuphandler)
 
+    initialize()
+
     glutMainLoop()
+
+def initialize():
+    global planet
+    planet = Planet(6371, 3)
 
 def changeSize(width, height):
     if height == 0:
@@ -107,10 +117,10 @@ def step():
         camera.rotate((0., 0., 1.), -25.*dt)
 
     if specialkeys[GLUT_KEY_LEFT] == True:
-        camera.rotate((0., 1., 0.), 25.*dt)
+        camera.nodes['yaw'].rotate((0., 1., 0.), 25.*dt)
 
     if specialkeys[GLUT_KEY_RIGHT] == True:
-        camera.rotate((0., 1., 0.), -25.*dt)
+        camera.nodes['yaw'].rotate((0., 1., 0.), -25.*dt)
 
     if specialkeys[GLUT_KEY_UP] == True:
         camera.rotate((1., 0., 0.), -25.*dt)
@@ -125,10 +135,12 @@ def display():
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     glLoadIdentity()
     
-    glMultMatrixd(camera.rotation.gl_matrix());
+    glMultMatrixd(camera.rotation.gl_matrix())
+    glMultMatrixd(camera.nodes['yaw'].rotation.gl_matrix())
     glTranslatef(-camera.position[0], -camera.position[1], -camera.position[2])
     
     drawAxes()
+    planet.draw()
     
     glutSwapBuffers()
 

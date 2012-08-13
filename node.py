@@ -4,6 +4,7 @@ class Node:
     def __init__(self):
         self.rotation = Quat(0., 0., 0., 1.)
         self.position = [0., 0., 0.]
+        self.nodes = None
 
     def rotate(self, vector, value):
         q = Quat(vector[0], vector[1], vector[2], value)
