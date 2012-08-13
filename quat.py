@@ -47,10 +47,7 @@ class Quat:
         wx = w*x
         wy = w*y
         wz = w*z
-        
-        """
-           Returns OpenGL compatible modelview matrix
-        """
+
         mat = [
             1.0 - 2.0 * (y2 + z2),
             2.0 * (xy - wz),
