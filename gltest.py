@@ -4,37 +4,17 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GLUT import *
 
-from quat import *
-from node import *
 from planet import *
+import factory
 
 import sys
 
-name = 'ball_glut'
-
-lastframe = 0.0
-dt = 0.0
-
-wireframe = False
-planet = None
-camera = Node()
-camera.position = [0.2, 0.2, 3.0]
-camera.nodes = {'yaw': Node()}
-
-keys = []
-specialkeys = []
-
-for i in range(256):
-    keys.append(False)
-    specialkeys.append(False)
-
 def main():
     glutInit(sys.argv)
-    lastframe = glutGet(GLUT_ELAPSED_TIME)/1000.;
 
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH)
     glutInitWindowSize(800, 500)
-    glutCreateWindow(name)
+    glutCreateWindow('spb')
     glutDisplayFunc(display)
     glutIdleFunc(display)
     glutReshapeFunc(changeSize)
@@ -53,15 +33,15 @@ def main():
     glutMainLoop()
 
 def initialize():
-    global planet
-
     glDepthFunc(GL_LEQUAL);
     glEnable(GL_DEPTH_TEST);
     glClearDepth(1.0);
     glCullFace(GL_BACK);
     glEnable(GL_CULL_FACE);
 
-    planet = Planet(6371, 3)
+    # got gl state, spawn factory singleton
+    factory.planet = Planet(6371000, 10)
+    factory.lastframe = glutGet(GLUT_ELAPSED_TIME)/1000.;
 
 def changeSize(width, height):
     if height == 0:
@@ -73,53 +53,58 @@ def changeSize(width, height):
     glLoadIdentity()
 
     glViewport(0, 0, width, height)
-    gluPerspective(45., ratio, 1., 1000.)
+    gluPerspective(45., ratio, 1.0, 6371000.*2.)
 
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
 
 def keydownhandler(*args):
-    keys[ord(args[0])] = True
+    factory.keys[ord(args[0])] = True
 
 def keyuphandler(*args):
-    keys[ord(args[0])] = False
+    factory.keys[ord(args[0])] = False
 
     if args[0] is 'l':
         toggleWireframe()
 
 def specialkeydownhandler(*args):
-    specialkeys[args[0]] = True
+    factory.specialkeys[args[0]] = True
 
 def specialkeyuphandler(*args):
-    specialkeys[args[0]] = False
+    factory.specialkeys[args[0]] = False
     
 def mouseclickhandler(button, state, x, y):
     global roll, pitch, yaw
 
 def step():
-    global position, dt, lastframe, cameraquat
-
     time = glutGet(GLUT_ELAPSED_TIME) / 1000.;
-    dt = time - lastframe
-    lastframe = time
+    factory.dt = time - factory.lastframe
+    factory.lastframe = time
+    
+    keys = factory.keys
+    specialkeys = factory.specialkeys
+    camera = factory.camera
+    dt = factory.dt
+
+    dist = np.linalg.norm(camera.position)-1.0
 
     if keys[ord('w')] == True:
-        camera.move((0., 0., -1.*dt))
+        camera.move((0., 0., -1.*dt*dist))
 
     if keys[ord('s')] == True:
-        camera.move((0., 0., 1.*dt))
+        camera.move((0., 0., 1.*dt*dist))
 
     if keys[ord('a')] == True:
-        camera.move((-1.*dt, 0., 0.))
+        camera.move((-1.*dt*dist, 0., 0.))
 
     if keys[ord('d')] == True:
-        camera.move((1.*dt, 0., 0.))
+        camera.move((1.*dt*dist, 0., 0.))
 
     if keys[ord('q')] == True:
-        camera.move((0., 1.*dt, 0.))
+        camera.move((0., 1.*dt*dist, 0.))
 
     if keys[ord('z')] == True:
-        camera.move((0., -1.*dt, 0.))
+        camera.move((0., -1.*dt*dist, 0.))
 
     if keys[ord('x')] == True:
         camera.rotate((0., 0., 1.), 25.*dt)
@@ -141,31 +126,27 @@ def step():
         
 
 def toggleWireframe():
-    global wireframe
-
-    if wireframe is True:
+    if factory.wireframe is True:
         glPolygonMode(GL_FRONT, GL_FILL)
-        wireframe = False
+        factory.wireframe = False
     else:
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        wireframe = True
-
+        glPolygonMode(GL_FRONT, GL_LINE);
+        factory.wireframe = True
 
 def display():
-    global cameraquat, position
     step()
     
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     glLoadIdentity()
     
-    glMultMatrixd(camera.rotation.gl_matrix())
-    glMultMatrixd(camera.nodes['yaw'].rotation.gl_matrix())
-    glTranslatef(-camera.position[0], -camera.position[1], -camera.position[2])
+    glMultMatrixd(factory.camera.rotation.gl_matrix())
+    glMultMatrixd(factory.camera.nodes['yaw'].rotation.gl_matrix())
+    glTranslatef(-factory.camera.position[0], -factory.camera.position[1], -factory.camera.position[2])
     
     drawAxes()
 
     glColor3f(1., 1., 1.)
-    planet.draw()
+    factory.planet.draw()
     
     glutSwapBuffers()
 
