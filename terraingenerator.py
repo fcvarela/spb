@@ -31,25 +31,8 @@ class TerrainGenerator:
         self.CONTINENT_HEIGHT_SCALE = (1.0 - self.SEA_LEVEL) / 4.0;
         self.RIVER_DEPTH = 0.0234375;
 
-        baseContinentDef_pe0 = Perlin()
-        baseContinentDef_pe0.SetSeed (self.CUR_SEED + 0);
-        baseContinentDef_pe0.SetFrequency (self.CONTINENT_FREQUENCY);
-        baseContinentDef_pe0.SetPersistence (0.5);
-        baseContinentDef_pe0.SetLacunarity (self.CONTINENT_LACUNARITY);
-        baseContinentDef_pe0.SetOctaveCount (14);
-        #baseContinentDef_pe0.SetNoiseQuality (QUALITY_STD);
+        # init the c++ app with these generator params
 
-        baseContinentDef_cu = Curve();
-        baseContinentDef_cu.SetSourceModule (0, baseContinentDef_pe0);
-        baseContinentDef_cu.AddControlPoint (-2.0000 + SEA_LEVEL,-1.625 + SEA_LEVEL);
-        baseContinentDef_cu.AddControlPoint (-1.0000 + SEA_LEVEL,-1.375 + SEA_LEVEL);
-        baseContinentDef_cu.AddControlPoint ( 0.0000 + SEA_LEVEL,-0.375 + SEA_LEVEL);
-        baseContinentDef_cu.AddControlPoint ( 0.0625 + SEA_LEVEL, 0.125 + SEA_LEVEL);
-        baseContinentDef_cu.AddControlPoint ( 0.1250 + SEA_LEVEL, 0.250 + SEA_LEVEL);
-        baseContinentDef_cu.AddControlPoint ( 0.2500 + SEA_LEVEL, 1.000 + SEA_LEVEL);
-        baseContinentDef_cu.AddControlPoint ( 0.5000 + SEA_LEVEL, 0.250 + SEA_LEVEL);
-        baseContinentDef_cu.AddControlPoint ( 0.7500 + SEA_LEVEL, 0.250 + SEA_LEVEL);
-        baseContinentDef_cu.AddControlPoint ( 1.0000 + SEA_LEVEL, 0.500 + SEA_LEVEL);
-        baseContinentDef_cu.AddControlPoint ( 2.0000 + SEA_LEVEL, 0.500 + SEA_LEVEL);
+        # sequentially call normals, topo, etc
 
 
