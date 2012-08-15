@@ -53,7 +53,7 @@ def changeSize(width, height):
     glLoadIdentity()
 
     glViewport(0, 0, width, height)
-    gluPerspective(45., ratio, 1.0, 6371000.*2.)
+    gluPerspective(45., ratio, .001, 6371000.*2.)
 
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
@@ -156,19 +156,19 @@ def drawAxes():
     glColor3f(1.0, 0.0, 0.0)
     glBegin(GL_LINES)
     glVertex3f(0., 0., 0.)
-    glVertex3f(1., 0., 0.)
+    glVertex3f(10., 0., 0.)
     glEnd()
     
     glColor3f(0.0, 1.0, 0.0)
     glBegin(GL_LINES)
     glVertex3f(0., 0., 0.)
-    glVertex3f(0., 1., 0.)
+    glVertex3f(0., 10., 0.)
     glEnd()
 
     glColor3f(0.0, 0.0, 1.0)
     glBegin(GL_LINES)
     glVertex3f(0., 0., 0.)
-    glVertex3f(0., 0., 1.)
+    glVertex3f(0., 0., 10.)
     glEnd()
     
     glPopMatrix()
