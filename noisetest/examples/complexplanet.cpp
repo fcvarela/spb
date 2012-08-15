@@ -1,199 +1,71 @@
-// Group (continent definition)
-//   Subgroup (base continent definition)
-//   Subgroup (continent definition)
-// Group (terrain type definition)
-//   Subgroup (terrain type definition)
-// Group (mountainous terrain)
-//   Subgroup (mountain base definition)
-//   Subgroup (high mountainous terrain)
-//   Subgroup (low mountainous terrain)
-//   Subgroup (mountainous terrain)
-// Group (hilly terrain)
-//   Subgroup (hilly terrain)
-// Group (plains terrain)
-//   Subgroup (plains terrain)
-// Group (badlands terrain)
-//   Subgroup (badlands sand)
-//   Subgroup (badlands cliffs)
-//   Subgroup (badlands terrain)
-// Group (river positions)
-//   Subgroup (river positions)
-// Group (scaled mountainous terrain)
-//   Subgroup (scaled mountainous terrain)
-// Group (scaled hilly terrain)
-//   Subgroup (scaled hilly terrain)
-// Group (scaled plains terrain)
-//   Subgroup (scaled plains terrain)
-// Group (scaled badlands terrain)
-//   Subgroup (scaled badlands terrain)
-// Group (final planet)
-//   Subgroup (continental shelf)
-//   Subgroup (base continent elevation)
-//   Subgroup (continents with plains)
-//   Subgroup (continents with hills)
-//   Subgroup (continents with mountains)
-//   Subgroup (continents with badlands)
-//   Subgroup (continents with rivers)
-//   Subgroup (unscaled final planet)
-//   Subgroup (final planet)
-
+#include <iostream>
 #include <fstream>
-
 #include <noise/noise.h>
-
 #include "noiseutils.h"
 
 using namespace noise;
 
-int main ()
-{
+double SOUTH_COORD = -90;
+double NORTH_COORD = 90;
+double WEST_COORD = -180;
+double EAST_COORD = 180;
+int GRID_WIDTH = 512;
+int GRID_HEIGHT = 256;
+int CUR_SEED = 1;
+double PLANET_CIRCUMFERENCE = 10917000.0;
+double MIN_ELEV = -3000.0;
+double MAX_ELEV = 28000.0;
+double CONTINENT_FREQUENCY = 1.0;
+double CONTINENT_LACUNARITY = 2.208984375;
+double MOUNTAIN_LACUNARITY = 2.142578125;
+double HILLS_LACUNARITY = 2.162109375;
+double PLAINS_LACUNARITY = 2.314453125;
+double BADLANDS_LACUNARITY = 2.212890625;
+double MOUNTAINS_TWIST = 1.0;
+double HILLS_TWIST = 1.0;
+double BADLANDS_TWIST = 1.0;
+double SEA_LEVEL = 0.0;
+double SHELF_LEVEL = -0.375;
+double MOUNTAINS_AMOUNT = 0.5;
+double HILLS_AMOUNT = (1.0 + MOUNTAINS_AMOUNT) / 2.0;
+double BADLANDS_AMOUNT = 0.03125;
+double TERRAIN_OFFSET = 1.0;
+double MOUNTAIN_GLACIATION = 1.375;
+double CONTINENT_HEIGHT_SCALE = (1.0 - SEA_LEVEL) / 4.0;
+double RIVER_DEPTH = 0.0234375;
 
-  ////////////////////////////////////////////////////////////////////////////
-  // Constants
-  //
-  // Modify these constants to change the terrain of the planet and to change
-  // the boundaries and size of the elevation grid.
-  //
-  // Note: "Planetary elevation units" range from -1.0 (for the lowest
-  // underwater trenches) to +1.0 (for the highest mountain peaks.)
-  //
+utils::Image destImage;
+utils::WriterBMP bitmapWriter;
+utils::NoiseMapBuilderSphere planet;
+utils::NoiseMap elevGrid;
 
-  // Southernmost coordinate of elevation grid.
-  const double SOUTH_COORD = -90;
+double resInMeters;
+double seaLevelInMeters;
 
-  // Northernmost coordinate of elevation grid.
-  const double NORTH_COORD = 90;
+int main(int argc, char **argv);
+void initParams(void);
+void createGeometry(void);
+void getTopography(void);
+void getNormals(void);
+void getSpecular(void);
+void getTexture(void);
 
-  // Westernmost coordinate of elevation grid.
-  const double WEST_COORD = -180;
+int main (int argc, char **argv) {
+  initParams();
+  createGeometry();
+  getTopography();
+  getTexture();
+  getSpecular();
+  getNormals();
 
-  // Easternmost coordinate of elevation grid.
-  const double EAST_COORD = 180;
+  return 0;
+}
 
-  // Width of elevation grid, in points.
-  const int GRID_WIDTH = 1024;
+void initParams() {
 
-  // Height of elevation grid, in points.
-  const int GRID_HEIGHT = 512;
+}
 
-  // Planet seed.  Change this to generate a different planet.
-  const int CUR_SEED = 0;
-
-  // Circumference of the planet, in meters.
-  const double PLANET_CIRCUMFERENCE = 10917000.0;
-
-  // Minimum elevation on the planet, in meters.  This value is approximate.
-  const double MIN_ELEV = -3000.0;
-
-  // Maximum elevation on the planet, in meters.  This value is approximate.
-  const double MAX_ELEV = 28000.0;
-
-  // Frequency of the planet's continents.  Higher frequency produces smaller,
-  // more numerous continents.  This value is measured in radians.
-  const double CONTINENT_FREQUENCY = 1.0;
-
-  // Lacunarity of the planet's continents.  Changing this value produces
-  // slightly different continents.  For the best results, this value should
-  // be random, but close to 2.0.
-  const double CONTINENT_LACUNARITY = 2.208984375;
-
-  // Lacunarity of the planet's mountains.  Changing this value produces
-  // slightly different mountains.  For the best results, this value should
-  // be random, but close to 2.0.
-  const double MOUNTAIN_LACUNARITY = 2.142578125;
-
-  // Lacunarity of the planet's hills.  Changing this value produces slightly
-  // different hills.  For the best results, this value should be random, but
-  // close to 2.0.
-  const double HILLS_LACUNARITY = 2.162109375;
-
-  // Lacunarity of the planet's plains.  Changing this value produces slightly
-  // different plains.  For the best results, this value should be random, but
-  // close to 2.0.
-  const double PLAINS_LACUNARITY = 2.314453125;
-
-  // Lacunarity of the planet's badlands.  Changing this value produces
-  // slightly different badlands.  For the best results, this value should be
-  // random, but close to 2.0.
-  const double BADLANDS_LACUNARITY = 2.212890625;
-
-  // Specifies the "twistiness" of the mountains.
-  const double MOUNTAINS_TWIST = 1.0;
-
-  // Specifies the "twistiness" of the hills.
-  const double HILLS_TWIST = 1.0;
-
-  // Specifies the "twistiness" of the badlands.
-  const double BADLANDS_TWIST = 1.0;
-
-  // Specifies the planet's sea level.  This value must be between -1.0
-  // (minimum planet elevation) and +1.0 (maximum planet elevation.)
-  const double SEA_LEVEL = 0.0;
-
-  // Specifies the level on the planet in which continental shelves appear.
-  // This value must be between -1.0 (minimum planet elevation) and +1.0
-  // (maximum planet elevation), and must be less than SEA_LEVEL.
-  const double SHELF_LEVEL = -0.375;
-
-  // Determines the amount of mountainous terrain that appears on the
-  // planet.  Values range from 0.0 (no mountains) to 1.0 (all terrain is
-  // covered in mountains).  Mountainous terrain will overlap hilly terrain.
-  // Because the badlands terrain may overlap parts of the mountainous
-  // terrain, setting MOUNTAINS_AMOUNT to 1.0 may not completely cover the
-  // terrain in mountains.
-  const double MOUNTAINS_AMOUNT = 0.5;
-
-  // Determines the amount of hilly terrain that appears on the planet.
-  // Values range from 0.0 (no hills) to 1.0 (all terrain is covered in
-  // hills).  This value must be less than MOUNTAINS_AMOUNT.  Because the
-  // mountainous terrain will overlap parts of the hilly terrain, and
-  // the badlands terrain may overlap parts of the hilly terrain, setting
-  // HILLS_AMOUNT to 1.0 may not completely cover the terrain in hills.
-  const double HILLS_AMOUNT = (1.0 + MOUNTAINS_AMOUNT) / 2.0;
-
-  // Determines the amount of badlands terrain that covers the planet.
-  // Values range from 0.0 (no badlands) to 1.0 (all terrain is covered in
-  // badlands.)  Badlands terrain will overlap any other type of terrain.
-  const double BADLANDS_AMOUNT = 0.03125;
-
-  // Offset to apply to the terrain type definition.  Low values (< 1.0) cause
-  // the rough areas to appear only at high elevations.  High values (> 2.0)
-  // cause the rough areas to appear at any elevation.  The percentage of
-  // rough areas on the planet are independent of this value.
-  const double TERRAIN_OFFSET = 1.0;
-
-  // Specifies the amount of "glaciation" on the mountains.  This value
-  // should be close to 1.0 and greater than 1.0.
-  const double MOUNTAIN_GLACIATION = 1.375;
-
-  // Scaling to apply to the base continent elevations, in planetary elevation
-  // units.
-  const double CONTINENT_HEIGHT_SCALE = (1.0 - SEA_LEVEL) / 4.0;
-
-  // Maximum depth of the rivers, in planetary elevation units.
-  const double RIVER_DEPTH = 0.0234375;
-
-
-  ////////////////////////////////////////////////////////////////////////////
-  // Module group: continent definition
-  ////////////////////////////////////////////////////////////////////////////
-
-  ////////////////////////////////////////////////////////////////////////////
-  // Module subgroup: base continent definition (7 noise modules)
-  //
-  // This subgroup roughly defines the positions and base elevations of the
-  // planet's continents.
-  //
-  // The "base elevation" is the elevation of the terrain before any terrain
-  // features (mountains, hills, etc.) are placed on that terrain.
-  //
-  // -1.0 represents the lowest elevations and +1.0 represents the highest
-  // elevations.
-  //
-
-  // 1: [Continent module]: This Perlin-noise module generates the continents.
-  //    This noise module has a high number of octaves so that detail is
-  //    visible at high zoom levels.
+void createGeometry() {
   module::Perlin baseContinentDef_pe0;
   baseContinentDef_pe0.SetSeed (CUR_SEED + 0);
   baseContinentDef_pe0.SetFrequency (CONTINENT_FREQUENCY);
@@ -202,9 +74,6 @@ int main ()
   baseContinentDef_pe0.SetOctaveCount (14);
   baseContinentDef_pe0.SetNoiseQuality (QUALITY_STD);
 
-  // 2: [Continent-with-ranges module]: Next, a curve module modifies the
-  //    output value from the continent module so that very high values appear
-  //    near sea level.  This defines the positions of the mountain ranges.
   module::Curve baseContinentDef_cu;
   baseContinentDef_cu.SetSourceModule (0, baseContinentDef_pe0);
   baseContinentDef_cu.AddControlPoint (-2.0000 + SEA_LEVEL,-1.625 + SEA_LEVEL);
@@ -218,10 +87,6 @@ int main ()
   baseContinentDef_cu.AddControlPoint ( 1.0000 + SEA_LEVEL, 0.500 + SEA_LEVEL);
   baseContinentDef_cu.AddControlPoint ( 2.0000 + SEA_LEVEL, 0.500 + SEA_LEVEL);
 
-  // 3: [Carver module]: This higher-frequency Perlin-noise module will be
-  //    used by subsequent noise modules to carve out chunks from the mountain
-  //    ranges within the continent-with-ranges module so that the mountain
-  //    ranges will not be complely impassible.
   module::Perlin baseContinentDef_pe1;
   baseContinentDef_pe1.SetSeed (CUR_SEED + 1);
   baseContinentDef_pe1.SetFrequency (CONTINENT_FREQUENCY * 4.34375);
@@ -230,58 +95,22 @@ int main ()
   baseContinentDef_pe1.SetOctaveCount (11);
   baseContinentDef_pe1.SetNoiseQuality (QUALITY_STD);
 
-  // 4: [Scaled-carver module]: This scale/bias module scales the output
-  //    value from the carver module such that it is usually near 1.0.  This
-  //    is required for step 5.
   module::ScaleBias baseContinentDef_sb;
   baseContinentDef_sb.SetSourceModule (0, baseContinentDef_pe1);
   baseContinentDef_sb.SetScale (0.375);
   baseContinentDef_sb.SetBias (0.625);
 
-  // 5: [Carved-continent module]: This minimum-value module carves out chunks
-  //    from the continent-with-ranges module.  It does this by ensuring that
-  //    only the minimum of the output values from the scaled-carver module
-  //    and the continent-with-ranges module contributes to the output value
-  //    of this subgroup.  Most of the time, the minimum-value module will
-  //    select the output value from the continents-with-ranges module since
-  //    the output value from the scaled-carver module is usually near 1.0.
-  //    Occasionally, the output value from the scaled-carver module will be
-  //    less than the output value from the continent-with-ranges module, so
-  //    in this case, the output value from the scaled-carver module is
-  //    selected.
   module::Min baseContinentDef_mi;
   baseContinentDef_mi.SetSourceModule (0, baseContinentDef_sb);
   baseContinentDef_mi.SetSourceModule (1, baseContinentDef_cu);
 
-  // 6: [Clamped-continent module]: Finally, a clamp module modifies the
-  //    carved-continent module to ensure that the output value of this
-  //    subgroup is between -1.0 and 1.0.
   module::Clamp baseContinentDef_cl;
   baseContinentDef_cl.SetSourceModule (0, baseContinentDef_mi);
   baseContinentDef_cl.SetBounds (-1.0, 1.0);
 
-  // 7: [Base-continent-definition subgroup]: Caches the output value from the
-  //    clamped-continent module.
   module::Cache baseContinentDef;
   baseContinentDef.SetSourceModule (0, baseContinentDef_cl);
 
-
-  ////////////////////////////////////////////////////////////////////////////
-  // Module subgroup: continent definition (5 noise modules)
-  //
-  // This subgroup warps the output value from the the base-continent-
-  // definition subgroup, producing more realistic terrain.
-  //
-  // Warping the base continent definition produces lumpier terrain with
-  // cliffs and rifts.
-  //
-  // -1.0 represents the lowest elevations and +1.0 represents the highest
-  // elevations.
-  //
-
-  // 1: [Coarse-turbulence module]: This turbulence module warps the output
-  //    value from the base-continent-definition subgroup, adding some coarse
-  //    detail to it.
   module::Turbulence continentDef_tu0;
   continentDef_tu0.SetSourceModule (0, baseContinentDef);
   continentDef_tu0.SetSeed (CUR_SEED + 10);
@@ -289,10 +118,6 @@ int main ()
   continentDef_tu0.SetPower (CONTINENT_FREQUENCY / 113.75);
   continentDef_tu0.SetRoughness (13);
 
-  // 2: [Intermediate-turbulence module]: This turbulence module warps the
-  //    output value from the coarse-turbulence module.  This turbulence has
-  //    a higher frequency, but lower power, than the coarse-turbulence
-  //    module, adding some intermediate detail to it.
   module::Turbulence continentDef_tu1;
   continentDef_tu1.SetSourceModule (0, continentDef_tu0);
   continentDef_tu1.SetSeed (CUR_SEED + 11);
@@ -300,10 +125,6 @@ int main ()
   continentDef_tu1.SetPower (CONTINENT_FREQUENCY / 433.75);
   continentDef_tu1.SetRoughness (12);
 
-  // 3: [Warped-base-continent-definition module]: This turbulence module
-  //    warps the output value from the intermediate-turbulence module.  This
-  //    turbulence has a higher frequency, but lower power, than the
-  //    intermediate-turbulence module, adding some fine detail to it.
   module::Turbulence continentDef_tu2;
   continentDef_tu2.SetSourceModule (0, continentDef_tu1);
   continentDef_tu2.SetSeed (CUR_SEED + 12);
@@ -311,16 +132,6 @@ int main ()
   continentDef_tu2.SetPower (CONTINENT_FREQUENCY / 1019.75);
   continentDef_tu2.SetRoughness (11);
 
-  // 4: [Select-turbulence module]: At this stage, the turbulence is applied
-  //    to the entire base-continent-definition subgroup, producing some very
-  //    rugged, unrealistic coastlines.  This selector module selects the
-  //    output values from the (unwarped) base-continent-definition subgroup
-  //    and the warped-base-continent-definition module, based on the output
-  //    value from the (unwarped) base-continent-definition subgroup.  The
-  //    selection boundary is near sea level and has a relatively smooth
-  //    transition.  In effect, only the higher areas of the base-continent-
-  //    definition subgroup become warped; the underwater and coastal areas
-  //    remain unaffected.
   module::Select continentDef_se;
   continentDef_se.SetSourceModule (0, baseContinentDef);
   continentDef_se.SetSourceModule (1, continentDef_tu2);
@@ -328,80 +139,25 @@ int main ()
   continentDef_se.SetBounds (SEA_LEVEL - 0.0375, SEA_LEVEL + 1000.0375);
   continentDef_se.SetEdgeFalloff (0.0625);
 
-  // 7: [Continent-definition group]: Caches the output value from the
-  //    clamped-continent module.  This is the output value for the entire
-  //    continent-definition group.
   module::Cache continentDef;
   continentDef.SetSourceModule (0, continentDef_se);
 
-
-  ////////////////////////////////////////////////////////////////////////////
-  // Module group: terrain type definition
-  ////////////////////////////////////////////////////////////////////////////
-
-  ////////////////////////////////////////////////////////////////////////////
-  // Module subgroup: terrain type definition (3 noise modules)
-  //
-  // This subgroup defines the positions of the terrain types on the planet.
-  //
-  // Terrain types include, in order of increasing roughness, plains, hills,
-  // and mountains.
-  //
-  // This subgroup's output value is based on the output value from the
-  // continent-definition group.  Rougher terrain mainly appears at higher
-  // elevations.
-  //
-  // -1.0 represents the smoothest terrain types (plains and underwater) and
-  // +1.0 represents the roughest terrain types (mountains).
-  //
-
-  // 1: [Warped-continent module]: This turbulence module slightly warps the
-  //    output value from the continent-definition group.  This prevents the
-  //    rougher terrain from appearing exclusively at higher elevations.
-  //    Rough areas may now appear in the the ocean, creating rocky islands
-  //    and fjords.
   module::Turbulence terrainTypeDef_tu;
   terrainTypeDef_tu.SetSourceModule (0, continentDef);
   terrainTypeDef_tu.SetSeed (CUR_SEED + 20);
   terrainTypeDef_tu.SetFrequency (CONTINENT_FREQUENCY * 18.125);
-  terrainTypeDef_tu.SetPower (CONTINENT_FREQUENCY / 20.59375
-    * TERRAIN_OFFSET);
+  terrainTypeDef_tu.SetPower (CONTINENT_FREQUENCY / 20.59375 * TERRAIN_OFFSET);
   terrainTypeDef_tu.SetRoughness (3);
 
-  // 2: [Roughness-probability-shift module]: This terracing module sharpens
-  //    the edges of the warped-continent module near sea level and lowers
-  //    the slope towards the higher-elevation areas.  This shrinks the areas
-  //    in which the rough terrain appears, increasing the "rarity" of rough
-  //    terrain.
   module::Terrace terrainTypeDef_te;
   terrainTypeDef_te.SetSourceModule (0, terrainTypeDef_tu);
   terrainTypeDef_te.AddControlPoint (-1.00);
   terrainTypeDef_te.AddControlPoint (SHELF_LEVEL + SEA_LEVEL / 2.0);
   terrainTypeDef_te.AddControlPoint (1.00);
 
-  // 3: [Terrain-type-definition group]: Caches the output value from the
-  //    roughness-probability-shift module.  This is the output value for
-  //    the entire terrain-type-definition group.
   module::Cache terrainTypeDef;
   terrainTypeDef.SetSourceModule (0, terrainTypeDef_te);
 
-
-  ////////////////////////////////////////////////////////////////////////////
-  // Module group: mountainous terrain
-  ////////////////////////////////////////////////////////////////////////////
-
-  ////////////////////////////////////////////////////////////////////////////
-  // Module subgroup: mountain base definition (9 noise modules)
-  //
-  // This subgroup generates the base-mountain elevations.  Other subgroups
-  // will add the ridges and low areas to the base elevations.
-  //
-  // -1.0 represents low mountainous terrain and +1.0 represents high
-  // mountainous terrain.
-  //
-
-  // 1: [Mountain-ridge module]: This ridged-multifractal-noise module
-  //    generates the mountain ridges.
   module::RidgedMulti mountainBaseDef_rm0;
   mountainBaseDef_rm0.SetSeed (CUR_SEED + 30);
   mountainBaseDef_rm0.SetFrequency (1723.0);
@@ -409,21 +165,11 @@ int main ()
   mountainBaseDef_rm0.SetOctaveCount (4);
   mountainBaseDef_rm0.SetNoiseQuality (QUALITY_STD);
 
-  // 2: [Scaled-mountain-ridge module]: Next, a scale/bias module scales the
-  //    output value from the mountain-ridge module so that its ridges are not
-  //    too high.  The reason for this is that another subgroup adds actual
-  //    mountainous terrain to these ridges.
   module::ScaleBias mountainBaseDef_sb0;
   mountainBaseDef_sb0.SetSourceModule (0, mountainBaseDef_rm0);
   mountainBaseDef_sb0.SetScale (0.5);
   mountainBaseDef_sb0.SetBias (0.375);
 
-  // 3: [River-valley module]: This ridged-multifractal-noise module generates
-  //    the river valleys.  It has a much lower frequency than the mountain-
-  //    ridge module so that more mountain ridges will appear outside of the
-  //    valleys.  Note that this noise module generates ridged-multifractal
-  //    noise using only one octave; this information will be important in the
-  //    next step.
   module::RidgedMulti mountainBaseDef_rm1;
   mountainBaseDef_rm1.SetSeed (CUR_SEED + 31);
   mountainBaseDef_rm1.SetFrequency (367.0);
@@ -431,38 +177,19 @@ int main ()
   mountainBaseDef_rm1.SetOctaveCount (1);
   mountainBaseDef_rm1.SetNoiseQuality (QUALITY_BEST);
 
-  // 4: [Scaled-river-valley module]: Next, a scale/bias module applies a
-  //    scaling factor of -2.0 to the output value from the river-valley
-  //    module.  This stretches the possible elevation values because one-
-  //    octave ridged-multifractal noise has a lower range of output values
-  //    than multiple-octave ridged-multifractal noise.  The negative scaling
-  //    factor inverts the range of the output value, turning the ridges from
-  //    the river-valley module into valleys.
   module::ScaleBias mountainBaseDef_sb1;
   mountainBaseDef_sb1.SetSourceModule (0, mountainBaseDef_rm1);
   mountainBaseDef_sb1.SetScale (-2.0);
   mountainBaseDef_sb1.SetBias (-0.5);
 
-  // 5: [Low-flat module]: This low constant value is used by step 6.
   module::Const mountainBaseDef_co;
   mountainBaseDef_co.SetConstValue (-1.0);
 
-  // 6: [Mountains-and-valleys module]: This blender module merges the
-  //    scaled-mountain-ridge module and the scaled-river-valley module
-  //    together.  It causes the low-lying areas of the terrain to become
-  //    smooth, and causes the high-lying areas of the terrain to contain
-  //    ridges.  To do this, it uses the scaled-river-valley module as the
-  //    control module, causing the low-flat module to appear in the lower
-  //    areas and causing the scaled-mountain-ridge module to appear in the
-  //    higher areas.
   module::Blend mountainBaseDef_bl;
   mountainBaseDef_bl.SetSourceModule (0, mountainBaseDef_co);
   mountainBaseDef_bl.SetSourceModule (1, mountainBaseDef_sb0);
   mountainBaseDef_bl.SetControlModule (mountainBaseDef_sb1);
 
-  // 7: [Coarse-turbulence module]: This turbulence module warps the output
-  //    value from the mountain-and-valleys module, adding some coarse detail
-  //    to it.
   module::Turbulence mountainBaseDef_tu0;
   mountainBaseDef_tu0.SetSourceModule (0, mountainBaseDef_bl);
   mountainBaseDef_tu0.SetSeed (CUR_SEED + 32);
@@ -470,10 +197,6 @@ int main ()
   mountainBaseDef_tu0.SetPower (1.0 / 6730.0 * MOUNTAINS_TWIST);
   mountainBaseDef_tu0.SetRoughness (4);
 
-  // 8: [Warped-mountains-and-valleys module]: This turbulence module warps
-  //    the output value from the coarse-turbulence module.  This turbulence
-  //    has a higher frequency, but lower power, than the coarse-turbulence
-  //    module, adding some fine detail to it.
   module::Turbulence mountainBaseDef_tu1;
   mountainBaseDef_tu1.SetSourceModule (0, mountainBaseDef_tu0);
   mountainBaseDef_tu1.SetSeed (CUR_SEED + 33);
@@ -481,25 +204,9 @@ int main ()
   mountainBaseDef_tu1.SetPower (1.0 / 120157.0 * MOUNTAINS_TWIST);
   mountainBaseDef_tu1.SetRoughness (6);
 
-  // 9: [Mountain-base-definition subgroup]: Caches the output value from the
-  //    warped-mountains-and-valleys module.
   module::Cache mountainBaseDef;
   mountainBaseDef.SetSourceModule (0, mountainBaseDef_tu1);
 
-
-  ////////////////////////////////////////////////////////////////////////////
-  // Module subgroup: high mountainous terrain (5 noise modules)
-  //
-  // This subgroup generates the mountainous terrain that appears at high
-  // elevations within the mountain ridges.
-  //
-  // -1.0 represents the lowest elevations and +1.0 represents the highest
-  // elevations.
-  //
-
-  // 1: [Mountain-basis-0 module]: This ridged-multifractal-noise module,
-  //    along with the mountain-basis-1 module, generates the individual
-  //    mountains.
   module::RidgedMulti mountainousHigh_rm0;
   mountainousHigh_rm0.SetSeed (CUR_SEED + 40);
   mountainousHigh_rm0.SetFrequency (2371.0);
@@ -507,9 +214,6 @@ int main ()
   mountainousHigh_rm0.SetOctaveCount (3);
   mountainousHigh_rm0.SetNoiseQuality (QUALITY_BEST);
 
-  // 2: [Mountain-basis-1 module]: This ridged-multifractal-noise module,
-  //    along with the mountain-basis-0 module, generates the individual
-  //    mountains.
   module::RidgedMulti mountainousHigh_rm1;
   mountainousHigh_rm1.SetSeed (CUR_SEED + 41);
   mountainousHigh_rm1.SetFrequency (2341.0);
@@ -517,17 +221,10 @@ int main ()
   mountainousHigh_rm1.SetOctaveCount (3);
   mountainousHigh_rm1.SetNoiseQuality (QUALITY_BEST);
 
-  // 3: [High-mountains module]: Next, a maximum-value module causes more
-  //    mountains to appear at the expense of valleys.  It does this by
-  //    ensuring that only the maximum of the output values from the two
-  //    ridged-multifractal-noise modules contribute to the output value of
-  //    this subgroup.
   module::Max mountainousHigh_ma;
   mountainousHigh_ma.SetSourceModule (0, mountainousHigh_rm0);
   mountainousHigh_ma.SetSourceModule (1, mountainousHigh_rm1);
 
-  // 4: [Warped-high-mountains module]: This turbulence module warps the
-  //    output value from the high-mountains module, adding some detail to it.
   module::Turbulence mountainousHigh_tu;
   mountainousHigh_tu.SetSourceModule (0, mountainousHigh_ma);
   mountainousHigh_tu.SetSeed (CUR_SEED + 42);
@@ -535,25 +232,9 @@ int main ()
   mountainousHigh_tu.SetPower (1.0 / 180371.0 * MOUNTAINS_TWIST);
   mountainousHigh_tu.SetRoughness (4);
 
-  // 5: [High-mountainous-terrain subgroup]: Caches the output value from the
-  //    warped-high-mountains module.
   module::Cache mountainousHigh;
   mountainousHigh.SetSourceModule (0, mountainousHigh_tu);
 
-
-  ////////////////////////////////////////////////////////////////////////////
-  // Module subgroup: low mountainous terrain (4 noise modules)
-  //
-  // This subgroup generates the mountainous terrain that appears at low
-  // elevations within the river valleys.
-  //
-  // -1.0 represents the lowest elevations and +1.0 represents the highest
-  // elevations.
-  //
-
-  // 1: [Lowland-basis-0 module]: This ridged-multifractal-noise module,
-  //    along with the lowland-basis-1 module, produces the low mountainous
-  //    terrain.
   module::RidgedMulti mountainousLow_rm0;
   mountainousLow_rm0.SetSeed (CUR_SEED + 50);
   mountainousLow_rm0.SetFrequency (1381.0);
@@ -561,9 +242,6 @@ int main ()
   mountainousLow_rm0.SetOctaveCount (8);
   mountainousLow_rm0.SetNoiseQuality (QUALITY_BEST);
 
-  // 1: [Lowland-basis-1 module]: This ridged-multifractal-noise module,
-  //    along with the lowland-basis-0 module, produces the low mountainous
-  //    terrain.
   module::RidgedMulti mountainousLow_rm1;
   mountainousLow_rm1.SetSeed (CUR_SEED + 51);
   mountainousLow_rm1.SetFrequency (1427.0);
@@ -571,75 +249,27 @@ int main ()
   mountainousLow_rm1.SetOctaveCount (8);
   mountainousLow_rm1.SetNoiseQuality (QUALITY_BEST);
 
-  // 3: [Low-mountainous-terrain module]: This multiplication module combines
-  //    the output values from the two ridged-multifractal-noise modules.
-  //    This causes the following to appear in the resulting terrain:
-  //    - Cracks appear when two negative output values are multiplied
-  //      together.
-  //    - Flat areas appear when a positive and a negative output value are
-  //      multiplied together.
-  //    - Ridges appear when two positive output values are multiplied
-  //      together.
   module::Multiply mountainousLow_mu;
   mountainousLow_mu.SetSourceModule (0, mountainousLow_rm0);
   mountainousLow_mu.SetSourceModule (1, mountainousLow_rm1);
 
-  // 4: [Low-mountainous-terrain subgroup]: Caches the output value from the
-  //    low-moutainous-terrain module.
   module::Cache mountainousLow;
   mountainousLow.SetSourceModule (0, mountainousLow_mu);
-
-
-  ////////////////////////////////////////////////////////////////////////////
-  // Module subgroup: mountainous terrain (7 noise modules)
-  //
-  // This subgroup generates the final mountainous terrain by combining the
-  // high-mountainous-terrain subgroup with the low-mountainous-terrain
-  // subgroup.
-  //
-  // -1.0 represents the lowest elevations and +1.0 represents the highest
-  // elevations.
-  //
-
-  // 1: [Scaled-low-mountainous-terrain module]: First, this scale/bias module
-  //    scales the output value from the low-mountainous-terrain subgroup to a
-  //    very low value and biases it towards -1.0.  This results in the low
-  //    mountainous areas becoming more-or-less flat with little variation.
-  //    This will also result in the low mountainous areas appearing at the
-  //    lowest elevations in this subgroup.
+  
   module::ScaleBias mountainousTerrain_sb0;
   mountainousTerrain_sb0.SetSourceModule (0, mountainousLow);
   mountainousTerrain_sb0.SetScale (0.03125);
   mountainousTerrain_sb0.SetBias (-0.96875);
 
-  // 2: [Scaled-high-mountainous-terrain module]: Next, this scale/bias module
-  //    scales the output value from the high-mountainous-terrain subgroup to
-  //    1/4 of its initial value and biases it so that its output value is
-  //    usually positive.
   module::ScaleBias mountainousTerrain_sb1;
   mountainousTerrain_sb1.SetSourceModule (0, mountainousHigh);
   mountainousTerrain_sb1.SetScale (0.25);
   mountainousTerrain_sb1.SetBias (0.25);
 
-  // 3: [Added-high-mountainous-terrain module]: This addition module adds the
-  //    output value from the scaled-high-mountainous-terrain module to the
-  //    output value from the mountain-base-definition subgroup.  Mountains
-  //    now appear all over the terrain.
   module::Add mountainousTerrain_ad;
   mountainousTerrain_ad.SetSourceModule (0, mountainousTerrain_sb1);
   mountainousTerrain_ad.SetSourceModule (1, mountainBaseDef);
 
-  // 4: [Combined-mountainous-terrain module]: Note that at this point, the
-  //    entire terrain is covered in high mountainous terrain, even at the low
-  //    elevations.  To make sure the mountains only appear at the higher
-  //    elevations, this selector module causes low mountainous terrain to
-  //    appear at the low elevations (within the valleys) and the high
-  //    mountainous terrain to appear at the high elevations (within the
-  //    ridges.)  To do this, this noise module selects the output value from
-  //    the added-high-mountainous-terrain module if the output value from the
-  //    mountain-base-definition subgroup is higher than a set amount.
-  //    Otherwise, this noise module selects the output value from the scaled-
-  //    low-mountainous-terrain module.
   module::Select mountainousTerrain_se;
   mountainousTerrain_se.SetSourceModule (0, mountainousTerrain_sb0);
   mountainousTerrain_se.SetSourceModule (1, mountainousTerrain_ad);
@@ -647,45 +277,18 @@ int main ()
   mountainousTerrain_se.SetBounds (-0.5, 999.5);
   mountainousTerrain_se.SetEdgeFalloff (0.5);
 
-  // 5: [Scaled-mountainous-terrain-module]: This scale/bias module slightly
-  //    reduces the range of the output value from the combined-mountainous-
-  //    terrain module, decreasing the heights of the mountain peaks.
   module::ScaleBias mountainousTerrain_sb2;
   mountainousTerrain_sb2.SetSourceModule (0, mountainousTerrain_se);
   mountainousTerrain_sb2.SetScale (0.8);
   mountainousTerrain_sb2.SetBias (0.0);
 
-  // 6: [Glaciated-mountainous-terrain-module]: This exponential-curve module
-  //    applies an exponential curve to the output value from the scaled-
-  //    mountainous-terrain module.  This causes the slope of the mountains to
-  //    smoothly increase towards higher elevations, as if a glacier grinded
-  //    out those mountains.  This exponential-curve module expects the output
-  //    value to range from -1.0 to +1.0.
   module::Exponent mountainousTerrain_ex;
   mountainousTerrain_ex.SetSourceModule (0, mountainousTerrain_sb2);
   mountainousTerrain_ex.SetExponent (MOUNTAIN_GLACIATION);
 
-  // 7: [Mountainous-terrain group]: Caches the output value from the
-  //    glaciated-mountainous-terrain module.  This is the output value for
-  //    the entire mountainous-terrain group.
   module::Cache mountainousTerrain;
   mountainousTerrain.SetSourceModule (0, mountainousTerrain_ex);
 
-
-  ////////////////////////////////////////////////////////////////////////////
-  // Module group: hilly terrain
-  ////////////////////////////////////////////////////////////////////////////
-
-  ////////////////////////////////////////////////////////////////////////////
-  // Module subgroup: hilly terrain (11 noise modules)
-  //
-  // This subgroup generates the hilly terrain.
-  //
-  // -1.0 represents the lowest elevations and +1.0 represents the highest
-  // elevations.
-  //
-
-  // 1: [Hills module]: This billow-noise module generates the hills.
   module::Billow hillyTerrain_bi;
   hillyTerrain_bi.SetSeed (CUR_SEED + 60);
   hillyTerrain_bi.SetFrequency (1663.0);
@@ -694,20 +297,11 @@ int main ()
   hillyTerrain_bi.SetOctaveCount (6);
   hillyTerrain_bi.SetNoiseQuality (QUALITY_BEST);
 
-  // 2: [Scaled-hills module]: Next, a scale/bias module scales the output
-  //    value from the hills module so that its hilltops are not too high.
-  //    The reason for this is that these hills are eventually added to the
-  //    river valleys (see below.)
   module::ScaleBias hillyTerrain_sb0;
   hillyTerrain_sb0.SetSourceModule (0, hillyTerrain_bi);
   hillyTerrain_sb0.SetScale (0.5);
   hillyTerrain_sb0.SetBias (0.5);
 
-  // 3: [River-valley module]: This ridged-multifractal-noise module generates
-  //    the river valleys.  It has a much lower frequency so that more hills
-  //    will appear in between the valleys.  Note that this noise module
-  //    generates ridged-multifractal noise using only one octave; this
-  //    information will be important in the next step.
   module::RidgedMulti hillyTerrain_rm;
   hillyTerrain_rm.SetSeed (CUR_SEED + 61);
   hillyTerrain_rm.SetFrequency (367.5);
@@ -715,13 +309,6 @@ int main ()
   hillyTerrain_rm.SetNoiseQuality (QUALITY_BEST);
   hillyTerrain_rm.SetOctaveCount (1);
 
-  // 4: [Scaled-river-valley module]: Next, a scale/bias module applies a
-  //    scaling factor of -2.0 to the output value from the river-valley
-  //    module.  This stretches the possible elevation values because one-
-  //    octave ridged-multifractal noise has a lower range of output values
-  //    than multiple-octave ridged-multifractal noise.  The negative scaling
-  //    factor inverts the range of the output value, turning the ridges from
-  //    the river-valley module into valleys.
   module::ScaleBias hillyTerrain_sb1;
   hillyTerrain_sb1.SetSourceModule (0, hillyTerrain_rm);
   hillyTerrain_sb1.SetScale (-2.0);
@@ -1765,14 +1352,6 @@ int main ()
   assert (MOUNTAIN_GLACIATION >= 1.0);
   assert (RIVER_DEPTH >= 0.0);
 
-
-  ////////////////////////////////////////////////////////////////////////////
-  // Create the elevation grid and resulting images
-
-  // First, create a spherical-noise-map builder.
-  utils::NoiseMapBuilderSphere planet;
-  utils::NoiseMap elevGrid;
-
   // Pass in the boundaries of the elevation grid to extract.
   planet.SetBounds (SOUTH_COORD, NORTH_COORD, WEST_COORD, EAST_COORD);
   planet.SetDestSize (GRID_WIDTH, GRID_HEIGHT);
@@ -1789,26 +1368,20 @@ int main ()
   double degExtent = EAST_COORD - WEST_COORD;
   double gridExtent = (double)GRID_WIDTH;
   double metersPerDegree = (PLANET_CIRCUMFERENCE / 360.0);
-  double resInMeters = (degExtent / gridExtent) * metersPerDegree;
-  
-  // Write the elevation grid as a Terragen terrain file (*.ter).
-  /*if (resInMeters <= 240.0) {
-    utils::WriterTER terrainWriter;
-    terrainWriter.SetSourceNoiseMap (elevGrid);
-    terrainWriter.SetDestFilename ("terrain.ter");
-    terrainWriter.SetMetersPerPoint (resInMeters);
-    terrainWriter.WriteDestFile ();
-  }*/
+  resInMeters = (degExtent / gridExtent) * metersPerDegree;
+}
+
+void getTopography() {
+  std::cout << "Will create topo" << std::endl;
 
   // Write the elevation grid as a raw file (*.raw)
-  int x, y;
   uint8* pLineBuffer = new uint8[GRID_WIDTH * 2];
   std::ofstream os;
   os.open ("terrain.raw", std::ios::out | std::ios::binary);
-  for (y = 0; y < GRID_HEIGHT; y++) {
+  for (int y = 0; y < GRID_HEIGHT; y++) {
     float* pSource = elevGrid.GetSlabPtr (y);
     uint8* pDest = pLineBuffer;
-    for (x = 0; x < GRID_WIDTH; x++) {
+    for (int x = 0; x < GRID_WIDTH; x++) {
       int16 elev = (int16)(floor (*pSource));
       *pDest++ = (uint8)(((uint16)elev & 0xff00) >> 8);
       *pDest++ = (uint8)(((uint16)elev & 0x00ff)     );
@@ -1818,53 +1391,21 @@ int main ()
   }
   os.close ();
   delete[] pLineBuffer;
+  std::cout << "Done" << std::endl;
+}
 
+void getTexture() {
+  std::cout << "Will create texture" << std::endl;
   // Calculate the sea level, in meters.
-  double seaLevelInMeters = (((SEA_LEVEL + 1.0) / 2.0)
+  seaLevelInMeters = (((SEA_LEVEL + 1.0) / 2.0)
     * (MAX_ELEV - MIN_ELEV)) + MIN_ELEV;
 
   // Now generate an image that is colored by elevation and has an artificial
   // light-source.
-  utils::Image destImage;
-
-  /*
-  utils::RendererImage imageRenderer;
-  imageRenderer.SetSourceNoiseMap (elevGrid);
-  imageRenderer.SetDestImage (destImage);
-  imageRenderer.ClearGradient ();
-  imageRenderer.AddGradientPoint (-16384.0 + seaLevelInMeters, utils::Color (  0,   0,   0, 255));
-  imageRenderer.AddGradientPoint (    -256 + seaLevelInMeters, utils::Color (  6,  58, 127, 255));
-  imageRenderer.AddGradientPoint (    -1.0 + seaLevelInMeters, utils::Color ( 14, 112, 192, 255));
-  imageRenderer.AddGradientPoint (     0.0 + seaLevelInMeters, utils::Color ( 70, 120,  60, 255));
-  imageRenderer.AddGradientPoint (  1024.0 + seaLevelInMeters, utils::Color (110, 140,  75, 255));
-  imageRenderer.AddGradientPoint (  2048.0 + seaLevelInMeters, utils::Color (160, 140, 111, 255));
-  imageRenderer.AddGradientPoint (  3072.0 + seaLevelInMeters, utils::Color (184, 163, 141, 255));
-  imageRenderer.AddGradientPoint (  4096.0 + seaLevelInMeters, utils::Color (255, 255, 255, 255));
-  imageRenderer.AddGradientPoint (  6144.0 + seaLevelInMeters, utils::Color (128, 255, 255, 255));
-  imageRenderer.AddGradientPoint ( 16384.0 + seaLevelInMeters, utils::Color (  0,   0, 255, 255));
-  imageRenderer.EnableLight (true);
-  imageRenderer.SetLightContrast (1.0 / resInMeters);
-  imageRenderer.SetLightIntensity (2.0);
-  imageRenderer.SetLightElev (45.0);
-  imageRenderer.SetLightAzimuth (135.0);
-  imageRenderer.Render ();
-
-  // Write the image as a Windows bitmap file (*.bmp).
-  */
-  utils::WriterBMP bitmapWriter;
-  /*
-  bitmapWriter.SetSourceImage (destImage);
-  bitmapWriter.SetDestFilename ("terrain.bmp");
-  bitmapWriter.WriteDestFile ();
-  */
-
-  // Flatten the seas that are deeper than 15 meters or so.  We do not flatten
-  // all the seas so that we can color the shallow areas with a different
-  // color than the deeper seas.
   const double DEEP_SEA_LEVEL = -256.0;
-  for (y = 0; y < GRID_HEIGHT; y++) {
+  for (int y = 0; y < GRID_HEIGHT; y++) {
     float* pCur = elevGrid.GetSlabPtr (y);
-    for (x = 0; x < GRID_WIDTH; x++) {
+    for (int x = 0; x < GRID_WIDTH; x++) {
       if (*pCur < (SEA_LEVEL + DEEP_SEA_LEVEL)) {
         *pCur = (SEA_LEVEL + DEEP_SEA_LEVEL);
       }
@@ -1897,7 +1438,11 @@ int main ()
   bitmapWriter.SetSourceImage (destImage);
   bitmapWriter.SetDestFilename ("terrainsurface.bmp");
   bitmapWriter.WriteDestFile ();
+  std::cout << "done" << std::endl;
+}
 
+void getSpecular() {
+  std::cout << "Will create spec" << std::endl;
   // Now generate the specularity map.  This defines the "shininess" of the
   // elevation grid.  Water areas are the shiniest.
   utils::RendererImage specularityRenderer;
@@ -1915,7 +1460,11 @@ int main ()
   bitmapWriter.SetSourceImage (destImage);
   bitmapWriter.SetDestFilename ("terrainspec.bmp");
   bitmapWriter.WriteDestFile ();
+  std::cout << "Will create done" << std::endl;
+}
 
+void getNormals() {
+  std::cout << "Will create normals" << std::endl;
   // Finally, render the normal map.  Using OpenGL or another 3D API, a
   // surface map can be used in conjunction with a normal map to light the map
   // in any direction in real time.
@@ -1929,6 +1478,5 @@ int main ()
   bitmapWriter.SetSourceImage (destImage);
   bitmapWriter.SetDestFilename ("terrainnormal.bmp");
   bitmapWriter.WriteDestFile ();
-
-  return 0;
+  std::cout << "done" << std::endl;
 }
