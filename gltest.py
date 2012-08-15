@@ -5,11 +5,14 @@ from OpenGL.GLU import *
 from OpenGL.GLUT import *
 
 from planet import *
+from terraingenerator import *
 import factory
 
 import sys
 
 def main():
+    a = TerrainGenerator()
+    
     glutInit(sys.argv)
 
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH)

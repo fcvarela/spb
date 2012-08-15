@@ -1,4 +1,4 @@
-#include <noise.h>
+#include <noise/noise.h>
 #include "noiseutils.h"
 
 using namespace noise;
@@ -12,8 +12,8 @@ int main(int argc, char** argv) {
     heightMapBuilder.SetSourceModule(myModule);
     myModule.SetOctaveCount (15);
     heightMapBuilder.SetDestNoiseMap(heightMap);
-    heightMapBuilder.SetDestSize(512, 512);
-    heightMapBuilder.SetBounds(-90.0, 90.0, -18.0, 180.0);
+    heightMapBuilder.SetDestSize(1024, 512);
+    heightMapBuilder.SetBounds(-90.0, 90.0, -180.0, 180.0);
     heightMapBuilder.Build();
     utils::RendererImage renderer;
     utils::Image image;
