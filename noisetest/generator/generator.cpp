@@ -28,12 +28,14 @@ double BADLANDS_TWIST = 1.0;
 double SEA_LEVEL = 0.0;
 double SHELF_LEVEL = -0.375;
 double MOUNTAINS_AMOUNT = 0.5;
-double HILLS_AMOUNT = (1.0 + MOUNTAINS_AMOUNT) / 2.0;
 double BADLANDS_AMOUNT = 0.03125;
 double TERRAIN_OFFSET = 1.0;
 double MOUNTAIN_GLACIATION = 1.375;
-double CONTINENT_HEIGHT_SCALE = (1.0 - SEA_LEVEL) / 4.0;
 double RIVER_DEPTH = 0.0234375;
+
+// computed properties. will be set later
+double HILLS_AMOUNT = (1.0 + MOUNTAINS_AMOUNT) / 2.0;
+double CONTINENT_HEIGHT_SCALE = (1.0 - SEA_LEVEL) / 4.0;
 
 utils::Image destImage;
 utils::WriterBMP bitmapWriter;
@@ -53,7 +55,12 @@ void getTexture(void);
 
 int main (int argc, char **argv) {
   initParams(argc, argv);
+
+  // computed properties
+  double HILLS_AMOUNT = (1.0 + MOUNTAINS_AMOUNT) / 2.0;
+  double CONTINENT_HEIGHT_SCALE = (1.0 - SEA_LEVEL) / 4.0;
   createGeometry();
+
   getTopography();
   getTexture();
   getSpecular();
@@ -87,12 +94,10 @@ void initParams(int argc, char **argv) {
     {"sealevel", required_argument, NULL, 't'},
     {"shelflevel", required_argument, NULL, 'u'},
     {"mountainsamount", required_argument, NULL, 'v'},
-    {"hillsamount", required_argument, NULL, 'w'},
-    {"badlandsamount", required_argument, NULL, 'x'},
-    {"terrainoffset", required_argument, NULL, 'y'},
-    {"mountainglaciation", required_argument, NULL, 'z'},
-    {"continentheightscale", required_argument, NULL, 'A'},
-    {"riverdepth", required_argument, NULL, 'B'},
+    {"badlandsamount", required_argument, NULL, 'w'},
+    {"terrainoffset", required_argument, NULL, 'x'},
+    {"mountainglaciation", required_argument, NULL, 'y'},
+    {"riverdepth", required_argument, NULL, 'z'},
     {NULL, required_argument, NULL, 0}
   };
 
@@ -123,12 +128,10 @@ void initParams(int argc, char **argv) {
       case 't': SEA_LEVEL = strtod(optarg, NULL); break;
       case 'u': SHELF_LEVEL = strtod(optarg, NULL); break;
       case 'v': MOUNTAINS_AMOUNT = strtod(optarg, NULL); break;
-      case 'w': HILLS_AMOUNT = strtod(optarg, NULL); break;
-      case 'x': BADLANDS_AMOUNT = strtod(optarg, NULL); break;
-      case 'y': TERRAIN_OFFSET = strtod(optarg, NULL); break;
-      case 'z': MOUNTAIN_GLACIATION = strtod(optarg, NULL); break;
-      case 'A': CONTINENT_HEIGHT_SCALE = strtod(optarg, NULL); break;
-      case 'B': RIVER_DEPTH = strtod(optarg, NULL); break;
+      case 'w': BADLANDS_AMOUNT = strtod(optarg, NULL); break;
+      case 'x': TERRAIN_OFFSET = strtod(optarg, NULL); break;
+      case 'y': MOUNTAIN_GLACIATION = strtod(optarg, NULL); break;
+      case 'z': RIVER_DEPTH = strtod(optarg, NULL); break;
     }
     opt = getopt_long(argc, argv, optString, longOpts, &longIndex);
   }
@@ -1099,10 +1102,12 @@ void createGeometry() {
 }
 
 void getTopography() {
-  std::cerr << "Will create topo" << std::endl;
+  uint32_t toposize = GRID_WIDTH*GRID_HEIGHT*2;
+  fwrite(&toposize, sizeof(toposize), 1, stdout);
+
   uint8* pLineBuffer = new uint8[GRID_WIDTH * 2];
-  std::ofstream os;
-  os.open ("topo.raw", std::ios::out | std::ios::binary);
+  //std::ofstream os;
+  //os.open ("topo.raw", std::ios::out | std::ios::binary);
   for (int y = 0; y < GRID_HEIGHT; y++) {
     float* pSource = elevGrid.GetSlabPtr (y);
     uint8* pDest = pLineBuffer;
@@ -1112,15 +1117,14 @@ void getTopography() {
       *pDest++ = (uint8)(((uint16)elev & 0x00ff)     );
       ++pSource;
     }
-    os.write ((char*)pLineBuffer, GRID_WIDTH * 2);
+    fwrite(pLineBuffer, GRID_WIDTH*2, 1, stdout);
+    //os.write ((char*)pLineBuffer, GRID_WIDTH * 2);
   }
-  os.close ();
+  //os.close ();
   delete[] pLineBuffer;
-  std::cerr << "Done" << std::endl;
 }
 
 void getTexture() {
-  std::cerr << "Will create texture" << std::endl;
   seaLevelInMeters = (((SEA_LEVEL + 1.0) / 2.0)
     * (MAX_ELEV - MIN_ELEV)) + MIN_ELEV;
 
@@ -1154,11 +1158,9 @@ void getTexture() {
   bitmapWriter.SetSourceImage (destImage);
   bitmapWriter.SetDestFilename ("texture.bmp");
   bitmapWriter.WriteDestFile ();
-  std::cerr << "done" << std::endl;
 }
 
 void getSpecular() {
-  std::cerr << "Will create spec" << std::endl;
   utils::RendererImage specularityRenderer;
   specularityRenderer.SetSourceNoiseMap (elevGrid);
   specularityRenderer.SetDestImage (destImage);
@@ -1172,11 +1174,9 @@ void getSpecular() {
   bitmapWriter.SetSourceImage (destImage);
   bitmapWriter.SetDestFilename ("specular.bmp");
   bitmapWriter.WriteDestFile ();
-  std::cerr << "done" << std::endl;
 }
 
 void getNormals() {
-  std::cerr << "Will create normals" << std::endl;
   utils::RendererNormalMap normalMapRenderer;
   normalMapRenderer.SetSourceNoiseMap (elevGrid);
   normalMapRenderer.SetDestImage (destImage);
@@ -1185,5 +1185,4 @@ void getNormals() {
   bitmapWriter.SetSourceImage (destImage);
   bitmapWriter.SetDestFilename ("normal.bmp");
   bitmapWriter.WriteDestFile ();
-  std::cerr << "done" << std::endl;
 }

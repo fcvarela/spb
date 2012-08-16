@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GLUT import *
@@ -43,7 +42,7 @@ def initialize():
     glEnable(GL_CULL_FACE);
 
     # got gl state, spawn factory singleton
-    factory.planet = Planet(6371000, 10)
+    factory.planet = Planet('planets/planet1.conf')
     factory.lastframe = glutGet(GLUT_ELAPSED_TIME)/1000.;
 
 def changeSize(width, height):
