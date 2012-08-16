@@ -1,3 +1,4 @@
+from OpenGL import *
 import math
 from ConfigParser import SafeConfigParser
 
@@ -20,7 +21,7 @@ class Planet:
         baselat = 0.
         degreespan = 90.
         for i in range(0,8):
-            baselon = i%4 * 90.
+            baselon = -180 + (i%4 * 90.)
             if i > 3:
                 baselat = -90.
             
@@ -29,6 +30,8 @@ class Planet:
 
     def draw(self):
         self.shader.attach()
+        GL.glUniform1i(GL.glGetUniformLocation(self.shader.shader, 'normalTexture'), 0)
+        GL.glUniform1i(GL.glGetUniformLocation(self.shader.shader, 'colorTexture'), 1)
         [x.draw() for x in self.quadtrees]
         self.shader.dettach()
 

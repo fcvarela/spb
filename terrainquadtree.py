@@ -1,6 +1,4 @@
 import os
-import threading
-import subprocess
 from numpy import array
 import numpy as np
 
@@ -21,18 +19,19 @@ class TerrainQuadtree:
         self.span = span
         self.seed = seed
 
-        self.gridSize = 8
+        self.gridSize = 32
         self.gridSizep1 = self.gridSize + 1
 
         self.vertices = []
+        self.texcoords = []
         self.indexes = []
         self.children = []
 
         self.positionBufferObject = None
+        self.texcoordBufferObject = None
         self.indexBufferObject = None
 
         self.generateVertices()
-
         self.ready = False
 
         self.files = [\
@@ -42,14 +41,16 @@ class TerrainQuadtree:
             '%s/%s-texture.bmp' % (self.seed['cachedir'], self.index)]
 
         self.normalTexture = None
-        self.texture = None
+        self.colorTexture = None
+        self.topoTexture = None
 
         self.generateTextures()
 
     def loadTextures(self):
         # test just the normal
         self.normalTexture = Texture(self.files[2])
-        print self.normalTexture
+        self.colorTexture = Texture(self.files[3])
+        self.topoTexture = Texture(self.files[0])
 
     def needFiles(self):
         for file in self.files:
@@ -69,8 +70,8 @@ class TerrainQuadtree:
             'height': 256,
             'south': self.baselat,
             'north': self.baselat+self.span,
-            'west': self.baselon-180.,
-            'east': self.baselon-180.+self.span,
+            'west': self.baselon,
+            'east': self.baselon+self.span,
             'outfile': self.index}
 
         command = './gen '
@@ -79,15 +80,7 @@ class TerrainQuadtree:
         for k in extra.keys():
             command = "%s --%s %s" % (command, k, extra[k])
         
-        loadt = threading.Thread(target=self.spawnProcessInNewThread, args=(command, self,))
-        loadt.start()
-
-    def spawnProcessInNewThread(self, command, instance):
-        cmd = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
-        for line in cmd.stdout:
-            print line
-
-        instance.ready = True
+        factory.generatorQueue.put((command, self))
 
     def generateVertices(self):
         step = self.span / self.gridSize
@@ -100,6 +93,7 @@ class TerrainQuadtree:
                 coord = factory.geocentricToCarthesian(lat, lon, 1.0)
                 coord /= np.linalg.norm(coord)
                 self.vertices.append(coord)
+                self.texcoords.append([float(x)/self.gridSize, float(self.gridSize-y)/self.gridSize])
 
                 if y == x and x == self.gridSize/2:
                     self.center = coord
@@ -121,10 +115,15 @@ class TerrainQuadtree:
 
         self.vertices = array(self.vertices, dtype='float32')
         self.indexes = array(self.indexes, dtype='ushort')
+        self.texcoords = array(self.texcoords, dtype='float32')
 
         self.indexBufferObject = GL.glGenBuffers(1)
         GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, self.indexBufferObject)
         GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, self.indexes, GL.GL_STATIC_DRAW)
+
+        self.texcoordBufferObject = GL.glGenBuffers(1)
+        GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, self.texcoordBufferObject)
+        GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, self.texcoords, GL.GL_STATIC_DRAW)
 
         self.positionBufferObject = GL.glGenBuffers(1)
         GL.glBindBuffer(GL.GL_ARRAY_BUFFER, self.positionBufferObject)
@@ -132,8 +131,12 @@ class TerrainQuadtree:
 
         self.vertices = None
         self.indexes = None
+        self.texcoords = None
 
     def draw(self):
+        if self.ready == False:
+            return
+
         if self.ready == True and self.normalTexture is None:
             self.loadTextures()
 
@@ -159,14 +162,20 @@ class TerrainQuadtree:
             else:
                 self.initChildren()
 
-        GL.glBindBuffer(GL.GL_ARRAY_BUFFER, self.positionBufferObject)
         GL.glEnableClientState(GL.GL_VERTEX_ARRAY)
+        GL.glBindBuffer(GL.GL_ARRAY_BUFFER, self.positionBufferObject)
         GL.glVertexPointer(3, GL.GL_FLOAT, 0, None)
+
+        GL.glEnableClientState(GL.GL_TEXTURE_COORD_ARRAY)
+        GL.glBindBuffer(GL.GL_ARRAY_BUFFER, self.texcoordBufferObject)
+        GL.glTexCoordPointer(2, GL.GL_FLOAT, 0, None)
 
         GL.glEnableClientState(GL.GL_INDEX_ARRAY)
         GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, self.indexBufferObject)
 
-        self.normalTexture.bind()
+        self.normalTexture.bind(0)
+        self.colorTexture.bind(1)
+        self.topoTexture.bind(2)
         GL.glDrawElements(GL.GL_TRIANGLE_STRIP, self.gridSize*self.gridSizep1*2, GL.GL_UNSIGNED_SHORT, c_void_p(0))
         self.normalTexture.unbind()
 

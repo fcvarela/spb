@@ -8,6 +8,8 @@ import factory
 
 import sys
 
+sunlon = 0.
+
 def main():
     glutInit(sys.argv)
 
@@ -32,15 +34,20 @@ def main():
     glutMainLoop()
 
 def initialize():
-    glDepthFunc(GL_LEQUAL);
-    glEnable(GL_DEPTH_TEST);
-    glClearDepth(1.0);
-    glCullFace(GL_BACK);
-    glEnable(GL_CULL_FACE);
+    glDepthFunc(GL_LEQUAL)
+    glEnable(GL_DEPTH_TEST)
+    glClearDepth(1.0)
+    glCullFace(GL_BACK)
+    glEnable(GL_CULL_FACE)
+    glEnable(GL_LIGHTING)
+    glEnable(GL_LIGHT0)
+    glLightfv(GL_LIGHT0, GL_AMBIENT, array([1.0, 1.0, 1.0, 1.0]))
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, array([1.0, 1.0, 1.0, 1.0]))
+    glLightfv(GL_LIGHT0, GL_SPECULAR, array([1.0, 1.0, 1.0, 1.0]))
 
     # got gl state, spawn factory singleton
     factory.planet = Planet('planets/planet1.conf')
-    factory.lastframe = glutGet(GLUT_ELAPSED_TIME)/1000.;
+    factory.lastframe = glutGet(GLUT_ELAPSED_TIME)/1000.
 
 def changeSize(width, height):
     if height == 0:
@@ -76,7 +83,7 @@ def mouseclickhandler(button, state, x, y):
     global roll, pitch, yaw
 
 def step():
-    time = glutGet(GLUT_ELAPSED_TIME) / 1000.;
+    time = glutGet(GLUT_ELAPSED_TIME) / 1000.
     factory.dt = time - factory.lastframe
     factory.lastframe = time
     
@@ -129,10 +136,11 @@ def toggleWireframe():
         glPolygonMode(GL_FRONT, GL_FILL)
         factory.wireframe = False
     else:
-        glPolygonMode(GL_FRONT, GL_LINE);
+        glPolygonMode(GL_FRONT, GL_LINE)
         factory.wireframe = True
 
 def display():
+    global sunlon
     step()
     
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
@@ -141,6 +149,13 @@ def display():
     glMultMatrixd(factory.camera.rotation.gl_matrix())
     glMultMatrixd(factory.camera.nodes['yaw'].rotation.gl_matrix())
     glTranslatef(-factory.camera.position[0], -factory.camera.position[1], -factory.camera.position[2])
+
+    sunlon += factory.dt*10.
+    if sunlon > 360.:
+        sunlon = sunlon-360.
+
+    factory.sun.position = factory.camera.position#geocentricToCarthesian(sunlon, sunlon, 2.)
+    glLightfv(GL_LIGHT0, GL_POSITION, factory.sun.position);
     
     drawAxes()
 
@@ -150,6 +165,7 @@ def display():
     glutSwapBuffers()
 
 def drawAxes():
+    glDisable(GL_LIGHTING)
     glPushMatrix()
     
     glColor3f(1.0, 0.0, 0.0)
@@ -171,6 +187,7 @@ def drawAxes():
     glEnd()
     
     glPopMatrix()
+    glEnable(GL_LIGHTING)
 
 if __name__ == '__main__':
     main()
