@@ -1,3 +1,4 @@
+#include <getopt.h>
 #include <iostream>
 #include <fstream>
 #include <noise/noise.h>
@@ -43,7 +44,7 @@ double resInMeters;
 double seaLevelInMeters;
 
 int main(int argc, char **argv);
-void initParams(void);
+void initParams(int argc, char **argv);
 void createGeometry(void);
 void getTopography(void);
 void getNormals(void);
@@ -51,7 +52,7 @@ void getSpecular(void);
 void getTexture(void);
 
 int main (int argc, char **argv) {
-  initParams();
+  initParams(argc, argv);
   createGeometry();
   getTopography();
   getTexture();
@@ -61,7 +62,75 @@ int main (int argc, char **argv) {
   return 0;
 }
 
-void initParams() {
+void initParams(int argc, char **argv) {
+  static const char *optString = "a:b:c:d:e:f:g:h:i:j:k:l:m:n:o:p:q:r:s:t:u:v:w:x:y:z:A:B:C:";
+  static const struct option longOpts[] = {
+    {"north", required_argument, NULL, 'a'},
+    {"south", required_argument, NULL, 'b'},
+    {"east", required_argument, NULL, 'c'},
+    {"west", required_argument, NULL, 'd'},
+    {"width", required_argument, NULL, 'e'},
+    {"height", required_argument, NULL, 'f'},
+    {"seed", required_argument, NULL, 'g'},
+    {"circumference", required_argument, NULL, 'h'},
+    {"minelev", required_argument, NULL, 'i'},
+    {"maxelev", required_argument, NULL, 'j'},
+    {"continentsfreq", required_argument, NULL, 'k'},
+    {"continentslacu", required_argument, NULL, 'l'},
+    {"mountainslacu", required_argument, NULL, 'm'},
+    {"mountainstwist", required_argument, NULL, 'n'},
+    {"hillslacu", required_argument, NULL, 'o'},
+    {"hillstwist", required_argument, NULL, 'p'},
+    {"plainslacu", required_argument, NULL, 'q'},
+    {"badlandslacu", required_argument, NULL, 'r'},
+    {"badlandstwist", required_argument, NULL, 's'},
+    {"sealevel", required_argument, NULL, 't'},
+    {"shelflevel", required_argument, NULL, 'u'},
+    {"mountainsamount", required_argument, NULL, 'v'},
+    {"hillsamount", required_argument, NULL, 'w'},
+    {"badlandsamount", required_argument, NULL, 'x'},
+    {"terrainoffset", required_argument, NULL, 'y'},
+    {"mountainglaciation", required_argument, NULL, 'z'},
+    {"continentheightscale", required_argument, NULL, 'A'},
+    {"riverdepth", required_argument, NULL, 'B'},
+    {NULL, required_argument, NULL, 0}
+  };
+
+  int longIndex;
+  int opt = getopt_long(argc, argv, optString, longOpts, &longIndex);
+
+  while (opt != -1) {
+    switch (opt) {
+      case 'a': NORTH_COORD = strtod(optarg, NULL); break;
+      case 'b': SOUTH_COORD = strtod(optarg, NULL); break;
+      case 'c': EAST_COORD = strtod(optarg, NULL); break;
+      case 'd': WEST_COORD = strtod(optarg, NULL); break;
+      case 'e': GRID_WIDTH = atoi(optarg); break;
+      case 'f': GRID_HEIGHT = atoi(optarg); break;
+      case 'g': CUR_SEED = atoi(optarg); break;
+      case 'h': PLANET_CIRCUMFERENCE = strtod(optarg, NULL); break;
+      case 'i': MIN_ELEV = strtod(optarg, NULL); break;
+      case 'j': MAX_ELEV = strtod(optarg, NULL); break;
+      case 'k': CONTINENT_FREQUENCY = strtod(optarg, NULL); break;
+      case 'l': CONTINENT_LACUNARITY = strtod(optarg, NULL); break;
+      case 'm': MOUNTAIN_LACUNARITY = strtod(optarg, NULL); break;
+      case 'n': MOUNTAINS_TWIST = strtod(optarg, NULL); break;
+      case 'o': HILLS_LACUNARITY = strtod(optarg, NULL); break;
+      case 'p': HILLS_TWIST = strtod(optarg, NULL); break;
+      case 'q': PLAINS_LACUNARITY = strtod(optarg, NULL); break;
+      case 'r': BADLANDS_LACUNARITY = strtod(optarg, NULL); break;
+      case 's': BADLANDS_TWIST = strtod(optarg, NULL); break;
+      case 't': SEA_LEVEL = strtod(optarg, NULL); break;
+      case 'u': SHELF_LEVEL = strtod(optarg, NULL); break;
+      case 'v': MOUNTAINS_AMOUNT = strtod(optarg, NULL); break;
+      case 'w': HILLS_AMOUNT = strtod(optarg, NULL); break;
+      case 'x': BADLANDS_AMOUNT = strtod(optarg, NULL); break;
+      case 'y': TERRAIN_OFFSET = strtod(optarg, NULL); break;
+      case 'z': MOUNTAIN_GLACIATION = strtod(optarg, NULL); break;
+      case 'A': CONTINENT_HEIGHT_SCALE = strtod(optarg, NULL); break;
+      case 'B': RIVER_DEPTH = strtod(optarg, NULL); break;
+    }
+  }
 
 }
 
