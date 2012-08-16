@@ -24,7 +24,7 @@ class Planet:
             if i > 3:
                 baselat = -90.
             
-            qt = TerrainQuadtree(parent=None, maxlod=self.maxlod, index=i, baselat=baselat, baselon=baselon, span=degreespan, seed=self.generator_seed)
+            qt = TerrainQuadtree(parent=None, maxlod=self.maxlod, index=i+1, baselat=baselat, baselon=baselon, span=degreespan, seed=self.generator_seed())
             self.quadtrees.append(qt)
 
     def draw(self):
@@ -34,11 +34,11 @@ class Planet:
 
     def generator_seed(self):
         # assemble all options into cli str
-        command = 'noisetest/generator/generator '
+        options = {}
         for item in self.parser.items('planet'):
-            command = "%s %s" % (command, '--%s %s' % (item[0], item[1]))
+            options[item[0]] = item[1]
         for item in self.parser.items('terrain'):
-            command = "%s %s" % (command, '--%s %s' % (item[0], item[1]))
+            options[item[0]] = item[1]
         for item in self.parser.items('cache'):
-            command = "%s %s" % (command, '--%s %s' % (item[0], item[1]))
-        return command
+            options[item[0]] = item[1]
+        return options

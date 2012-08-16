@@ -1,3 +1,5 @@
+import os
+import threading
 import subprocess
 from numpy import array
 import numpy as np
@@ -7,6 +9,7 @@ from OpenGL.GLU import *
 from OpenGL.GLUT import *
 
 import factory
+from texture import *
 
 class TerrainQuadtree:
     def __init__(self, parent, maxlod, index, baselat, baselon, span, seed):
@@ -30,21 +33,61 @@ class TerrainQuadtree:
 
         self.generateVertices()
 
-        self.generateTextures()
-        self.loadTextures()
+        self.ready = False
 
-    def generateTextures(self):
-        extra = '--width 256 --height 256 --south %f --north %f --west %f --east %f --outfile %d' % (\
-            self.baselat, self.baselat+self.span, self.baselon-180., self.baselon-180.+self.span, self.index)
-        command = "%s %s" % (self.seed(), extra)
-        print command
-        
-        cmd = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
-        for line in cmd.stdout:
-            pass
+        self.files = [\
+            '%s/%s-topo.raw' % (self.seed['cachedir'], self.index),
+            '%s/%s-specular.bmp' % (self.seed['cachedir'], self.index),
+            '%s/%s-normal.bmp' % (self.seed['cachedir'], self.index),
+            '%s/%s-texture.bmp' % (self.seed['cachedir'], self.index)]
+
+        self.normalTexture = None
+        self.texture = None
+
+        self.generateTextures()
 
     def loadTextures(self):
-        pass
+        # test just the normal
+        self.normalTexture = Texture(self.files[2])
+        print self.normalTexture
+
+    def needFiles(self):
+        for file in self.files:
+            if os.path.exists(file):
+                self.ready = True
+                return False
+
+        return True
+
+    def generateTextures(self):
+        # make sure we need them
+        if not self.needFiles():
+            return
+
+        extra = {\
+            'width': 256,
+            'height': 256,
+            'south': self.baselat,
+            'north': self.baselat+self.span,
+            'west': self.baselon-180.,
+            'east': self.baselon-180.+self.span,
+            'outfile': self.index}
+
+        command = './gen '
+        for k in self.seed.keys():
+            command = "%s --%s %s" % (command, k, self.seed[k])
+        for k in extra.keys():
+            command = "%s --%s %s" % (command, k, extra[k])
+        
+        loadt = threading.Thread(target=self.spawnProcessInNewThread, args=(command, self,))
+        loadt.start()
+
+    def spawnProcessInNewThread(self, command, instance):
+        cmd = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
+        for line in cmd.stdout:
+            print line
+
+        instance.ready = True
 
     def generateVertices(self):
         step = self.span / self.gridSize
@@ -91,6 +134,9 @@ class TerrainQuadtree:
         self.indexes = None
 
     def draw(self):
+        if self.ready == True and self.normalTexture is None:
+            self.loadTextures()
+
         # do we need to draw our children
         d1 = np.linalg.norm(factory.camera.position - self.center)
         d2 = np.linalg.norm(factory.camera.position - self.topleft)
@@ -102,8 +148,14 @@ class TerrainQuadtree:
         if self.maxlod > 0 and distance < self.sidelength*1.1:
             # are they ready?
             if len(self.children) > 0:
-                [x.draw() for x in self.children]
-                return
+                readycount = 0
+                for x in self.children:
+                    if x.ready == True:
+                        readycount += 1
+                # got children. all ready? draw then. not? draw self
+                if readycount == 4:
+                    [x.draw() for x in self.children]
+                    return
             else:
                 self.initChildren()
 
@@ -113,18 +165,20 @@ class TerrainQuadtree:
 
         GL.glEnableClientState(GL.GL_INDEX_ARRAY)
         GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, self.indexBufferObject)
+
+        self.normalTexture.bind()
         GL.glDrawElements(GL.GL_TRIANGLE_STRIP, self.gridSize*self.gridSizep1*2, GL.GL_UNSIGNED_SHORT, c_void_p(0))
-            
+        self.normalTexture.unbind()
 
     def initChildren(self):
-        qt = TerrainQuadtree(self, self.maxlod-1, self.index*10+1, self.baselat, self.baselon, self.span/2.)
+        qt = TerrainQuadtree(self, self.maxlod-1, self.index*10+1, self.baselat, self.baselon, self.span/2., self.seed)
         self.children.append(qt)
 
-        qt = TerrainQuadtree(self, self.maxlod-1, self.index*10+2, self.baselat, self.baselon+self.span/2., self.span/2.)
+        qt = TerrainQuadtree(self, self.maxlod-1, self.index*10+2, self.baselat, self.baselon+self.span/2., self.span/2., self.seed)
         self.children.append(qt)
 
-        qt = TerrainQuadtree(self, self.maxlod-1, self.index*10+3, self.baselat+self.span/2., self.baselon, self.span/2.)
+        qt = TerrainQuadtree(self, self.maxlod-1, self.index*10+3, self.baselat+self.span/2., self.baselon, self.span/2., self.seed)
         self.children.append(qt)
 
-        qt = TerrainQuadtree(self, self.maxlod-1, self.index*10+4, self.baselat+self.span/2., self.baselon+self.span/2., self.span/2.)
+        qt = TerrainQuadtree(self, self.maxlod-1, self.index*10+4, self.baselat+self.span/2., self.baselon+self.span/2., self.span/2., self.seed)
         self.children.append(qt)

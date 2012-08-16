@@ -1,2 +1,0 @@
-/Users/fcv/Documents/Projects/spb/noisetest/libnoise/build/src/CMakeFiles/noise.dir
-/Users/fcv/Documents/Projects/spb/noisetest/libnoise/build/src/CMakeFiles/noise-static.dir
