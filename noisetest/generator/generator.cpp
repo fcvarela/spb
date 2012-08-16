@@ -45,6 +45,9 @@ utils::NoiseMap elevGrid;
 double resInMeters;
 double seaLevelInMeters;
 
+char cachedir[1024];
+char outfile[1024];
+
 int main(int argc, char **argv);
 void initParams(int argc, char **argv);
 void createGeometry(void);
@@ -98,6 +101,8 @@ void initParams(int argc, char **argv) {
     {"terrainoffset", required_argument, NULL, 'x'},
     {"mountainglaciation", required_argument, NULL, 'y'},
     {"riverdepth", required_argument, NULL, 'z'},
+    {"cachedir", required_argument, NULL, 'A'},
+    {"outfile", required_argument, NULL, 'B'},
     {NULL, required_argument, NULL, 0}
   };
 
@@ -132,6 +137,8 @@ void initParams(int argc, char **argv) {
       case 'x': TERRAIN_OFFSET = strtod(optarg, NULL); break;
       case 'y': MOUNTAIN_GLACIATION = strtod(optarg, NULL); break;
       case 'z': RIVER_DEPTH = strtod(optarg, NULL); break;
+      case 'A': strcpy(cachedir, optarg); break;
+      case 'B': strcpy(outfile, optarg); break;
     }
     opt = getopt_long(argc, argv, optString, longOpts, &longIndex);
   }
@@ -1106,8 +1113,10 @@ void getTopography() {
   fwrite(&toposize, sizeof(toposize), 1, stdout);
 
   uint8* pLineBuffer = new uint8[GRID_WIDTH * 2];
-  //std::ofstream os;
-  //os.open ("topo.raw", std::ios::out | std::ios::binary);
+  std::ofstream os;
+  char fullpath[1024];
+  sprintf("%s/%s-topo.raw", fullpath, cachedir, outfile);
+  os.open (fullpath, std::ios::out | std::ios::binary);
   for (int y = 0; y < GRID_HEIGHT; y++) {
     float* pSource = elevGrid.GetSlabPtr (y);
     uint8* pDest = pLineBuffer;
@@ -1117,10 +1126,10 @@ void getTopography() {
       *pDest++ = (uint8)(((uint16)elev & 0x00ff)     );
       ++pSource;
     }
-    fwrite(pLineBuffer, GRID_WIDTH*2, 1, stdout);
-    //os.write ((char*)pLineBuffer, GRID_WIDTH * 2);
+    //fwrite(pLineBuffer, GRID_WIDTH*2, 1, stdout);
+    os.write ((char*)pLineBuffer, GRID_WIDTH * 2);
   }
-  //os.close ();
+  os.close ();
   delete[] pLineBuffer;
 }
 
@@ -1156,7 +1165,9 @@ void getTexture() {
   surfaceRenderer.EnableLight (false);
   surfaceRenderer.Render ();
   bitmapWriter.SetSourceImage (destImage);
-  bitmapWriter.SetDestFilename ("texture.bmp");
+  char fullpath[1024];
+  sprintf("%s/%s-texture.bmp", fullpath, cachedir, outfile);
+  bitmapWriter.SetDestFilename (fullpath);
   bitmapWriter.WriteDestFile ();
 }
 
@@ -1172,7 +1183,9 @@ void getSpecular() {
   specularityRenderer.EnableLight (false);
   specularityRenderer.Render ();
   bitmapWriter.SetSourceImage (destImage);
-  bitmapWriter.SetDestFilename ("specular.bmp");
+  char fullpath[1024];
+  sprintf("%s/%s-specular.bmp", fullpath, cachedir, outfile);
+  bitmapWriter.SetDestFilename (fullpath);
   bitmapWriter.WriteDestFile ();
 }
 
@@ -1183,6 +1196,8 @@ void getNormals() {
   normalMapRenderer.SetBumpHeight (1.0 / resInMeters);
   normalMapRenderer.Render ();
   bitmapWriter.SetSourceImage (destImage);
-  bitmapWriter.SetDestFilename ("normal.bmp");
+    char fullpath[1024];
+  sprintf("%s/%s-normal.bmp", fullpath, cachedir, outfile);
+  bitmapWriter.SetDestFilename (fullpath);
   bitmapWriter.WriteDestFile ();
 }

@@ -1,3 +1,4 @@
+import math
 from ConfigParser import SafeConfigParser
 
 from terrainquadtree import *
@@ -5,11 +6,12 @@ from shaderprogram import *
 
 class Planet:
     def __init__(self, conffile):
-        parser = SafeConfigParser()
-        parser.read(conffile)
+        self.parser = SafeConfigParser()
+        self.parser.read(conffile)
 
-        self.radius = parser.get('planet', 'circumference') / (2.0 * math.PI)
-        self.maxlod = maxlod
+        self.radius = float(self.parser.get('planet', 'circumference')) / (2.0 * math.pi)
+        self.maxlod = int(self.parser.get('terrain', 'maxlod'))
+
         self.atmosphere_radius = 1.025*self.radius
         self.quadtrees = []
 
@@ -22,10 +24,21 @@ class Planet:
             if i > 3:
                 baselat = -90.
             
-            qt = TerrainQuadtree(parent=None, maxlod=maxlod, index=1, baselat=baselat, baselon=baselon, span=degreespan)
+            qt = TerrainQuadtree(parent=None, maxlod=self.maxlod, index=i, baselat=baselat, baselon=baselon, span=degreespan, seed=self.generator_seed)
             self.quadtrees.append(qt)
 
     def draw(self):
         self.shader.attach()
         [x.draw() for x in self.quadtrees]
         self.shader.dettach()
+
+    def generator_seed(self):
+        # assemble all options into cli str
+        command = 'noisetest/generator/generator '
+        for item in self.parser.items('planet'):
+            command = "%s %s" % (command, '--%s %s' % (item[0], item[1]))
+        for item in self.parser.items('terrain'):
+            command = "%s %s" % (command, '--%s %s' % (item[0], item[1]))
+        for item in self.parser.items('cache'):
+            command = "%s %s" % (command, '--%s %s' % (item[0], item[1]))
+        return command

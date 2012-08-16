@@ -1,3 +1,4 @@
+import subprocess
 from numpy import array
 import numpy as np
 
@@ -8,13 +9,14 @@ from OpenGL.GLUT import *
 import factory
 
 class TerrainQuadtree:
-    def __init__(self, parent, maxlod, index, baselat, baselon, span):
+    def __init__(self, parent, maxlod, index, baselat, baselon, span, seed):
         self.parent = parent
         self.maxlod = maxlod
         self.baselat = baselat
         self.baselon = baselon
         self.index = index
         self.span = span
+        self.seed = seed
 
         self.gridSize = 8
         self.gridSizep1 = self.gridSize + 1
@@ -27,6 +29,22 @@ class TerrainQuadtree:
         self.indexBufferObject = None
 
         self.generateVertices()
+
+        self.generateTextures()
+        self.loadTextures()
+
+    def generateTextures(self):
+        extra = '--width 256 --height 256 --south %f --north %f --west %f --east %f --outfile %d' % (\
+            self.baselat, self.baselat+self.span, self.baselon-180., self.baselon-180.+self.span, self.index)
+        command = "%s %s" % (self.seed(), extra)
+        print command
+        
+        cmd = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
+        for line in cmd.stdout:
+            pass
+
+    def loadTextures(self):
+        pass
 
     def generateVertices(self):
         step = self.span / self.gridSize
