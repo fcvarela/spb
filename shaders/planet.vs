@@ -1,21 +1,18 @@
-varying vec3 vertex_light_position;
-varying vec4 orig_vertex;
+varying vec4 vertex;
+varying vec4 vvertex;
 
 uniform sampler2D topoTexture;
 
-void main()
-{
+void main() {
     gl_TexCoord[0] = gl_MultiTexCoord0;
     
     float radius = 1.0;
     
     vec4 heightmap = texture2D(topoTexture, gl_TexCoord[0].st);
-    float height = heightmap.g * 255.0 + heightmap.r;
-    height /= 173814.0;
-    orig_vertex = vec4(normalize(gl_Vertex.xyz) * (height + radius), 1.0);
-    
-    vec4 v_vertex = gl_ModelViewMatrix * orig_vertex;
-    gl_Position = gl_ModelViewProjectionMatrix * orig_vertex;
+    float height = heightmap.r * 255.0 + heightmap.g;
+    height /= 1738140.0;
+    vertex = vec4(normalize(gl_Vertex.xyz) * (height + radius), 1.0);
 
-    vertex_light_position = normalize(gl_LightSource[0].position.xyz);
+    vvertex = gl_ModelViewMatrix * gl_Vertex;
+    gl_Position = gl_ModelViewProjectionMatrix * vertex;
 }

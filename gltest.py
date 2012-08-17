@@ -150,18 +150,18 @@ def display():
     glMultMatrixd(factory.camera.nodes['yaw'].rotation.gl_matrix())
     glTranslatef(-factory.camera.position[0], -factory.camera.position[1], -factory.camera.position[2])
 
-    sunlon += factory.dt*10.
-    if sunlon > 360.:
-        sunlon = sunlon-360.
+    #sunlon += factory.dt*10.
+    #if sunlon > 360.:
+    #    sunlon = sunlon-360.
 
-    factory.sun.position = factory.camera.position#geocentricToCarthesian(sunlon, sunlon, 2.)
+    factory.sun.position = factory.geocentricToCarthesian(0., sunlon, 10.)
     glLightfv(GL_LIGHT0, GL_POSITION, factory.sun.position);
-    
+
     drawAxes()
 
     glColor3f(1., 1., 1.)
     factory.planet.draw()
-    
+
     glutSwapBuffers()
 
 def drawAxes():

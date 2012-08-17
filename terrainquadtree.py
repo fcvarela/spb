@@ -19,8 +19,9 @@ class TerrainQuadtree:
         self.span = span
         self.seed = seed
 
-        self.gridSize = 32
+        self.gridSize = 12
         self.gridSizep1 = self.gridSize + 1
+        self.textureSize = 256
 
         self.vertices = []
         self.texcoords = []
@@ -43,6 +44,7 @@ class TerrainQuadtree:
         self.normalTexture = None
         self.colorTexture = None
         self.topoTexture = None
+        self.specularTexture = None
 
         self.generateTextures()
 
@@ -51,6 +53,7 @@ class TerrainQuadtree:
         self.normalTexture = Texture(self.files[2])
         self.colorTexture = Texture(self.files[3])
         self.topoTexture = Texture(self.files[0])
+        self.specularTexture = Texture(self.files[1])
 
     def needFiles(self):
         for file in self.files:
@@ -65,13 +68,15 @@ class TerrainQuadtree:
         if not self.needFiles():
             return
 
+        degreesPerVertex = 1./self.textureSize
+
         extra = {\
-            'width': 256,
-            'height': 256,
+            'width': self.textureSize,
+            'height': self.textureSize,
             'south': self.baselat,
-            'north': self.baselat+self.span,
+            'north': self.baselat+self.span+(self.span*degreesPerVertex),
             'west': self.baselon,
-            'east': self.baselon+self.span,
+            'east': self.baselon+self.span+(self.span*degreesPerVertex),
             'outfile': self.index}
 
         command = './gen '
@@ -93,7 +98,6 @@ class TerrainQuadtree:
                 coord = factory.geocentricToCarthesian(lat, lon, 1.0)
                 coord /= np.linalg.norm(coord)
                 self.vertices.append(coord)
-                self.texcoords.append([float(x)/self.gridSize, float(self.gridSize-y)/self.gridSize])
 
                 if y == x and x == self.gridSize/2:
                     self.center = coord
@@ -107,31 +111,44 @@ class TerrainQuadtree:
                     self.botright = coord
 
         self.sidelength = np.linalg.norm(self.topleft - self.botleft)
-
-        for y in range(0, self.gridSize):
-            for x in range(0, self.gridSizep1):
-                self.indexes.append(y * self.gridSizep1 + x)
-                self.indexes.append((y+1) * self.gridSizep1 + x)
-
         self.vertices = array(self.vertices, dtype='float32')
-        self.indexes = array(self.indexes, dtype='ushort')
-        self.texcoords = array(self.texcoords, dtype='float32')
-
-        self.indexBufferObject = GL.glGenBuffers(1)
-        GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, self.indexBufferObject)
-        GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, self.indexes, GL.GL_STATIC_DRAW)
-
-        self.texcoordBufferObject = GL.glGenBuffers(1)
-        GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, self.texcoordBufferObject)
-        GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, self.texcoords, GL.GL_STATIC_DRAW)
-
         self.positionBufferObject = GL.glGenBuffers(1)
         GL.glBindBuffer(GL.GL_ARRAY_BUFFER, self.positionBufferObject)
         GL.glBufferData(GL.GL_ARRAY_BUFFER, self.vertices, GL.GL_STATIC_DRAW)
-
         self.vertices = None
-        self.indexes = None
-        self.texcoords = None
+
+        # texture coords
+
+        if self.indexBufferObject is None:
+            for y in range(0, self.gridSize):
+                for x in range(0, self.gridSizep1):
+                    self.indexes.append(y * self.gridSizep1 + x)
+                    self.indexes.append((y+1) * self.gridSizep1 + x)
+
+            # store in gl
+            self.indexes = array(self.indexes, dtype='ushort')
+            self.indexBufferObject = GL.glGenBuffers(1)
+            GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, self.indexBufferObject)
+            GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, self.indexes, GL.GL_STATIC_DRAW)
+
+            # release local copy
+            self.indexes = None
+
+        if self.texcoordBufferObject is None:
+            for y in range(0, self.gridSizep1):
+                for x in range(0, self.gridSizep1):
+                    cx = float(x) / float(self.gridSize)
+                    cy = float(self.gridSize-y) / float(self.gridSize)
+                    self.texcoords.append([cx, cy])
+
+            # store in gl
+            self.texcoords = array(self.texcoords, dtype='float32')
+            self.texcoordBufferObject = GL.glGenBuffers(1)
+            GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, self.texcoordBufferObject)
+            GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, self.texcoords, GL.GL_STATIC_DRAW)
+
+            # release local copy
+            self.texcoords = None
 
     def draw(self):
         if self.ready == False:
@@ -176,18 +193,29 @@ class TerrainQuadtree:
         self.normalTexture.bind(0)
         self.colorTexture.bind(1)
         self.topoTexture.bind(2)
+        self.specularTexture.bind(3)
+        
         GL.glDrawElements(GL.GL_TRIANGLE_STRIP, self.gridSize*self.gridSizep1*2, GL.GL_UNSIGNED_SHORT, c_void_p(0))
         self.normalTexture.unbind()
 
     def initChildren(self):
         qt = TerrainQuadtree(self, self.maxlod-1, self.index*10+1, self.baselat, self.baselon, self.span/2., self.seed)
+
+        qt.texcoordBufferObject = self.texcoordBufferObject
+        qt.indexBufferObject = self.indexBufferObject
         self.children.append(qt)
 
         qt = TerrainQuadtree(self, self.maxlod-1, self.index*10+2, self.baselat, self.baselon+self.span/2., self.span/2., self.seed)
+        qt.texcoordBufferObject = self.texcoordBufferObject
+        qt.indexBufferObject = self.indexBufferObject
         self.children.append(qt)
 
         qt = TerrainQuadtree(self, self.maxlod-1, self.index*10+3, self.baselat+self.span/2., self.baselon, self.span/2., self.seed)
+        qt.texcoordBufferObject = self.texcoordBufferObject
+        qt.indexBufferObject = self.indexBufferObject
         self.children.append(qt)
 
         qt = TerrainQuadtree(self, self.maxlod-1, self.index*10+4, self.baselat+self.span/2., self.baselon+self.span/2., self.span/2., self.seed)
+        qt.texcoordBufferObject = self.texcoordBufferObject
+        qt.indexBufferObject = self.indexBufferObject
         self.children.append(qt)

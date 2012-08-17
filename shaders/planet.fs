@@ -1,21 +1,41 @@
-varying vec3 vertex_light_position;
-varying vec4 orig_vertex;
-uniform sampler2D colorTexture;
+varying vec4 vertex;
+varying vec4 vvertex;
+
 uniform sampler2D normalTexture;
+uniform sampler2D colorTexture;
+uniform sampler2D specularTexture;
 
 mat3 fromToRotation(vec3 from, vec3 to);
 
 void main() {
+    // fetch base color
+    vec4 base = texture2D(colorTexture, gl_TexCoord[0].st);
+    vec4 spec = texture2D(specularTexture, gl_TexCoord[0].st);
+    
+    // fetch normals and rotate
     vec3 normal = texture2D(normalTexture, gl_TexCoord[0].st).xyz;
     normal = (normal * 2.0) - 1.0;
-
-    mat3 rot_matrix = fromToRotation(vec3(0.0, 0.0, 1.0), normalize(orig_vertex.xyz));
-    
+    mat3 rot_matrix = fromToRotation(vec3(0.0, 0.0, 1.0), normalize(vertex.xyz));
     normal = normalize(normal * rot_matrix);
     normal = normalize(gl_NormalMatrix * normal);
 
-    float diffuse_value = max(dot(normal, vertex_light_position), 0.0);
-    gl_FragColor = texture2D(colorTexture, gl_TexCoord[0].xy) * diffuse_value;
+    // lighting stuff
+    vec4 s = -normalize(vvertex - gl_LightSource[0].position);
+    vec3 light = normalize(s.xyz);
+
+    // ambient component
+    vec4 ambient = gl_LightSource[0].ambient;
+
+    // diffuse component
+    float diffuse = max(0.0, dot(normal, light));
+    
+    // specular component
+    vec3 r = normalize(-reflect(light, normal));
+    vec3 v = normalize(-vvertex.xyz);
+
+    vec4 specular = gl_LightSource[0].specular * spec + pow(max(0.0, dot(r, v)), 8.0);
+
+    gl_FragColor = base * diffuse + specular;
 }
 
 mat3 fromToRotation(vec3 from, vec3 to) {

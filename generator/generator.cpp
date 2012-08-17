@@ -73,7 +73,7 @@ int main (int argc, char **argv) {
 }
 
 void initParams(int argc, char **argv) {
-  static const char *optString = "a:b:c:d:e:f:g:h:i:j:k:l:m:n:o:p:q:r:s:t:u:v:w:x:y:z:A:B:C:";
+  static const char *optString = "a:b:c:d:e:f:g:h:i:j:k:l:m:n:o:p:q:r:s:t:u:v:w:x:y:z:A:B:C:D:E:";
   static const struct option longOpts[] = {
     {"north", required_argument, NULL, 'a'},
     {"south", required_argument, NULL, 'b'},
@@ -103,6 +103,9 @@ void initParams(int argc, char **argv) {
     {"riverdepth", required_argument, NULL, 'z'},
     {"cachedir", required_argument, NULL, 'A'},
     {"outfile", required_argument, NULL, 'B'},
+    {"name", required_argument, NULL, 'C'},
+    {"maxlod", required_argument, NULL, 'D'},
+    {"whatever", required_argument, NULL, 'E'},
     {NULL, required_argument, NULL, 0}
   };
 

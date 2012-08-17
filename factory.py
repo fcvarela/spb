@@ -37,9 +37,7 @@ def generatorThread():
             generatorQueue.put((entry[0], entry[1]))
 
         (command, instance) = generatorQueue.get(True, None)
-        print "Starting job - %f" % instance.index
         subprocess.Popen(command, shell=True, stdout=subprocess.PIPE).communicate()
-        print "Done"
         instance.ready = True
 
 
