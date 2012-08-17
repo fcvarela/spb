@@ -1,3 +1,6 @@
+*.dylib
+*.so
+*.o
 cache
 gen
 venv
