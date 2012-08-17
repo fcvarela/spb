@@ -33,7 +33,7 @@ class Planet:
         GL.glUniform1i(GL.glGetUniformLocation(self.shader.shader, 'normalTexture'), 0)
         GL.glUniform1i(GL.glGetUniformLocation(self.shader.shader, 'colorTexture'), 1)
         GL.glUniform1i(GL.glGetUniformLocation(self.shader.shader, 'topoTexture'), 2)
-        GL.glUniform1i(GL.glGetUniformLocation(self.shader.shader, 'specularTexture'), 1)
+        GL.glUniform1i(GL.glGetUniformLocation(self.shader.shader, 'specularTexture'), 3)
         [x.draw() for x in self.quadtrees]
         self.shader.dettach()
 

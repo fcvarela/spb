@@ -23,17 +23,25 @@ void main() {
     vec4 s = -normalize(vvertex - gl_LightSource[0].position);
     vec3 light = normalize(s.xyz);
 
+    // finals
+    vec4 ambient = vec4(0.0);
+    vec4 diffuse = vec4(0.0);
+    vec4 specular = vec4(0.0);
+
     // ambient component
-    vec4 ambient = gl_LightSource[0].ambient;
+    ambient = gl_LightSource[0].ambient;
 
     // diffuse component
-    float diffuse = max(0.0, dot(normal, light));
-    
-    // specular component
-    vec3 r = normalize(-reflect(light, normal));
-    vec3 v = normalize(-vvertex.xyz);
-
-    vec4 specular = gl_LightSource[0].specular * spec + pow(max(0.0, dot(r, v)), 8.0);
+    float diffuse_coeff = max(0.0, dot(normal, light));
+    if (diffuse_coeff > 0.0) {
+        diffuse = gl_LightSource[0].diffuse * diffuse_coeff;
+        
+        // specular component
+        vec3 r = -reflect(light, normal);
+        vec3 v = normalize(-vvertex.xyz);
+        float NdotHV = clamp(dot(r, v), 0.0, 1.0);
+        specular = gl_LightSource[0].specular * pow(NdotHV, 8.0) * spec;
+    }
 
     gl_FragColor = base * diffuse + specular;
 }

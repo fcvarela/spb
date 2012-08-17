@@ -41,19 +41,19 @@ class TerrainQuadtree:
             '%s/%s-normal.bmp' % (self.seed['cachedir'], self.index),
             '%s/%s-texture.bmp' % (self.seed['cachedir'], self.index)]
 
-        self.normalTexture = None
-        self.colorTexture = None
         self.topoTexture = None
         self.specularTexture = None
+        self.normalTexture = None
+        self.colorTexture = None
 
         self.generateTextures()
 
     def loadTextures(self):
         # test just the normal
-        self.normalTexture = Texture(self.files[2])
-        self.colorTexture = Texture(self.files[3])
         self.topoTexture = Texture(self.files[0])
         self.specularTexture = Texture(self.files[1])
+        self.normalTexture = Texture(self.files[2])
+        self.colorTexture = Texture(self.files[3])
 
     def needFiles(self):
         for file in self.files:

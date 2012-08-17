@@ -22,6 +22,19 @@ def geocentricToCarthesian(lat, lon, alt):
     return position
 
 def generatorThread():
+    # spawn process
+
+    # while 1 and process is alive
+    # get from queue
+
+    # send request to process
+
+    # got here? process died. respawn
+
+
+
+
+
     while True:
         # dequeue everything into a local list
         entries = []

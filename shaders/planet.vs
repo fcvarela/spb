@@ -10,7 +10,7 @@ void main() {
     
     vec4 heightmap = texture2D(topoTexture, gl_TexCoord[0].st);
     float height = heightmap.r * 255.0 + heightmap.g;
-    height /= 1738140.0;
+    height /= 173814.0;
     vertex = vec4(normalize(gl_Vertex.xyz) * (height + radius), 1.0);
 
     vvertex = gl_ModelViewMatrix * gl_Vertex;
