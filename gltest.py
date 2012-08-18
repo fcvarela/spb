@@ -59,7 +59,7 @@ def changeSize(width, height):
     glLoadIdentity()
 
     glViewport(0, 0, width, height)
-    gluPerspective(45., ratio, .001, 6371000.*2.)
+    gluPerspective(45., ratio, .01, 10.)
 
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()

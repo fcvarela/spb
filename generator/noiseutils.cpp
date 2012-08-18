@@ -36,14 +36,14 @@ const int BMP_HEADER_SIZE = 54;
 
 // Direction of the light source, in compass degrees (0 = north, 90 = east,
 // 180 = south, 270 = east)
-const double DEFAULT_LIGHT_AZIMUTH = 45.0;
+const float DEFAULT_LIGHT_AZIMUTH = 45.0;
 
 // Amount of contrast between light and dark areas.
-const double DEFAULT_LIGHT_CONTRAST  =  1.0;
+const float DEFAULT_LIGHT_CONTRAST  =  1.0;
 
 // Elevation of the light source above the horizon, in degrees (0 = on
 // horizon, 90 = directly overhead)
-const double DEFAULT_LIGHT_ELEVATION = 45.0;
+const float DEFAULT_LIGHT_ELEVATION = 45.0;
 
 //////////////////////////////////////////////////////////////////////////////
 // Miscellaneous functions
@@ -128,7 +128,7 @@ GradientColor::~GradientColor ()
   delete[] m_pGradientPoints;
 }
 
-void GradientColor::AddGradientPoint (double gradientPos,
+void GradientColor::AddGradientPoint (float gradientPos,
   const Color& gradientColor)
 {
   // Find the insertion point for the new gradient point and insert the new
@@ -145,7 +145,7 @@ void GradientColor::Clear ()
   m_gradientPointCount = 0;
 }
 
-int GradientColor::FindInsertionPos (double gradientPos)
+int GradientColor::FindInsertionPos (float gradientPos)
 {
   int insertionPos;
   for (insertionPos = 0; insertionPos < m_gradientPointCount;
@@ -163,7 +163,7 @@ int GradientColor::FindInsertionPos (double gradientPos)
   return insertionPos;
 }
 
-const Color& GradientColor::GetColor (double gradientPos) const
+const Color& GradientColor::GetColor (float gradientPos) const
 {
   assert (m_gradientPointCount >= 2);
 
@@ -192,9 +192,9 @@ const Color& GradientColor::GetColor (double gradientPos) const
   }
   
   // Compute the alpha value used for linear interpolation.
-  double input0 = m_pGradientPoints[index0].pos;
-  double input1 = m_pGradientPoints[index1].pos;
-  double alpha = (gradientPos - input0) / (input1 - input0);
+  float input0 = m_pGradientPoints[index0].pos;
+  float input1 = m_pGradientPoints[index1].pos;
+  float alpha = (gradientPos - input0) / (input1 - input0);
 
   // Now perform the linear interpolation given the alpha value.
   const Color& color0 = m_pGradientPoints[index0].color;
@@ -203,7 +203,7 @@ const Color& GradientColor::GetColor (double gradientPos) const
   return m_workingColor;
 }
 
-void GradientColor::InsertAtPos (int insertionPos, double gradientPos,
+void GradientColor::InsertAtPos (int insertionPos, float gradientPos,
   const Color& gradientColor)
 {
   // Make room for the new gradient point at the specified insertion position
@@ -698,7 +698,7 @@ void WriterTER::WriteDestFile ()
 
   // Build the header.
   noise::uint8 d[4];
-  int16 heightScale = (int16)(floor (32768.0 / (double)m_metersPerPoint));
+  int16 heightScale = (int16)(floor (32768.0 / (float)m_metersPerPoint));
   os.write ("TERRAGENTERRAIN ", 16);
   os.write ("SIZE", 4);
   os.write ((char*)UnpackLittle16 (d, GetMin (width, height) - 1), 2);
@@ -796,12 +796,12 @@ void NoiseMapBuilderCylinder::Build ()
   model::Cylinder cylinderModel;
   cylinderModel.SetModule (*m_pSourceModule);
 
-  double angleExtent  = m_upperAngleBound  - m_lowerAngleBound ;
-  double heightExtent = m_upperHeightBound - m_lowerHeightBound;
-  double xDelta = angleExtent  / (double)m_destWidth ;
-  double yDelta = heightExtent / (double)m_destHeight;
-  double curAngle  = m_lowerAngleBound ;
-  double curHeight = m_lowerHeightBound;
+  float angleExtent  = m_upperAngleBound  - m_lowerAngleBound ;
+  float heightExtent = m_upperHeightBound - m_lowerHeightBound;
+  float xDelta = angleExtent  / (float)m_destWidth ;
+  float yDelta = heightExtent / (float)m_destHeight;
+  float curAngle  = m_lowerAngleBound ;
+  float curHeight = m_lowerHeightBound;
 
   // Fill every point in the noise map with the output values from the model.
   for (int y = 0; y < m_destHeight; y++) {
@@ -850,12 +850,12 @@ void NoiseMapBuilderPlane::Build ()
   model::Plane planeModel;
   planeModel.SetModule (*m_pSourceModule);
 
-  double xExtent = m_upperXBound - m_lowerXBound;
-  double zExtent = m_upperZBound - m_lowerZBound;
-  double xDelta  = xExtent / (double)m_destWidth ;
-  double zDelta  = zExtent / (double)m_destHeight;
-  double xCur    = m_lowerXBound;
-  double zCur    = m_lowerZBound;
+  float xExtent = m_upperXBound - m_lowerXBound;
+  float zExtent = m_upperZBound - m_lowerZBound;
+  float xDelta  = xExtent / (float)m_destWidth ;
+  float zDelta  = zExtent / (float)m_destHeight;
+  float xCur    = m_lowerXBound;
+  float zCur    = m_lowerZBound;
 
   // Fill every point in the noise map with the output values from the model.
   for (int z = 0; z < m_destHeight; z++) {
@@ -866,15 +866,15 @@ void NoiseMapBuilderPlane::Build ()
       if (!m_isSeamlessEnabled) {
         finalValue = planeModel.GetValue (xCur, zCur);
       } else {
-        double swValue, seValue, nwValue, neValue;
+        float swValue, seValue, nwValue, neValue;
         swValue = planeModel.GetValue (xCur          , zCur          );
         seValue = planeModel.GetValue (xCur + xExtent, zCur          );
         nwValue = planeModel.GetValue (xCur          , zCur + zExtent);
         neValue = planeModel.GetValue (xCur + xExtent, zCur + zExtent);
-        double xBlend = 1.0 - ((xCur - m_lowerXBound) / xExtent);
-        double zBlend = 1.0 - ((zCur - m_lowerZBound) / zExtent);
-        double z0 = LinearInterp (swValue, seValue, xBlend);
-        double z1 = LinearInterp (nwValue, neValue, xBlend);
+        float xBlend = 1.0 - ((xCur - m_lowerXBound) / xExtent);
+        float zBlend = 1.0 - ((zCur - m_lowerZBound) / zExtent);
+        float z0 = LinearInterp (swValue, seValue, xBlend);
+        float z1 = LinearInterp (nwValue, neValue, xBlend);
         finalValue = (float)LinearInterp (z0, z1, zBlend);
       }
       *pDest++ = finalValue;
@@ -917,12 +917,12 @@ void NoiseMapBuilderSphere::Build ()
   model::Sphere sphereModel;
   sphereModel.SetModule (*m_pSourceModule);
 
-  double lonExtent = m_eastLonBound  - m_westLonBound ;
-  double latExtent = m_northLatBound - m_southLatBound;
-  double xDelta = lonExtent / (double)m_destWidth ;
-  double yDelta = latExtent / (double)m_destHeight;
-  double curLon = m_westLonBound ;
-  double curLat = m_southLatBound;
+  float lonExtent = m_eastLonBound  - m_westLonBound ;
+  float latExtent = m_northLatBound - m_southLatBound;
+  float xDelta = lonExtent / (float)m_destWidth ;
+  float yDelta = latExtent / (float)m_destHeight;
+  float curLon = m_westLonBound ;
+  float curLat = m_southLatBound;
 
   // Fill every point in the noise map with the output values from the model.
   for (int y = 0; y < m_destHeight; y++) {
@@ -960,7 +960,7 @@ RendererImage::RendererImage ():
   BuildGrayscaleGradient ();
 };
 
-void RendererImage::AddGradientPoint (double gradientPos,
+void RendererImage::AddGradientPoint (float gradientPos,
   const Color& gradientColor)
 {
   m_gradient.AddGradientPoint (gradientPos, gradientColor);
@@ -988,28 +988,28 @@ void RendererImage::BuildTerrainGradient ()
 }
 
 Color RendererImage::CalcDestColor (const Color& sourceColor,
-  const Color& backgroundColor, double lightValue) const
+  const Color& backgroundColor, float lightValue) const
 {
-  double sourceRed   = (double)sourceColor.red   / 255.0;
-  double sourceGreen = (double)sourceColor.green / 255.0;
-  double sourceBlue  = (double)sourceColor.blue  / 255.0;
-  double sourceAlpha = (double)sourceColor.alpha / 255.0;
-  double backgroundRed   = (double)backgroundColor.red   / 255.0;
-  double backgroundGreen = (double)backgroundColor.green / 255.0;
-  double backgroundBlue  = (double)backgroundColor.blue  / 255.0;
+  float sourceRed   = (float)sourceColor.red   / 255.0;
+  float sourceGreen = (float)sourceColor.green / 255.0;
+  float sourceBlue  = (float)sourceColor.blue  / 255.0;
+  float sourceAlpha = (float)sourceColor.alpha / 255.0;
+  float backgroundRed   = (float)backgroundColor.red   / 255.0;
+  float backgroundGreen = (float)backgroundColor.green / 255.0;
+  float backgroundBlue  = (float)backgroundColor.blue  / 255.0;
 
   // First, blend the source color to the background color using the alpha
   // of the source color.
-  double red   = LinearInterp (backgroundRed,   sourceRed  , sourceAlpha);
-  double green = LinearInterp (backgroundGreen, sourceGreen, sourceAlpha);
-  double blue  = LinearInterp (backgroundBlue,  sourceBlue , sourceAlpha);
+  float red   = LinearInterp (backgroundRed,   sourceRed  , sourceAlpha);
+  float green = LinearInterp (backgroundGreen, sourceGreen, sourceAlpha);
+  float blue  = LinearInterp (backgroundBlue,  sourceBlue , sourceAlpha);
 
   if (m_isLightEnabled) {
 
     // Now calculate the light color.
-    double lightRed   = lightValue * (double)m_lightColor.red   / 255.0;
-    double lightGreen = lightValue * (double)m_lightColor.green / 255.0;
-    double lightBlue  = lightValue * (double)m_lightColor.blue  / 255.0;
+    float lightRed   = lightValue * (float)m_lightColor.red   / 255.0;
+    float lightGreen = lightValue * (float)m_lightColor.green / 255.0;
+    float lightBlue  = lightValue * (float)m_lightColor.blue  / 255.0;
 
     // Apply the light color to the new color.
     red   *= lightRed  ;
@@ -1035,8 +1035,8 @@ Color RendererImage::CalcDestColor (const Color& sourceColor,
   return newColor;
 }
 
-double RendererImage::CalcLightIntensity (double center, double left,
-  double right, double down, double up) const
+float RendererImage::CalcLightIntensity (float center, float left,
+  float right, float down, float up) const
 {
   // Recalculate the sine and cosine of the various light values if
   // necessary so it does not have to be calculated each time this method is
@@ -1050,13 +1050,13 @@ double RendererImage::CalcLightIntensity (double center, double left,
   }
 
   // Now do the lighting calculations.
-  const double I_MAX = 1.0;
-  double io = I_MAX * SQRT_2 * m_sinElev / 2.0;
-  double ix = (I_MAX - io) * m_lightContrast * SQRT_2 * m_cosElev
+  const float I_MAX = 1.0;
+  float io = I_MAX * SQRT_2 * m_sinElev / 2.0;
+  float ix = (I_MAX - io) * m_lightContrast * SQRT_2 * m_cosElev
     * m_cosAzimuth;
-  double iy = (I_MAX - io) * m_lightContrast * SQRT_2 * m_cosElev
+  float iy = (I_MAX - io) * m_lightContrast * SQRT_2 * m_cosElev
     * m_sinAzimuth; 
-  double intensity = (ix * (left - right) + iy * (down - up) + io);
+  float intensity = (ix * (left - right) + iy * (down - up) + io);
   if (intensity < 0.0) {
     intensity = 0.0;
   }
@@ -1111,7 +1111,7 @@ void RendererImage::Render ()
 
       // If lighting is enabled, calculate the light intensity based on the
       // rate of change at the current point in the noise map.
-      double lightIntensity;
+      float lightIntensity;
       if (m_isLightEnabled) {
 
         // Calculate the positions of the current point's four-neighbors.
@@ -1165,11 +1165,11 @@ void RendererImage::Render ()
 
         // Get the noise value of the current point in the source noise map
         // and the noise values of its four-neighbors.
-        double nc = (double)(*pSource);
-        double nl = (double)(*(pSource + xLeftOffset ));
-        double nr = (double)(*(pSource + xRightOffset));
-        double nd = (double)(*(pSource + yDownOffset ));
-        double nu = (double)(*(pSource + yUpOffset   ));
+        float nc = (float)(*pSource);
+        float nl = (float)(*(pSource + xLeftOffset ));
+        float nr = (float)(*(pSource + xRightOffset));
+        float nd = (float)(*(pSource + yDownOffset ));
+        float nu = (float)(*(pSource + yUpOffset   ));
 
         // Now we can calculate the lighting intensity.
         lightIntensity = CalcLightIntensity (nc, nl, nr, nd, nu);
@@ -1213,19 +1213,19 @@ RendererNormalMap::RendererNormalMap ():
 {
 };
 
-Color RendererNormalMap::CalcNormalColor (double nc, double nr, double nu,
-  double bumpHeight) const
+Color RendererNormalMap::CalcNormalColor (float nc, float nr, float nu,
+  float bumpHeight) const
 {
   // Calculate the surface normal.
   nc *= bumpHeight;
   nr *= bumpHeight;
   nu *= bumpHeight;
-  double ncr = (nc - nr);
-  double ncu = (nc - nu);
-  double d = sqrt ((ncu * ncu) + (ncr * ncr) + 1);
-  double vxc = (nc - nr) / d;
-  double vyc = (nc - nu) / d;
-  double vzc = 1.0 / d;
+  float ncr = (nc - nr);
+  float ncu = (nc - nu);
+  float d = sqrt ((ncu * ncu) + (ncr * ncr) + 1);
+  float vxc = (nc - nr) / d;
+  float vyc = (nc - nu) / d;
+  float vzc = 1.0 / d;
 
   // Map the normal range from the (-1.0 .. +1.0) range to the (0 .. 255)
   // range.
@@ -1284,9 +1284,9 @@ void RendererNormalMap::Render ()
 
       // Get the noise value of the current point in the source noise map
       // and the noise values of its right and up neighbors.
-      double nc = (double)(*pSource);
-      double nr = (double)(*(pSource + xRightOffset));
-      double nu = (double)(*(pSource + yUpOffset   ));
+      float nc = (float)(*pSource);
+      float nr = (float)(*(pSource + xRightOffset));
+      float nu = (float)(*(pSource + yUpOffset   ));
 
       // Calculate the normal product.
       *pDest = CalcNormalColor (nc, nr, nu, m_bumpHeight);

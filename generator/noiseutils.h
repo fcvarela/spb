@@ -98,11 +98,11 @@ namespace noise
     typedef void(*NoiseMapCallback) (int row);
 
     /// Number of meters per point in a Terragen terrain (TER) file.
-    const double DEFAULT_METERS_PER_POINT = 30.0;
+    const float DEFAULT_METERS_PER_POINT = 30.0;
 
     /// Same as the DEFAULT_METERS_PER_POINT constant, but for us
     /// canuckleheads.
-    const double DEFAULT_METRES_PER_POINT = DEFAULT_METERS_PER_POINT;
+    const float DEFAULT_METRES_PER_POINT = DEFAULT_METERS_PER_POINT;
 
     /// Defines a color.
     ///
@@ -161,7 +161,7 @@ namespace noise
     {
 
       /// The position of this gradient point.
-      double pos;
+      float pos;
 
       /// The color of this gradient point.
       Color color;
@@ -218,7 +218,7 @@ namespace noise
         /// @throw noise::ExceptionInvalidParam See the precondition.
         ///
         /// It does not matter which order these gradient points are added.
-        void AddGradientPoint (double gradientPos,
+        void AddGradientPoint (float gradientPos,
           const Color& gradientColor);
 
         /// Deletes all the gradient points from this gradient object.
@@ -231,7 +231,7 @@ namespace noise
         /// @param gradientPos The specified position.
         ///
         /// @returns The color at that position.
-        const Color& GetColor (double gradientPos) const;
+        const Color& GetColor (float gradientPos) const;
 
         /// Returns a pointer to the array of gradient points in this object.
         ///
@@ -273,7 +273,7 @@ namespace noise
         /// object ensures that the gradient-point array is sorted by input
         /// value.  The code that maps a value to a color requires a sorted
         /// gradient-point array.
-        int FindInsertionPos (double gradientPos);
+        int FindInsertionPos (float gradientPos);
 
         /// Inserts the gradient point at the specified position in the
         /// internal gradient-point array.
@@ -290,7 +290,7 @@ namespace noise
         /// Because this object requires that all gradient points in the array
         /// must be sorted by the position, the new gradient point should be
         /// inserted at the position in which the order is still preserved.
-        void InsertAtPos (int insertionPos, double gradientPos,
+        void InsertAtPos (int insertionPos, float gradientPos,
           const Color& gradientColor);
 
         /// Number of gradient points.
@@ -1372,7 +1372,7 @@ namespace noise
         ///
         /// This object does not change the height in the destination noise
         /// map object until the Build() method is called.
-        double GetDestHeight () const
+        float GetDestHeight () const
         {
           return m_destHeight;
         }
@@ -1383,7 +1383,7 @@ namespace noise
         ///
         /// This object does not change the height in the destination noise
         /// map object until the Build() method is called.
-        double GetDestWidth () const
+        float GetDestWidth () const
         {
           return m_destWidth;
         }
@@ -1501,7 +1501,7 @@ namespace noise
         /// Returns the lower angle boundary of the cylindrical noise map.
         ///
         /// @returns The lower angle boundary of the noise map, in degrees.
-        double GetLowerAngleBound () const
+        float GetLowerAngleBound () const
         {
           return m_lowerAngleBound;
         }
@@ -1511,7 +1511,7 @@ namespace noise
         /// @returns The lower height boundary of the noise map, in units.
         ///
         /// One unit is equal to the radius of the cylinder.
-        double GetLowerHeightBound () const
+        float GetLowerHeightBound () const
         {
           return m_lowerHeightBound;
         }
@@ -1519,7 +1519,7 @@ namespace noise
         /// Returns the upper angle boundary of the cylindrical noise map.
         ///
         /// @returns The upper angle boundary of the noise map, in degrees.
-        double GetUpperAngleBound () const
+        float GetUpperAngleBound () const
         {
           return m_upperAngleBound;
         }
@@ -1529,7 +1529,7 @@ namespace noise
         /// @returns The upper height boundary of the noise map, in units.
         ///
         /// One unit is equal to the radius of the cylinder.
-        double GetUpperHeightBound () const
+        float GetUpperHeightBound () const
         {
           return m_upperHeightBound;
         }
@@ -1553,8 +1553,8 @@ namespace noise
         /// @throw noise::ExceptionInvalidParam See the preconditions.
         ///
         /// One unit is equal to the radius of the cylinder.
-        void SetBounds (double lowerAngleBound, double upperAngleBound,
-          double lowerHeightBound, double upperHeightBound)
+        void SetBounds (float lowerAngleBound, float upperAngleBound,
+          float lowerHeightBound, float upperHeightBound)
         {
           if (lowerAngleBound >= upperAngleBound
             || lowerHeightBound >= upperHeightBound) {
@@ -1570,16 +1570,16 @@ namespace noise
       private:
 
         /// Lower angle boundary of the cylindrical noise map, in degrees.
-        double m_lowerAngleBound;
+        float m_lowerAngleBound;
 
         /// Lower height boundary of the cylindrical noise map, in units.
-        double m_lowerHeightBound;
+        float m_lowerHeightBound;
 
         /// Upper angle boundary of the cylindrical noise map, in degrees.
-        double m_upperAngleBound;
+        float m_upperAngleBound;
 
         /// Upper height boundary of the cylindrical noise map, in units.
-        double m_upperHeightBound;
+        float m_upperHeightBound;
 
     };
 
@@ -1621,7 +1621,7 @@ namespace noise
         /// Returns the lower x boundary of the planar noise map.
         ///
         /// @returns The lower x boundary of the planar noise map, in units.
-        double GetLowerXBound () const
+        float GetLowerXBound () const
         {
           return m_lowerXBound;
         }
@@ -1629,7 +1629,7 @@ namespace noise
         /// Returns the lower z boundary of the planar noise map.
         ///
         /// @returns The lower z boundary of the noise map, in units.
-        double GetLowerZBound () const
+        float GetLowerZBound () const
         {
           return m_lowerZBound;
         }
@@ -1637,7 +1637,7 @@ namespace noise
         /// Returns the upper x boundary of the planar noise map.
         ///
         /// @returns The upper x boundary of the noise map, in units.
-        double GetUpperXBound () const
+        float GetUpperXBound () const
         {
           return m_upperXBound;
         }
@@ -1645,7 +1645,7 @@ namespace noise
         /// Returns the upper z boundary of the planar noise map.
         ///
         /// @returns The upper z boundary of the noise map, in units.
-        double GetUpperZBound () const
+        float GetUpperZBound () const
         {
           return m_upperZBound;
         }
@@ -1678,8 +1678,8 @@ namespace noise
         /// @pre The lower z boundary is less than the upper z boundary.
         ///
         /// @throw noise::ExceptionInvalidParam See the preconditions.
-        void SetBounds (double lowerXBound, double upperXBound,
-          double lowerZBound, double upperZBound)
+        void SetBounds (float lowerXBound, float upperXBound,
+          float lowerZBound, float upperZBound)
         {
           if (lowerXBound >= upperXBound
             || lowerZBound >= upperZBound) {
@@ -1698,16 +1698,16 @@ namespace noise
         bool m_isSeamlessEnabled;
 
         /// Lower x boundary of the planar noise map, in units.
-        double m_lowerXBound;
+        float m_lowerXBound;
 
         /// Lower z boundary of the planar noise map, in units.
-        double m_lowerZBound;
+        float m_lowerZBound;
 
         /// Upper x boundary of the planar noise map, in units.
-        double m_upperXBound;
+        float m_upperXBound;
 
         /// Upper z boundary of the planar noise map, in units.
-        double m_upperZBound;
+        float m_upperZBound;
 
     };
 
@@ -1743,7 +1743,7 @@ namespace noise
         /// Returns the eastern boundary of the spherical noise map.
         ///
         /// @returns The eastern boundary of the noise map, in degrees.
-        double GetEastLonBound () const
+        float GetEastLonBound () const
         {
           return m_eastLonBound;
         }
@@ -1751,7 +1751,7 @@ namespace noise
         /// Returns the northern boundary of the spherical noise map
         ///
         /// @returns The northern boundary of the noise map, in degrees.
-        double GetNorthLatBound () const
+        float GetNorthLatBound () const
         {
           return m_northLatBound;
         }
@@ -1759,7 +1759,7 @@ namespace noise
         /// Returns the southern boundary of the spherical noise map
         ///
         /// @returns The southern boundary of the noise map, in degrees.
-        double GetSouthLatBound () const
+        float GetSouthLatBound () const
         {
           return m_southLatBound;
         }
@@ -1767,7 +1767,7 @@ namespace noise
         /// Returns the western boundary of the spherical noise map
         ///
         /// @returns The western boundary of the noise map, in degrees.
-        double GetWestLonBound () const
+        float GetWestLonBound () const
         {
           return m_westLonBound;
         }
@@ -1787,8 +1787,8 @@ namespace noise
         /// @pre The western boundary is less than the eastern boundary.
         ///
         /// @throw noise::ExceptionInvalidParam See the preconditions.
-        void SetBounds (double southLatBound, double northLatBound,
-          double westLonBound, double eastLonBound)
+        void SetBounds (float southLatBound, float northLatBound,
+          float westLonBound, float eastLonBound)
         {
           if (southLatBound >= northLatBound
             || westLonBound >= eastLonBound) {
@@ -1804,16 +1804,16 @@ namespace noise
       private:
 
         /// Eastern boundary of the spherical noise map, in degrees.
-        double m_eastLonBound;
+        float m_eastLonBound;
 
         /// Northern boundary of the spherical noise map, in degrees.
-        double m_northLatBound;
+        float m_northLatBound;
 
         /// Southern boundary of the spherical noise map, in degrees.
-        double m_southLatBound;
+        float m_southLatBound;
 
         /// Western boundary of the spherical noise map, in degrees.
-        double m_westLonBound;
+        float m_westLonBound;
 
     };
 
@@ -1942,7 +1942,7 @@ namespace noise
         /// towards the calculated color, and if the alpha value is low, this
         /// object weighs the blend towards the color from the corresponding
         /// pixel in the background image.
-        void AddGradientPoint (double gradientPos,
+        void AddGradientPoint (float gradientPos,
           const Color& gradientColor);
 
         /// Builds a grayscale gradient.
@@ -2010,7 +2010,7 @@ namespace noise
         /// - 90.0 degrees is north.
         /// - 180.0 degrees is west.
         /// - 270.0 degrees is south.
-        double GetLightAzimuth () const
+        float GetLightAzimuth () const
         {
           return m_lightAzimuth;
         }
@@ -2018,7 +2018,7 @@ namespace noise
         /// Returns the brightness of the light source.
         ///
         /// @returns The brightness of the light source.
-        double GetLightBrightness () const
+        float GetLightBrightness () const
         {
           return m_lightBrightness;
         }
@@ -2044,7 +2044,7 @@ namespace noise
         /// map as a height map that has a spatial resolution of @a h meters
         /// and an elevation resolution of 1 meter, a good contrast amount to
         /// use is ( 1.0 / @a h ).
-        double GetLightContrast () const
+        float GetLightContrast () const
         {
           return m_lightContrast;
         }
@@ -2056,7 +2056,7 @@ namespace noise
         /// The elevation is the angle above the horizon:
         /// - 0 degrees is on the horizon.
         /// - 90 degrees is straight up.
-        double GetLightElev () const
+        float GetLightElev () const
         {
           return m_lightElev;
         }
@@ -2064,7 +2064,7 @@ namespace noise
         /// Returns the intensity of the light source.
         ///
         /// @returns The intensity of the light source.
-        double GetLightIntensity () const
+        float GetLightIntensity () const
         {
           return m_lightIntensity;
         }
@@ -2162,7 +2162,7 @@ namespace noise
         ///
         /// Make sure the light source is enabled via a call to the
         /// EnableLight() method before calling the Render() method.
-        void SetLightAzimuth (double lightAzimuth)
+        void SetLightAzimuth (float lightAzimuth)
         {
           m_lightAzimuth = lightAzimuth;
           m_recalcLightValues = true;
@@ -2174,7 +2174,7 @@ namespace noise
         ///
         /// Make sure the light source is enabled via a call to the
         /// EnableLight() method before calling the Render() method.
-        void SetLightBrightness (double lightBrightness)
+        void SetLightBrightness (float lightBrightness)
         {
           m_lightBrightness = lightBrightness;
           m_recalcLightValues = true;
@@ -2211,7 +2211,7 @@ namespace noise
         ///
         /// Make sure the light source is enabled via a call to the
         /// EnableLight() method before calling the Render() method.
-        void SetLightContrast (double lightContrast)
+        void SetLightContrast (float lightContrast)
         {
           if (lightContrast <= 0.0) {
             throw noise::ExceptionInvalidParam ();
@@ -2231,7 +2231,7 @@ namespace noise
         ///
         /// Make sure the light source is enabled via a call to the
         /// EnableLight() method before calling the Render() method.
-        void SetLightElev (double lightElev)
+        void SetLightElev (float lightElev)
         {
           m_lightElev = lightElev;
           m_recalcLightValues = true;
@@ -2245,7 +2245,7 @@ namespace noise
         ///
         /// Make sure the light source is enabled via a call to the
         /// EnableLight() method before calling the Render() method.
-        void SetLightIntensity (double lightIntensity)
+        void SetLightIntensity (float lightIntensity)
         {
           if (lightIntensity < 0.0) {
             throw noise::ExceptionInvalidParam ();
@@ -2278,7 +2278,7 @@ namespace noise
         ///
         /// @returns The destination color.
         Color CalcDestColor (const Color& sourceColor,
-          const Color& backgroundColor, double lightValue) const;
+          const Color& backgroundColor, float lightValue) const;
 
         /// Calculates the intensity of the light given some elevation values.
         ///
@@ -2292,14 +2292,14 @@ namespace noise
         /// @param up Elevation of the point directly above the center point.
         ///
         /// These values come directly from the noise map.
-        double CalcLightIntensity (double center, double left, double right,
-          double down, double up) const;
+        float CalcLightIntensity (float center, float left, float right,
+          float down, float up) const;
 
         /// The cosine of the azimuth of the light source.
-        mutable double m_cosAzimuth;
+        mutable float m_cosAzimuth;
 
         /// The cosine of the elevation of the light source.
-        mutable double m_cosElev;
+        mutable float m_cosElev;
 
         /// The color gradient used to specify the image colors.
         GradientColor m_gradient;
@@ -2311,22 +2311,22 @@ namespace noise
         bool m_isWrapEnabled;
 
         /// The azimuth of the light source, in degrees.
-        double m_lightAzimuth;
+        float m_lightAzimuth;
 
         /// The brightness of the light source.
-        double m_lightBrightness;
+        float m_lightBrightness;
 
         /// The color of the light source.
         Color m_lightColor;
 
         /// The contrast between areas in light and areas in shadow.
-        double m_lightContrast;
+        float m_lightContrast;
 
         /// The elevation of the light source, in degrees.
-        double m_lightElev;
+        float m_lightElev;
 
         /// The intensity of the light source.
-        double m_lightIntensity;
+        float m_lightIntensity;
 
         /// A pointer to the background image.
         const Image* m_pBackgroundImage;
@@ -2346,10 +2346,10 @@ namespace noise
         mutable bool m_recalcLightValues;
 
         /// The sine of the azimuth of the light source.
-        mutable double m_sinAzimuth;
+        mutable float m_sinAzimuth;
 
         /// The sine of the elevation of the light source.
-        mutable double m_sinElev;
+        mutable float m_sinElev;
 
     };
 
@@ -2416,7 +2416,7 @@ namespace noise
         ///
         /// The spatial resolution and elevation resolution are determined by
         /// the application.
-        double GetBumpHeight () const
+        float GetBumpHeight () const
         {
           return m_bumpHeight;
         }
@@ -2463,7 +2463,7 @@ namespace noise
         ///
         /// The spatial resolution and elevation resolution are determined by
         /// the application.
-        void SetBumpHeight (double bumpHeight)
+        void SetBumpHeight (float bumpHeight)
         {
           m_bumpHeight = bumpHeight;
         }
@@ -2516,11 +2516,11 @@ namespace noise
         /// 
         /// The spatial resolution and elevation resolution are determined by
         /// the application.
-        Color CalcNormalColor (double nc, double nr, double nu,
-          double bumpHeight) const;
+        Color CalcNormalColor (float nc, float nr, float nu,
+          float bumpHeight) const;
 
         /// The bump height for the normal map.
-        double m_bumpHeight;
+        float m_bumpHeight;
 
         /// A flag specifying whether wrapping is enabled.
         bool m_isWrapEnabled;

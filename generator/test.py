@@ -5,9 +5,6 @@ class genlib(object):
     def __init__(self):
         self.obj = lib.genlib_new()
 
-    def initParams(self):
-        lib.genlib_initParams(self.obj)
-
     def createGeometry(self):
         lib.genlib_createGeometry(self.obj)
 
@@ -26,7 +23,6 @@ class genlib(object):
 
 if __name__ == '__main__':
     g = genlib()
-    g.initParams()
     g.createGeometry()
     g.getTopography()
     g.getTexture()

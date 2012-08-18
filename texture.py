@@ -3,19 +3,6 @@ import Image
 
 class Texture:
     def __init__(self, imagefile):
-        textureMode = GL.GL_RGBA
-
-        if imagefile[-3:] == 'bmp':
-            im = Image.open(imagefile)
-            try:
-                ix, iy, image = im.size[0], im.size[1], im.tostring("raw", "RGBA", 0, -1)
-            except SystemError:
-                ix, iy, image = im.size[0], im.size[1], im.tostring("raw", "RGBX", 0, -1)
-
-        if imagefile[-3:] == 'raw':
-            ix, iy, image = 256, 256, open(imagefile, 'r').read()
-            textureMode = GL.GL_RGB
-
         self.id = GL.glGenTextures(1)
 
         GL.glBindTexture(GL.GL_TEXTURE_2D, self.id)
@@ -25,7 +12,22 @@ class Texture:
         GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR)
         GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR_MIPMAP_LINEAR)
         GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_GENERATE_MIPMAP, GL.GL_TRUE);
-        GL.glTexImage2D(GL.GL_TEXTURE_2D, 0, textureMode, ix, iy, 0, textureMode, GL.GL_UNSIGNED_BYTE, image)
+
+        if imagefile[-3:] == 'bmp':
+            im = Image.open(imagefile)
+            try:
+                ix, iy, image = im.size[0], im.size[1], im.tostring("raw", "RGBA", 0, -1)
+            except SystemError:
+                ix, iy, image = im.size[0], im.size[1], im.tostring("raw", "RGBX", 0, -1)
+
+            GL.glTexImage2D(GL.GL_TEXTURE_2D, 0, GL.GL_RGBA, ix, iy, 0, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, image)
+
+        if imagefile[-3:] == 'raw':
+            ix, iy, image = 256, 256, open(imagefile, 'r').read()
+            GL.glTexImage2D(GL.GL_TEXTURE_2D, 0, GL.GL_ALPHA16, ix, iy, 0, GL.GL_ALPHA, GL.GL_SHORT, image)
+
+        
+        
 
         self.textureunits = [\
             GL.GL_TEXTURE0,

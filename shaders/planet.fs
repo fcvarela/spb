@@ -1,9 +1,12 @@
+#version 110
+
 varying vec4 vertex;
 varying vec4 vvertex;
 
 uniform sampler2D normalTexture;
 uniform sampler2D colorTexture;
 uniform sampler2D specularTexture;
+uniform sampler2D topoTexture;
 
 mat3 fromToRotation(vec3 from, vec3 to);
 
@@ -11,6 +14,7 @@ void main() {
     // fetch base color
     vec4 base = texture2D(colorTexture, gl_TexCoord[0].st);
     vec4 spec = texture2D(specularTexture, gl_TexCoord[0].st);
+    vec4 topo = texture2D(topoTexture, gl_TexCoord[0].st);
     
     // fetch normals and rotate
     vec3 normal = texture2D(normalTexture, gl_TexCoord[0].st).xyz;
@@ -42,8 +46,23 @@ void main() {
         float NdotHV = clamp(dot(r, v), 0.0, 1.0);
         specular = gl_LightSource[0].specular * pow(NdotHV, 8.0) * spec;
     }
+    
+    float height = topo.a
 
-    gl_FragColor = base * diffuse + specular;
+    vec4 shade;
+    if (height < -256.0) shade = vec4(  3,  29,  63, 255);
+    if (height > -256.0 && height <= -1.0) shade = vec4(  7, 106, 127, 255);
+    if (height > -1.0 && height <= 0.0) shade = vec4( 62,  86,  30, 255);
+    if (height > 0.0 && height <= 1024.0) shade = vec4( 84,  96,  50, 255);
+    if (height > 1024.0 && height <= 2048.0) shade = vec4(130, 127,  97, 255);
+    if (height > 2048.0 && height <= 3072.0) shade = vec4(184, 163, 141, 255);
+    if (height > 3072.0 && height <= 4096.0) shade = vec4(255, 255, 255, 255);
+    if (height > 4096.0 && height <= 6144.0) shade = vec4(128, 255, 255, 255);
+    if (height > 6144.0 && height <= 16384.0) shade = vec4(  0,   0, 255, 255);
+    if (height == 16384.0) shade = vec4(  0,   0, 255, 255);
+
+
+    gl_FragColor = vec4(shade/255.0) * diffuse + specular;
 }
 
 mat3 fromToRotation(vec3 from, vec3 to) {

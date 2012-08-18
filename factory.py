@@ -68,10 +68,9 @@ planet = None
 wireframe = False
 
 # terrain generator
-genthread1 = Thread(target=generatorThread, args=())
-genthread2 = Thread(target=generatorThread, args=())
-genthread1.start()
-genthread2.start()
+for i in range(0, 8):
+    genthread = Thread(target=generatorThread, args=())
+    genthread.start()
 
 keys = []
 specialkeys = []

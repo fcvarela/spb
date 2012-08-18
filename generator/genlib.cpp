@@ -42,27 +42,20 @@ utils::NoiseMap elevGrid;
 double resInMeters;
 double seaLevelInMeters;
 
-char cachedir[1024];
-char outfile[1024];
-
 using namespace noise;
 
 class genlib {
 public:
-  void initParams(void);  
-  void createGeometry(void);
-  void getTopography(void);
-  void getNormals(void);
-  void getSpecular(void);
-  void getTexture(void);
+  void createGeometry(double circ, int seed);
+  void getTopography(char *filename, double s, double n, int w, int h);
+  void getNormals(char *filename, double s, double n, int w, int h);
+  void getSpecular(char *filename, double s, double n, int w, int h);
+  void getTexture(char *filename, double s, double n, int w, int h);
 };
 
-
-void genlib::initParams() {
-  std::cout << "Got inited" << std::endl;
-}
-
-void genlib::createGeometry() {
+void genlib::createGeometry(double circ, int seed) {
+  HILLS_AMOUNT = (1.0 + MOUNTAINS_AMOUNT) / 2.0;
+  CONTINENT_HEIGHT_SCALE = (1.0 - SEA_LEVEL) / 4.0;
   module::Perlin baseContinentDef_pe0;
   baseContinentDef_pe0.SetSeed (CUR_SEED + 0);
   baseContinentDef_pe0.SetFrequency (CONTINENT_FREQUENCY);
@@ -1022,19 +1015,14 @@ void genlib::createGeometry() {
   double gridExtent = (double)GRID_WIDTH;
   double metersPerDegree = (PLANET_CIRCUMFERENCE / 360.0);
   resInMeters = (degExtent / gridExtent) * metersPerDegree;
-
-  std::cout << "Created geometry" << std::endl;
 }
 
-void genlib::getTopography() {
+void genlib::getTopography(char *filename) {
   uint32_t toposize = GRID_WIDTH*GRID_HEIGHT*2;
-  fwrite(&toposize, sizeof(toposize), 1, stdout);
 
   uint8_t pLineBuffer[(int)GRID_WIDTH * 3];
   std::ofstream os;
-  char fullpath[1024];
-  sprintf(fullpath, "topo.raw");
-  os.open (fullpath, std::ios::out | std::ios::binary);
+  os.open(filename, std::ios::out | std::ios::binary);
   for (int y = 0; y < GRID_HEIGHT; y++) {
     float* pSource = elevGrid.GetSlabPtr (y);
     uint8_t *pDest = pLineBuffer;
@@ -1049,12 +1037,10 @@ void genlib::getTopography() {
     os.write ((char*)pLineBuffer, GRID_WIDTH * 2);
   }
   os.close ();
-  std::cout << fullpath << std::endl;
   //delete[] pLineBuffer;
-  std::cout << "Topo done" << std::endl; 
 }
 
-void genlib::getTexture() {
+void genlib::getTexture(char *filename) {
   seaLevelInMeters = (((SEA_LEVEL + 1.0) / 2.0)
     * (MAX_ELEV - MIN_ELEV)) + MIN_ELEV;
 
@@ -1086,13 +1072,11 @@ void genlib::getTexture() {
   surfaceRenderer.EnableLight (false);
   surfaceRenderer.Render ();
   bitmapWriter.SetSourceImage (destImage);
-  char fullpath[1024];
-  sprintf(fullpath, "texture.bmp");
-  bitmapWriter.SetDestFilename (fullpath);
+  bitmapWriter.SetDestFilename (filename);
   bitmapWriter.WriteDestFile ();
 }
 
-void genlib::getSpecular() {
+void genlib::getSpecular(char *filename) {
   utils::RendererImage specularityRenderer;
   specularityRenderer.SetSourceNoiseMap (elevGrid);
   specularityRenderer.SetDestImage (destImage);
@@ -1104,24 +1088,18 @@ void genlib::getSpecular() {
   specularityRenderer.EnableLight (false);
   specularityRenderer.Render ();
   bitmapWriter.SetSourceImage (destImage);
-  char fullpath[1024];
-  sprintf(fullpath, "%s/%s-specular.bmp", cachedir, outfile);
-  std::cout << fullpath << std::endl;
-  bitmapWriter.SetDestFilename (fullpath);
+  bitmapWriter.SetDestFilename (filename);
   bitmapWriter.WriteDestFile ();
 }
 
-void genlib::getNormals() {
+void genlib::getNormals(char *filename) {
   utils::RendererNormalMap normalMapRenderer;
   normalMapRenderer.SetSourceNoiseMap (elevGrid);
   normalMapRenderer.SetDestImage (destImage);
   normalMapRenderer.SetBumpHeight (1.0 / resInMeters);
   normalMapRenderer.Render ();
   bitmapWriter.SetSourceImage (destImage);
-  char fullpath[1024];
-  sprintf(fullpath, "%s/%s-normal.bmp", cachedir, outfile);
-  std::cout << fullpath << std::endl;
-  bitmapWriter.SetDestFilename (fullpath);
+  bitmapWriter.SetDestFilename (filename);
   bitmapWriter.WriteDestFile ();
 }
 
@@ -1129,33 +1107,28 @@ extern "C" {
     void *genlib_new() {
         return new genlib;
     }
-
-    void genlib_initParams(void *ptr) {
+    void genlib_createGeometry(void *ptr, double circ, int seed) {
       genlib *ref = reinterpret_cast<genlib *>(ptr);
-      ref->initParams();
+      ref->createGeometry(circ, seed, s, n, w, h);
     }
 
-    void genlib_createGeometry(void *ptr) {
+    void genlib_getTopography(void *ptr, char *filename, double s, double n, int w, int h) {
       genlib *ref = reinterpret_cast<genlib *>(ptr);
-      ref->createGeometry();
-    }
-
-    void genlib_getTopography(void *ptr) {
-      genlib *ref = reinterpret_cast<genlib *>(ptr);
-      ref->getTopography();
+      ref->getTopography(filename);
     }
     
-    void genlib_getNormals(void *ptr) {
+    void genlib_getNormals(void *ptr, char *filename, double s, double n, int w, int h) {
       genlib *ref = reinterpret_cast<genlib *>(ptr);
-      ref->getNormals();
+      ref->getNormals(filename);
     }
     
-    void genlib_getSpecular(void *ptr) {
+    void genlib_getSpecular(void *ptr, char *filename, double s, double n, int w, int h) {
       genlib *ref = reinterpret_cast<genlib *>(ptr);
-      ref->getSpecular();
+      ref->getSpecular(filename);
     }
 
-    void genlib_getTexture(void *ptr) {
+    void genlib_getTexture(void *ptr, char *filename, double s, double n, int w, int h) {
       genlib *ref = reinterpret_cast<genlib *>(ptr);
-      ref->getTexture();}
+      ref->getTexture(filename);
+    }
 }

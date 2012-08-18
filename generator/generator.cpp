@@ -1115,7 +1115,7 @@ void getTopography() {
   uint32_t toposize = GRID_WIDTH*GRID_HEIGHT*2;
   fwrite(&toposize, sizeof(toposize), 1, stdout);
 
-  uint8* pLineBuffer = new uint8[GRID_WIDTH * 3];
+  uint8* pLineBuffer = new uint8[GRID_WIDTH * 2];
   std::ofstream os;
   char fullpath[1024];
   sprintf(fullpath, "%s/%s-topo.raw", cachedir, outfile);
@@ -1125,9 +1125,8 @@ void getTopography() {
     uint8* pDest = pLineBuffer;
     for (int x = 0; x < GRID_WIDTH; x++) {
       int16 elev = (int16)(floor (*pSource));
-      *pDest++ = (uint8)(((uint16)elev & 0xff00) >> 8);
       *pDest++ = (uint8)(((uint16)elev & 0x00ff)     );
-      *pDest++ = 0;
+      *pDest++ = (uint8)(((uint16)elev & 0xff00) >> 8);
       ++pSource;
     }
     //fwrite(pLineBuffer, GRID_WIDTH*2, 1, stdout);
