@@ -6,7 +6,7 @@ class Texture:
         self.id = GL.glGenTextures(1)
 
         GL.glBindTexture(GL.GL_TEXTURE_2D, self.id)
-        GL.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 1)
+        #GL.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 1)
         GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S, GL.GL_CLAMP_TO_EDGE);
         GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T, GL.GL_CLAMP_TO_EDGE);
         GL.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR)
@@ -25,9 +25,6 @@ class Texture:
         if imagefile[-3:] == 'raw':
             ix, iy, image = 256, 256, open(imagefile, 'r').read()
             GL.glTexImage2D(GL.GL_TEXTURE_2D, 0, GL.GL_ALPHA16, ix, iy, 0, GL.GL_ALPHA, GL.GL_SHORT, image)
-
-        
-        
 
         self.textureunits = [\
             GL.GL_TEXTURE0,

@@ -19,11 +19,11 @@ class TerrainQuadtree:
         self.span = span
         self.seed = seed
 
-        self.gridSize = 12
+        self.gridSize = 64
         self.gridSizep1 = self.gridSize + 1
         self.textureSize = 256
 
-        self.vertices = []
+        self.vertices = np.arange(self.gridSizep1*self.gridSizep1*3, dtype='float32')
         self.texcoords = []
         self.indexes = []
         self.children = []
@@ -88,6 +88,7 @@ class TerrainQuadtree:
         factory.generatorQueue.put((command, self))
 
     def generateVertices(self):
+        print "will generate"
         step = self.span / self.gridSize
 
         for y in range(0, self.gridSizep1):
@@ -95,9 +96,11 @@ class TerrainQuadtree:
             for x in range(0, self.gridSizep1):
                 lon = self.baselon + x*step
 
-                coord = factory.geocentricToCarthesian(lat, lon, 1.0)
-                coord /= np.linalg.norm(coord)
-                self.vertices.append(coord)
+                coord = array(factory.geocentricToCarthesian(lat, lon, 1.0))
+                #coord /= np.linalg.norm(coord)
+                self.vertices[self.gridSizep1*y*3 + x*3 + 0] = coord[0]
+                self.vertices[self.gridSizep1*y*3 + x*3 + 1] = coord[1]
+                self.vertices[self.gridSizep1*y*3 + x*3 + 2] = coord[2]
 
                 if y == x and x == self.gridSize/2:
                     self.center = coord
@@ -109,7 +112,7 @@ class TerrainQuadtree:
                     self.botleft = coord
                 if y == self.gridSize and x == self.gridSize:
                     self.botright = coord
-
+        print "done"
         self.sidelength = np.linalg.norm(self.topleft - self.botleft)
         self.vertices = array(self.vertices, dtype='float32')
         self.positionBufferObject = GL.glGenBuffers(1)
@@ -118,12 +121,24 @@ class TerrainQuadtree:
         self.vertices = None
 
         # texture coords
-
         if self.indexBufferObject is None:
+            added_indexes = 0
             for y in range(0, self.gridSize):
                 for x in range(0, self.gridSizep1):
                     self.indexes.append(y * self.gridSizep1 + x)
                     self.indexes.append((y+1) * self.gridSizep1 + x)
+
+                    added_indexes += 2
+                    if added_indexes % self.gridSizep1*2 == 0:
+                        # repeat last triangle
+                        self.indexes.append((y+1) * self.gridSizep1 + x)
+
+                        # repeat next triangle twice
+                        self.indexes.append((y+1) * self.gridSizep1)
+                        self.indexes.append((y+1) * self.gridSizep1)
+
+                        # add next triangle
+                        self.indexes.append((y+2) * self.gridSizep1 )
 
             # store in gl
             self.indexes = array(self.indexes, dtype='ushort')
@@ -158,14 +173,14 @@ class TerrainQuadtree:
             self.loadTextures()
 
         # do we need to draw our children
-        d1 = np.linalg.norm(factory.camera.position - self.center)
-        d2 = np.linalg.norm(factory.camera.position - self.topleft)
-        d3 = np.linalg.norm(factory.camera.position - self.topright)
-        d4 = np.linalg.norm(factory.camera.position - self.botleft)
-        d5 = np.linalg.norm(factory.camera.position - self.botright)
+        d1 = np.linalg.norm(factory.camera.position - self.center*1738140.0)
+        d2 = np.linalg.norm(factory.camera.position - self.topleft*1738140.0)
+        d3 = np.linalg.norm(factory.camera.position - self.topright*1738140.0)
+        d4 = np.linalg.norm(factory.camera.position - self.botleft*1738140.0)
+        d5 = np.linalg.norm(factory.camera.position - self.botright*1738140.0)
 
         distance = min(d1, min(d2, min(d3, min(d4, d5))))
-        if self.maxlod > 0 and distance < self.sidelength*1.1:
+        if self.maxlod > 0 and distance < self.sidelength*1.1*1738140.0:
             # are they ready?
             if len(self.children) > 0:
                 readycount = 0
@@ -194,8 +209,9 @@ class TerrainQuadtree:
         self.colorTexture.bind(1)
         self.topoTexture.bind(2)
         self.specularTexture.bind(3)
-        
-        GL.glDrawElements(GL.GL_TRIANGLE_STRIP, self.gridSize*self.gridSizep1*2, GL.GL_UNSIGNED_SHORT, c_void_p(0))
+
+        indexcount = (self.gridSizep1*self.gridSize*2)+(self.gridSize*4)
+        GL.glDrawElements(GL.GL_TRIANGLE_STRIP, indexcount, GL.GL_UNSIGNED_SHORT, None)
         self.normalTexture.unbind()
 
     def initChildren(self):

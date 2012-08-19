@@ -47,7 +47,7 @@ void main() {
         specular = gl_LightSource[0].specular * pow(NdotHV, 8.0) * spec;
     }
     
-    float height = topo.a
+    float height = topo.a * 65536.0 - 3000.0;
 
     vec4 shade;
     if (height < -256.0) shade = vec4(  3,  29,  63, 255);
@@ -59,10 +59,10 @@ void main() {
     if (height > 3072.0 && height <= 4096.0) shade = vec4(255, 255, 255, 255);
     if (height > 4096.0 && height <= 6144.0) shade = vec4(128, 255, 255, 255);
     if (height > 6144.0 && height <= 16384.0) shade = vec4(  0,   0, 255, 255);
-    if (height == 16384.0) shade = vec4(  0,   0, 255, 255);
+    if (height >= 16384.0) shade = vec4(  0,   0, 255, 255);
 
 
-    gl_FragColor = vec4(shade/255.0) * diffuse + specular;
+    gl_FragColor =  base * diffuse + specular;
 }
 
 mat3 fromToRotation(vec3 from, vec3 to) {

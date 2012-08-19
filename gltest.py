@@ -31,6 +31,8 @@ def main():
 
     initialize()
 
+    factory.camera.position = [0.0, 0.0, 1738140*2.0]
+
     glutMainLoop()
 
 def initialize():
@@ -59,7 +61,7 @@ def changeSize(width, height):
     glLoadIdentity()
 
     glViewport(0, 0, width, height)
-    gluPerspective(45., ratio, .01, 10.)
+    gluPerspective(45., ratio, 1.0, 1738140*2.0)
 
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
@@ -92,7 +94,7 @@ def step():
     camera = factory.camera
     dt = factory.dt
 
-    dist = np.linalg.norm(camera.position)-1.0
+    dist = (np.linalg.norm(camera.position)-1738140.0)/2.0
 
     if keys[ord('w')] == True:
         camera.move((0., 0., -1.*dt*dist))
