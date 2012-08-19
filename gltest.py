@@ -14,7 +14,7 @@ def main():
     glutInit(sys.argv)
 
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH)
-    glutInitWindowSize(800, 500)
+    glutInitWindowSize(1280, 800)
     glutCreateWindow('spb')
     glutDisplayFunc(display)
     glutIdleFunc(display)
@@ -55,13 +55,14 @@ def changeSize(width, height):
     if height == 0:
         height = 1
 
-    ratio = width/height
+    ratio = float(width)/float(height)
 
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
 
     glViewport(0, 0, width, height)
-    gluPerspective(45., ratio, 1.0, 1738140*2.0)
+    vfov = 35.
+    gluPerspective(vfov, ratio, 1.0, 1738140*3.0)
 
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()

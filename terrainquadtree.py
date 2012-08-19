@@ -19,7 +19,7 @@ class TerrainQuadtree:
         self.span = span
         self.seed = seed
 
-        self.gridSize = 64
+        self.gridSize = 16
         self.gridSizep1 = self.gridSize + 1
         self.textureSize = 256
 
@@ -32,6 +32,7 @@ class TerrainQuadtree:
         self.texcoordBufferObject = None
         self.indexBufferObject = None
 
+        # thread this later
         self.generateVertices()
         self.ready = False
 
@@ -88,7 +89,6 @@ class TerrainQuadtree:
         factory.generatorQueue.put((command, self))
 
     def generateVertices(self):
-        print "will generate"
         step = self.span / self.gridSize
 
         for y in range(0, self.gridSizep1):
@@ -112,7 +112,7 @@ class TerrainQuadtree:
                     self.botleft = coord
                 if y == self.gridSize and x == self.gridSize:
                     self.botright = coord
-        print "done"
+
         self.sidelength = np.linalg.norm(self.topleft - self.botleft)
         self.vertices = array(self.vertices, dtype='float32')
         self.positionBufferObject = GL.glGenBuffers(1)
@@ -180,7 +180,7 @@ class TerrainQuadtree:
         d5 = np.linalg.norm(factory.camera.position - self.botright*1738140.0)
 
         distance = min(d1, min(d2, min(d3, min(d4, d5))))
-        if self.maxlod > 0 and distance < self.sidelength*1.1*1738140.0:
+        if self.maxlod > 0 and distance < self.sidelength*1.2*1738140.0:
             # are they ready?
             if len(self.children) > 0:
                 readycount = 0
