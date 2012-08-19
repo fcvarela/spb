@@ -61,7 +61,9 @@ void main() {
     if (height > 6144.0 && height <= 16384.0) shade = vec4(  0,   0, 255, 255);
     if (height >= 16384.0) shade = vec4(  0,   0, 255, 255);
 
-    gl_FragColor =  vec4(shade/255.0) * diffuse + specular;
+    shade = vec4(shade/255.0) * diffuse + specular;
+    gl_FragColor = gl_Color;//shade + (gl_Color + 0.25 * gl_SecondaryColor);
+    gl_FragColor.a = 1.0;
 }
 
 mat3 fromToRotation(vec3 from, vec3 to) {

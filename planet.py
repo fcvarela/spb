@@ -1,9 +1,12 @@
 from OpenGL import *
 import math
+import numpy as np
+
 from ConfigParser import SafeConfigParser
 
 from terrainquadtree import *
 from shaderprogram import *
+import factory
 
 class Planet:
     def __init__(self, conffile):
@@ -34,6 +37,12 @@ class Planet:
         GL.glUniform1i(GL.glGetUniformLocation(self.shader.shader, 'colorTexture'), 1)
         GL.glUniform1i(GL.glGetUniformLocation(self.shader.shader, 'topoTexture'), 2)
         GL.glUniform1i(GL.glGetUniformLocation(self.shader.shader, 'specularTexture'), 3)
+
+        cameraPos = np.array(factory.camera.position)/self.radius
+        lightPos = cameraPos
+        GL.glUniform3f(GL.glGetUniformLocation(self.shader.shader, 'v3CameraPos'), cameraPos[0], cameraPos[1], cameraPos[2])
+        GL.glUniform3f(GL.glGetUniformLocation(self.shader.shader, 'v3LightPos'), lightPos[0], lightPos[1], lightPos[2])
+
         [x.draw() for x in self.quadtrees]
         self.shader.dettach()
 
