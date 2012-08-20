@@ -39,7 +39,7 @@ class Planet:
         GL.glUniform1i(GL.glGetUniformLocation(self.shader.shader, 'specularTexture'), 3)
 
         cameraPos = np.array(factory.camera.position)/self.radius
-        lightPos = cameraPos
+        lightPos = np.array(factory.sun.position)/np.linalg.norm(factory.sun.position)
         GL.glUniform3f(GL.glGetUniformLocation(self.shader.shader, 'v3CameraPos'), cameraPos[0], cameraPos[1], cameraPos[2])
         GL.glUniform3f(GL.glGetUniformLocation(self.shader.shader, 'v3LightPos'), lightPos[0], lightPos[1], lightPos[2])
 

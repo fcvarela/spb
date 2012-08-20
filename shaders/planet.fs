@@ -24,7 +24,7 @@ void main() {
     normal = normalize(gl_NormalMatrix * normal);
 
     // lighting stuff
-    vec4 s = -normalize(vvertex - gl_LightSource[0].position);
+    vec4 s = normalize(gl_LightSource[0].position - vertex);
     vec3 light = normalize(s.xyz);
 
     // finals
@@ -62,7 +62,7 @@ void main() {
     if (height >= 16384.0) shade = vec4(  0,   0, 255, 255);
 
     shade = vec4(shade/255.0) * diffuse + specular;
-    gl_FragColor = gl_Color;//shade + (gl_Color + 0.25 * gl_SecondaryColor);
+    gl_FragColor = shade + (gl_Color + 0.25 * gl_SecondaryColor);
     gl_FragColor.a = 1.0;
 }
 

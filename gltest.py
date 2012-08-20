@@ -32,6 +32,7 @@ def main():
     initialize()
 
     factory.camera.position = [0.0, 0.0, 1738140*2.0]
+    factory.sun.position = [0.0, 0.0, 1738140.0*10.0]
 
     glutMainLoop()
 
@@ -153,14 +154,12 @@ def display():
     glMultMatrixd(factory.camera.nodes['yaw'].rotation.gl_matrix())
     glTranslatef(-factory.camera.position[0], -factory.camera.position[1], -factory.camera.position[2])
 
-    #sunlon += factory.dt*10.
+    sunlon += factory.dt*10.
     #if sunlon > 360.:
     #    sunlon = sunlon-360.
 
-    factory.sun.position = factory.geocentricToCarthesian(0., sunlon, 10.)
+    #factory.sun.position = factory.geocentricToCarthesian(0., sunlon, 1738140*10.0)
     glLightfv(GL_LIGHT0, GL_POSITION, factory.sun.position);
-
-    drawAxes()
 
     glColor3f(1., 1., 1.)
     factory.planet.draw()

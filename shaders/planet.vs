@@ -42,8 +42,7 @@ void main() {
     vec4 heightmap = texture2D(topoTexture, gl_TexCoord[0].st);
     float height = heightmap.a * 32768.0 - 3000.0;
     vertex = vec4(normalize(gl_Vertex.xyz) * (height + radius), 1.0);
-
-    vvertex = gl_ModelViewMatrix * gl_Vertex;
+    vvertex = gl_ModelViewMatrix * vertex;
     gl_Position = gl_ModelViewProjectionMatrix * vertex;
 
     // prepoare
@@ -53,11 +52,10 @@ void main() {
     	Wavelength.y * Wavelength.y * Wavelength.y * Wavelength.y, 
         Wavelength.z * Wavelength.z * Wavelength.z * Wavelength.z);
 
-  	float fCameraHeight = length(v3CameraPos-1.0);
+  	float fCameraHeight = length(v3CameraPos);
   	float fCameraHeight2 = fCameraHeight*fCameraHeight;
 
-    // Get the ray from the camera to the vertex and its length (which is the far point of the ray passing through the atmosphere)
-    vec3 v3Pos = vertex.xyz/radius;
+    vec3 v3Pos = gl_Vertex.xyz;
     vec3 v3Ray = v3Pos - v3CameraPos;
     float fFar = length(v3Ray);
     v3Ray /= fFar;

@@ -22,19 +22,6 @@ def geocentricToCarthesian(lat, lon, alt):
     return position
 
 def generatorThread():
-    # spawn process
-
-    # while 1 and process is alive
-    # get from queue
-
-    # send request to process
-
-    # got here? process died. respawn
-
-
-
-
-
     while True:
         # dequeue everything into a local list
         entries = []
@@ -55,11 +42,9 @@ def generatorThread():
 
 
 camera = Node()
-camera.position = [0.2, 0.2, 3.0]
 camera.nodes = {'yaw': Node()}
 
 sun = Node()
-sun.position = geocentricToCarthesian(0., 0., 3.)
 
 # planet instance
 planet = None
