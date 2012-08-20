@@ -6,6 +6,8 @@ from OpenGL.GL.ARB.shader_objects import *
 from OpenGL.GL.ARB.fragment_shader import *
 from OpenGL.GL.ARB.vertex_shader import *
 
+import threading
+
 from planet import *
 import factory
 import sys
@@ -14,12 +16,17 @@ shadow_fbo = None
 depth_texture = None
 sunlon = 0.
 
+pushcount = 0
+pullcount = 0
+
 def main():
     glutInit(sys.argv)
 
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH)
-    glutInitWindowSize(1280, 800)
     glutCreateWindow('spb')
+    factory.width = 800
+    factory.height = 600
+    glutInitWindowSize(factory.width, factory.height)
     glutDisplayFunc(display)
     glutIdleFunc(display)
     glutReshapeFunc(changeSize)
@@ -37,8 +44,6 @@ def main():
 
     factory.camera.position = [0.0, 0.0, 1738140*2.0]
     factory.sun.position = [0.0, 0.0, 1738140.0*10.0]
-
-    generateShadowFBO(1280.0, 800.0)
 
     glutMainLoop()
 
@@ -83,9 +88,6 @@ def generateShadowFBO(width, height):
     FBOstatus = glCheckFramebufferStatus(GL_FRAMEBUFFER)
     if FBOstatus != GL_FRAMEBUFFER_COMPLETE:
         print("GL_FRAMEBUFFER_COMPLETE_EXT failed, CANNOT use FBO");
-    
-    # switch back to window-system-provided framebuffer
-    glBindFramebuffer(GL_FRAMEBUFFER, 0)
 
 def setTextureMatrix():
     bias = [\
@@ -105,8 +107,8 @@ def setTextureMatrix():
     glLoadMatrixd(bias);
     
     # concatating all matrice into one.
-    glMultMatrixd (projection);
-    glMultMatrixd (modelView);
+    glMultMatrixd(projection);
+    glMultMatrixd(modelView);
     
     # Go back to normal matrix mode
     glMatrixMode(GL_MODELVIEW);
@@ -117,6 +119,9 @@ def initialize():
     glClearDepth(1.0)
     glCullFace(GL_BACK)
     glEnable(GL_CULL_FACE)
+
+    glHint(GL_PERSPECTIVE_CORRECTION_HINT,GL_NICEST);
+
     glEnable(GL_LIGHTING)
     glEnable(GL_LIGHT0)
     glLightfv(GL_LIGHT0, GL_AMBIENT, array([0.1, 0.1, 0.1, 1.0]))
@@ -133,12 +138,15 @@ def changeSize(width, height):
 
     ratio = float(width)/float(height)
 
+    generateShadowFBO(width, height)
+    factory.width = width
+    factory.height = height
+
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
 
     glViewport(0, 0, width, height)
-    vfov = 35.
-    gluPerspective(vfov, ratio, 1.0, 1738140*3.0)
+    gluPerspective(35., ratio, 1.0, 1738140*3.0)
 
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
@@ -208,7 +216,6 @@ def step():
 
     if specialkeys[GLUT_KEY_DOWN] == True:
         camera.rotate((1., 0., 0.), 25.*dt)
-        
 
 def toggleWireframe():
     if factory.wireframe is True:
@@ -221,82 +228,108 @@ def toggleWireframe():
 def display():
     global sunlon
     global shadow_fbo
+    global depth_texture
 
     step()
 
-    # render the shadow
+    # bind the framebuffer
     glBindFramebuffer(GL_FRAMEBUFFER, shadow_fbo)
+    glDisable(GL_TEXTURE_2D)
     glUseProgram(0)
-    glViewport(0, 0, 1280*2, 800*2)
-    glClear(GL_DEPTH_BUFFER_BIT)
-    glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE); 
 
-    # setup matrices
+    # adjust viewport
+    glViewport(0, 0, factory.width*2, factory.height*2)
+
+    # reset the content
+    glClear(GL_DEPTH_BUFFER_BIT)
+
+    # disable color rendering
+    glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+
+    # switch culling
+    glCullFace(GL_FRONT)
+
+    # prepare proj
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
-    gluPerspective(35, 1280.0/800.0, 1, factory.planet.radius*2.0)
+    gluPerspective(35.0, factory.width/factory.height, 1.0, 1738140*3.0)
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
-    gluLookAt(factory.sun.position[0], factory.sun.position[1], factory.sun.position[2],\
-        0, 0, 0, 0, 1, 0);
-    glCullFace(GL_FRONT)
+    gluLookAt(factory.sun.position[0], factory.sun.position[1], factory.sun.position[2], 0., 0., 0., 0., 1., 0.)
+
+    glPushMatrix()
+    glMatrixMode(GL_TEXTURE)
+    #glActiveTexture(GL_TEXTURE1)
+    glPushMatrix()
+
     factory.planet.draw(False)
 
+    glPopMatrix()
+    glMatrixMode(GL_MODELVIEW)
+    glPopMatrix()
+    
     setTextureMatrix()
-    glBindFramebuffer(GL_FRAMEBUFFER, 0)
-    glViewport(0, 0, 1280, 800)
-    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE); 
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glActiveTexture(GL_TEXTURE1)
-    glBindTexture(GL_TEXTURE_2D, depth_texture)
 
-    # setup matrices
+    # unbind the FB
+    glBindFramebuffer(GL_FRAMEBUFFER, 0)
+    
+    # adjust viewport
+    glViewport(0, 0, int(factory.width), int(factory.height))
+
+    # reenable color write
+    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE); 
+
+    # reset the content
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    # prepare proj
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
-    gluPerspective(35, 1280.0/800.0, 1, factory.planet.radius*30)
+    gluPerspective(35.0, factory.width/factory.height, 1.0, 1738140.0*3.0)
+
+    # reposition
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
-
     glMultMatrixd(factory.camera.rotation.gl_matrix())
     glMultMatrixd(factory.camera.nodes['yaw'].rotation.gl_matrix())
     glTranslatef(-factory.camera.position[0], -factory.camera.position[1], -factory.camera.position[2])
-    
+
+    # reset culling
     glCullFace(GL_BACK)
+
+    # bind the shadow texure
+    glActiveTexture(GL_TEXTURE1)
+    glBindTexture(GL_TEXTURE_2D, depth_texture)
+
+    # draw final
     factory.planet.draw(True)
 
-    sunlon += factory.dt*10.
-    #if sunlon > 360.:
-    #    sunlon = sunlon-360.
+    debug = False
+    if debug:
+        glUseProgram(0);
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        glOrtho(-factory.width/2.0, factory.width/2.0, -factory.height/2.0, factory.height/2.0, 1.0, 20.0);
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+        glColor4f(1.0, 1.0, 1.0, 1.0);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, depth_texture);
+        glEnable(GL_TEXTURE_2D);
+        glTranslatef(0.0, 0.0, -1.0);
+        glBegin(GL_QUADS);
+        glTexCoord2d(0,0); glVertex3f(0.0, 0.0, 0.0);
+        glTexCoord2d(1,0); glVertex3f(factory.width/2.0, 0.0, 0.0);
+        glTexCoord2d(1,1); glVertex3f(factory.width/2.0, factory.height/2.0, 0.0);
+        glTexCoord2d(0,1); glVertex3f(0.0, factory.height, 0.0);
+        glEnd();
+        glDisable(GL_TEXTURE_2D);
 
+    sunlon += factory.dt*10.
     factory.sun.position = factory.geocentricToCarthesian(0., sunlon, 1738140*10.0)
     glLightfv(GL_LIGHT0, GL_POSITION, factory.sun.position);
 
     glutSwapBuffers()
-
-def drawAxes():
-    glDisable(GL_LIGHTING)
-    glPushMatrix()
-    
-    glColor3f(1.0, 0.0, 0.0)
-    glBegin(GL_LINES)
-    glVertex3f(0., 0., 0.)
-    glVertex3f(10., 0., 0.)
-    glEnd()
-    
-    glColor3f(0.0, 1.0, 0.0)
-    glBegin(GL_LINES)
-    glVertex3f(0., 0., 0.)
-    glVertex3f(0., 10., 0.)
-    glEnd()
-
-    glColor3f(0.0, 0.0, 1.0)
-    glBegin(GL_LINES)
-    glVertex3f(0., 0., 0.)
-    glVertex3f(0., 0., 10.)
-    glEnd()
-    
-    glPopMatrix()
-    glEnable(GL_LIGHTING)
 
 if __name__ == '__main__':
     main()

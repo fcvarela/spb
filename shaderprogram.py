@@ -6,10 +6,17 @@ class ShaderProgram:
         vertfile = open('shaders/%s.vs' % programname, 'r')
         self.vertshader = shaders.compileShader(vertfile.read(), GL.GL_VERTEX_SHADER)
 
-        fragfile = open('shaders/%s.fs' % programname, 'r')
-        self.fragshader = shaders.compileShader(fragfile.read(), GL.GL_FRAGMENT_SHADER)
+        self.fragshader = None
+        try:
+            fragfile = open('shaders/%s.fs' % programname, 'r')
+            self.fragshader = shaders.compileShader(fragfile.read(), GL.GL_FRAGMENT_SHADER)
+        except:
+            pass
 
-        self.shader = shaders.compileProgram(self.vertshader, self.fragshader)
+        if self.fragshader is not None:
+            self.shader = shaders.compileProgram(self.vertshader, self.fragshader)
+        else:
+            self.shader = shaders.compileProgram(self.vertshader)
 
     def attach(self):
         GL.glUseProgram(self.shader)

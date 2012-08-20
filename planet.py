@@ -20,6 +20,7 @@ class Planet:
         self.quadtrees = []
 
         self.shader = ShaderProgram('planet')
+        self.shadowshader = ShaderProgram('planetshadow')
 
         baselat = 0.
         degreespan = 90.
@@ -38,18 +39,23 @@ class Planet:
             GL.glUniform1i(GL.glGetUniformLocation(self.shader.shader, 'shadowTexture'), 1)
             GL.glUniform1i(GL.glGetUniformLocation(self.shader.shader, 'topoTexture'), 2)
             GL.glUniform1i(GL.glGetUniformLocation(self.shader.shader, 'specularTexture'), 3)
-            GL.glUniform1f(GL.glGetUniformLocation(self.shader.shader, 'shadowMapStepX'), 1.0/(1280.0 * 2.0))
-            GL.glUniform1f(GL.glGetUniformLocation(self.shader.shader, 'shadowMapStepY'),1.0/(1280.0 * 2.0))
+            GL.glUniform1f(GL.glGetUniformLocation(self.shader.shader, 'shadowMapStepX'), 1.0/(factory.width*2.0))
+            GL.glUniform1f(GL.glGetUniformLocation(self.shader.shader, 'shadowMapStepY'), 1.0/(factory.height*2.0))
 
             cameraPos = np.array(factory.camera.position)/self.radius
             lightPos = np.array(factory.sun.position)/np.linalg.norm(factory.sun.position)
             GL.glUniform3f(GL.glGetUniformLocation(self.shader.shader, 'v3CameraPos'), cameraPos[0], cameraPos[1], cameraPos[2])
             GL.glUniform3f(GL.glGetUniformLocation(self.shader.shader, 'v3LightPos'), lightPos[0], lightPos[1], lightPos[2])
+        else:
+            self.shadowshader.attach()
+            GL.glUniform1i(GL.glGetUniformLocation(self.shadowshader.shader, 'topoTexture'), 2)
 
-        [x.draw() for x in self.quadtrees]
+        [x.draw(shader) for x in self.quadtrees]
 
         if shader is True:
             self.shader.dettach()
+        else:
+            self.shadowshader.dettach()
 
     def generator_seed(self):
         # assemble all options into cli str

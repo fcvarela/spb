@@ -37,6 +37,7 @@ float getNearIntersection(vec3 pos, vec3 ray, float distance2, float radius2) {
 
 void main() {
     gl_TexCoord[0] = gl_MultiTexCoord0;
+    gl_TexCoord[1] = gl_MultiTexCoord1;
     
     float radius = 1738140.0;
     
@@ -46,7 +47,7 @@ void main() {
     vvertex = gl_ModelViewMatrix * vertex;
     gl_Position = gl_ModelViewProjectionMatrix * vertex;
     
-    shadowcoord = gl_TextureMatrix[1] * gl_Vertex;
+    shadowcoord = gl_TextureMatrix[1] * vertex;
 
     // prepoare
     const vec3  Wavelength = vec3(0.650,0.570,0.475);

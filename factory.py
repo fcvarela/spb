@@ -53,7 +53,7 @@ planet = None
 wireframe = False
 
 # terrain generator
-for i in range(0, 8):
+for i in range(0, 2):
     genthread = Thread(target=generatorThread, args=())
     genthread.start()
 

@@ -39,13 +39,11 @@ class TerrainQuadtree:
         self.files = [\
             '%s/%s-topo.raw' % (self.seed['cachedir'], self.index),
             '%s/%s-specular.bmp' % (self.seed['cachedir'], self.index),
-            '%s/%s-normal.bmp' % (self.seed['cachedir'], self.index),
-            '%s/%s-texture.bmp' % (self.seed['cachedir'], self.index)]
+            '%s/%s-normal.bmp' % (self.seed['cachedir'], self.index)]
 
         self.topoTexture = None
         self.specularTexture = None
         self.normalTexture = None
-        self.colorTexture = None
 
         self.generateTextures()
 
@@ -54,7 +52,6 @@ class TerrainQuadtree:
         self.topoTexture = Texture(self.files[0])
         self.specularTexture = Texture(self.files[1])
         self.normalTexture = Texture(self.files[2])
-        self.colorTexture = Texture(self.files[3])
 
     def needFiles(self):
         for file in self.files:
@@ -165,7 +162,7 @@ class TerrainQuadtree:
             # release local copy
             self.texcoords = None
 
-    def draw(self):
+    def draw(self, textures):
         if self.ready == False:
             return
 
@@ -189,7 +186,7 @@ class TerrainQuadtree:
                         readycount += 1
                 # got children. all ready? draw then. not? draw self
                 if readycount == 4:
-                    [x.draw() for x in self.children]
+                    [x.draw(textures) for x in self.children]
                     return
             else:
                 self.initChildren()
@@ -198,21 +195,22 @@ class TerrainQuadtree:
         GL.glBindBuffer(GL.GL_ARRAY_BUFFER, self.positionBufferObject)
         GL.glVertexPointer(3, GL.GL_FLOAT, 0, None)
 
-        GL.glEnableClientState(GL.GL_TEXTURE_COORD_ARRAY)
-        GL.glBindBuffer(GL.GL_ARRAY_BUFFER, self.texcoordBufferObject)
-        GL.glTexCoordPointer(2, GL.GL_FLOAT, 0, None)
-
         GL.glEnableClientState(GL.GL_INDEX_ARRAY)
         GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, self.indexBufferObject)
 
-        self.normalTexture.bind(0)
-        self.colorTexture.bind(1)
-        self.topoTexture.bind(2)
-        self.specularTexture.bind(3)
+        if textures:
+            GL.glEnableClientState(GL.GL_TEXTURE_COORD_ARRAY)
+            GL.glBindBuffer(GL.GL_ARRAY_BUFFER, self.texcoordBufferObject)
+            GL.glTexCoordPointer(2, GL.GL_FLOAT, 0, None)
+            
+        if textures:
+            self.normalTexture.bind(GL.GL_TEXTURE0)
+            self.specularTexture.bind(GL.GL_TEXTURE3)
+        
+        self.topoTexture.bind(GL.GL_TEXTURE2)
 
         indexcount = (self.gridSizep1*self.gridSize*2)+(self.gridSize*4)
         GL.glDrawElements(GL.GL_TRIANGLE_STRIP, indexcount, GL.GL_UNSIGNED_SHORT, None)
-        self.normalTexture.unbind()
 
     def initChildren(self):
         qt = TerrainQuadtree(self, self.maxlod-1, self.index*10+1, self.baselat, self.baselon, self.span/2., self.seed)
