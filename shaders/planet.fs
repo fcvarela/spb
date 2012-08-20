@@ -85,7 +85,7 @@ void main() {
     float distanceFromLight = texture2D(shadowTexture, shadowCoordinateWdivide.st).z;
     if (shadowcoord.w > 0.0)
         shadow = distanceFromLight < shadowCoordinateWdivide.z ? 0.5 : 1.0 ;
-    gl_FragColor = vec4(shadow);
+    gl_FragColor = vec4(shadow) * gl_FragColor;
     
     gl_FragColor.a = 1.0;
 }

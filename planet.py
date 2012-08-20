@@ -32,6 +32,9 @@ class Planet:
             qt = TerrainQuadtree(parent=None, maxlod=self.maxlod, index=i+1, baselat=baselat, baselon=baselon, span=degreespan, seed=self.generator_seed())
             self.quadtrees.append(qt)
 
+    def bindTopoTexture(self):
+        [x.bindTopoTexture() for x in self.quadtrees]
+
     def draw(self, shader):
         if shader is True:
             self.shader.attach()

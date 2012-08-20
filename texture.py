@@ -27,5 +27,10 @@ class Texture:
             GL.glTexImage2D(GL.GL_TEXTURE_2D, 0, GL.GL_ALPHA16, ix, iy, 0, GL.GL_ALPHA, GL.GL_SHORT, image)
 
     def bind(self, textureUnit=GL.GL_TEXTURE0):
+        if textureUnit == 1:
+            print "ERR ERR ERR"
         GL.glActiveTexture(textureUnit)
         GL.glBindTexture(GL.GL_TEXTURE_2D, self.id)
+
+    def unbind(self):
+        GL.glDisable(GL.GL_TEXTURE_2D)

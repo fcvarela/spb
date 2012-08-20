@@ -206,11 +206,14 @@ class TerrainQuadtree:
         if textures:
             self.normalTexture.bind(GL.GL_TEXTURE0)
             self.specularTexture.bind(GL.GL_TEXTURE3)
-        
-        self.topoTexture.bind(GL.GL_TEXTURE2)
+            self.topoTexture.bind(GL.GL_TEXTURE2)
 
         indexcount = (self.gridSizep1*self.gridSize*2)+(self.gridSize*4)
         GL.glDrawElements(GL.GL_TRIANGLE_STRIP, indexcount, GL.GL_UNSIGNED_SHORT, None)
+
+    def bindTopoTexture(self):
+        if self.topoTexture:
+            self.topoTexture.bind(GL.GL_TEXTURE2)
 
     def initChildren(self):
         qt = TerrainQuadtree(self, self.maxlod-1, self.index*10+1, self.baselat, self.baselon, self.span/2., self.seed)

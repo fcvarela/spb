@@ -23,10 +23,9 @@ def main():
     glutInit(sys.argv)
 
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH)
+    glutInitWindowSize(800, 600)
+    glutFullScreen()
     glutCreateWindow('spb')
-    factory.width = 800
-    factory.height = 600
-    glutInitWindowSize(factory.width, factory.height)
     glutDisplayFunc(display)
     glutIdleFunc(display)
     glutReshapeFunc(changeSize)
@@ -65,11 +64,6 @@ def generateShadowFBO(width, height):
     # Remove artefact on the edges of the shadowmap
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP)
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP)
-    
-    # This is to allow usage of shadow2DProj function in the shader
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL)
-    glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE, GL_INTENSITY)
 
     # No need to force GL_DEPTH_COMPONENT24, drivers usually give you the max precision if available 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, shadowMapWidth, shadowMapHeight, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, None)
@@ -88,6 +82,9 @@ def generateShadowFBO(width, height):
     FBOstatus = glCheckFramebufferStatus(GL_FRAMEBUFFER)
     if FBOstatus != GL_FRAMEBUFFER_COMPLETE:
         print("GL_FRAMEBUFFER_COMPLETE_EXT failed, CANNOT use FBO");
+    
+    # switch back to window-system-provided framebuffer
+    glBindFramebuffer(GL_FRAMEBUFFER, 0)
 
 def setTextureMatrix():
     bias = [\
@@ -146,7 +143,8 @@ def changeSize(width, height):
     glLoadIdentity()
 
     glViewport(0, 0, width, height)
-    gluPerspective(35., ratio, 1.0, 1738140*3.0)
+    vfov = 35.
+    gluPerspective(vfov, ratio, 1.0, 1738140*3.0)
 
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
@@ -234,7 +232,6 @@ def display():
 
     # bind the framebuffer
     glBindFramebuffer(GL_FRAMEBUFFER, shadow_fbo)
-    glDisable(GL_TEXTURE_2D)
     glUseProgram(0)
 
     # adjust viewport
@@ -246,9 +243,6 @@ def display():
     # disable color rendering
     glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
 
-    # switch culling
-    glCullFace(GL_FRONT)
-
     # prepare proj
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
@@ -257,9 +251,16 @@ def display():
     glLoadIdentity()
     gluLookAt(factory.sun.position[0], factory.sun.position[1], factory.sun.position[2], 0., 0., 0., 0., 1., 0.)
 
+    # switch culling
+    glCullFace(GL_FRONT)
+    glColor4f(0.9, 0.9, 0.9, 1.0);
+    
+    # prepare beforehand
+    factory.planet.bindTopoTexture()
+
     glPushMatrix()
     glMatrixMode(GL_TEXTURE)
-    #glActiveTexture(GL_TEXTURE1)
+    glActiveTexture(GL_TEXTURE1)
     glPushMatrix()
 
     factory.planet.draw(False)
@@ -304,7 +305,7 @@ def display():
     # draw final
     factory.planet.draw(True)
 
-    debug = False
+    debug = True
     if debug:
         glUseProgram(0);
         glMatrixMode(GL_PROJECTION);
