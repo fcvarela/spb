@@ -2,12 +2,16 @@
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GLUT import *
+from OpenGL.GL.ARB.shader_objects import *
+from OpenGL.GL.ARB.fragment_shader import *
+from OpenGL.GL.ARB.vertex_shader import *
 
 from planet import *
 import factory
-
 import sys
 
+shadow_fbo = None
+depth_texture = None
 sunlon = 0.
 
 def main():
@@ -34,7 +38,78 @@ def main():
     factory.camera.position = [0.0, 0.0, 1738140*2.0]
     factory.sun.position = [0.0, 0.0, 1738140.0*10.0]
 
+    generateShadowFBO(1280.0, 800.0)
+
     glutMainLoop()
+
+def generateShadowFBO(width, height):
+    global shadow_fbo
+    global depth_texture
+
+    shadowmap_ratio = 2.0
+
+    shadowMapWidth = width * shadowmap_ratio
+    shadowMapHeight = height * shadowmap_ratio
+
+    depth_texture = glGenTextures(1)
+    glBindTexture(GL_TEXTURE_2D, depth_texture)
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+    
+    # Remove artefact on the edges of the shadowmap
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP)
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP)
+    
+    # This is to allow usage of shadow2DProj function in the shader
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL)
+    glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE, GL_INTENSITY)
+
+    # No need to force GL_DEPTH_COMPONENT24, drivers usually give you the max precision if available 
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, shadowMapWidth, shadowMapHeight, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, None)
+    glBindTexture(GL_TEXTURE_2D, 0)
+    
+    # create a framebuffer object
+    shadow_fbo = glGenFramebuffers(1)
+    glBindFramebuffer(GL_FRAMEBUFFER, shadow_fbo)
+    
+    # Instruct openGL that we won't bind a color texture with the currently binded FBO
+    glDrawBuffer(GL_NONE)
+    glReadBuffer(GL_NONE)
+    
+    # attach the texture to FBO depth attachment point
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depth_texture, 0)
+    FBOstatus = glCheckFramebufferStatus(GL_FRAMEBUFFER)
+    if FBOstatus != GL_FRAMEBUFFER_COMPLETE:
+        print("GL_FRAMEBUFFER_COMPLETE_EXT failed, CANNOT use FBO");
+    
+    # switch back to window-system-provided framebuffer
+    glBindFramebuffer(GL_FRAMEBUFFER, 0)
+
+def setTextureMatrix():
+    bias = [\
+        0.5, 0.0, 0.0, 0.0, \
+        0.0, 0.5, 0.0, 0.0, \
+        0.0, 0.0, 0.5, 0.0, \
+        0.5, 0.5, 0.5, 1.0]
+
+    # Grab modelview and transformation matrices
+    modelView = glGetDoublev(GL_MODELVIEW_MATRIX);
+    projection = glGetDoublev(GL_PROJECTION_MATRIX);
+    
+    glMatrixMode(GL_TEXTURE);
+    glActiveTexture(GL_TEXTURE1);
+    
+    glLoadIdentity();   
+    glLoadMatrixd(bias);
+    
+    # concatating all matrice into one.
+    glMultMatrixd (projection);
+    glMultMatrixd (modelView);
+    
+    # Go back to normal matrix mode
+    glMatrixMode(GL_MODELVIEW);
 
 def initialize():
     glDepthFunc(GL_LEQUAL)
@@ -145,24 +220,56 @@ def toggleWireframe():
 
 def display():
     global sunlon
+    global shadow_fbo
+
     step()
-    
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+
+    # render the shadow
+    glBindFramebuffer(GL_FRAMEBUFFER, shadow_fbo)
+    glUseProgram(0)
+    glViewport(0, 0, 1280*2, 800*2)
+    glClear(GL_DEPTH_BUFFER_BIT)
+    glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE); 
+
+    # setup matrices
+    glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
-    
+    gluPerspective(35, 1280.0/800.0, 1, factory.planet.radius*2.0)
+    glMatrixMode(GL_MODELVIEW)
+    glLoadIdentity()
+    gluLookAt(factory.sun.position[0], factory.sun.position[1], factory.sun.position[2],\
+        0, 0, 0, 0, 1, 0);
+    glCullFace(GL_FRONT)
+    factory.planet.draw(False)
+
+    setTextureMatrix()
+    glBindFramebuffer(GL_FRAMEBUFFER, 0)
+    glViewport(0, 0, 1280, 800)
+    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE); 
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glActiveTexture(GL_TEXTURE1)
+    glBindTexture(GL_TEXTURE_2D, depth_texture)
+
+    # setup matrices
+    glMatrixMode(GL_PROJECTION)
+    glLoadIdentity()
+    gluPerspective(35, 1280.0/800.0, 1, factory.planet.radius*30)
+    glMatrixMode(GL_MODELVIEW)
+    glLoadIdentity()
+
     glMultMatrixd(factory.camera.rotation.gl_matrix())
     glMultMatrixd(factory.camera.nodes['yaw'].rotation.gl_matrix())
     glTranslatef(-factory.camera.position[0], -factory.camera.position[1], -factory.camera.position[2])
+    
+    glCullFace(GL_BACK)
+    factory.planet.draw(True)
 
     sunlon += factory.dt*10.
     #if sunlon > 360.:
     #    sunlon = sunlon-360.
 
-    #factory.sun.position = factory.geocentricToCarthesian(0., sunlon, 1738140*10.0)
+    factory.sun.position = factory.geocentricToCarthesian(0., sunlon, 1738140*10.0)
     glLightfv(GL_LIGHT0, GL_POSITION, factory.sun.position);
-
-    glColor3f(1., 1., 1.)
-    factory.planet.draw()
 
     glutSwapBuffers()
 

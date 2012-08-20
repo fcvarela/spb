@@ -1,18 +1,20 @@
-#version 110
-
 varying vec4 vertex;
 varying vec4 vvertex;
 
 uniform sampler2D normalTexture;
-uniform sampler2D colorTexture;
 uniform sampler2D specularTexture;
 uniform sampler2D topoTexture;
+uniform sampler2DShadow shadowTexture;
 
+varying vec4 shadowcoord;
+uniform float shadowMapStepX;
+uniform float shadowMapStepY;
+
+float lookup( vec2 offSet);
 mat3 fromToRotation(vec3 from, vec3 to);
 
 void main() {
     // fetch base color
-    vec4 base = texture2D(colorTexture, gl_TexCoord[0].st);
     vec4 spec = texture2D(specularTexture, gl_TexCoord[0].st);
     vec4 topo = texture2D(topoTexture, gl_TexCoord[0].st);
     
@@ -49,21 +51,55 @@ void main() {
     
     float height = topo.a * 16384.0 - (4096.0 + 2048.0);
 
-    vec4 shade;
-    if (height < -256.0) shade = vec4(  3,  29,  63, 255);
-    if (height > -256.0 && height <= -1.0) shade = vec4(  7, 106, 127, 255);
-    if (height > -1.0 && height <= 0.0) shade = vec4( 62,  86,  30, 255);
-    if (height > 0.0 && height <= 1024.0) shade = vec4( 84,  96,  50, 255);
-    if (height > 1024.0 && height <= 2048.0) shade = vec4(130, 127,  97, 255);
-    if (height > 2048.0 && height <= 3072.0) shade = vec4(184, 163, 141, 255);
-    if (height > 3072.0 && height <= 4096.0) shade = vec4(255, 255, 255, 255);
-    if (height > 4096.0 && height <= 6144.0) shade = vec4(128, 255, 255, 255);
-    if (height > 6144.0 && height <= 16384.0) shade = vec4(  0,   0, 255, 255);
-    if (height >= 16384.0) shade = vec4(  0,   0, 255, 255);
+    vec4 shades[10];
+    float heights[10];
+    heights[0] = -16384.0;  shades[0] = vec4(  3,  29,  63, 255);
+    heights[1] = -256.0;    shades[1] = vec4(  3,  29,  63, 255);
+    heights[2] = -50.0;      shades[2] = vec4(  7, 106, 127, 255);
+    heights[3] = 0.0;       shades[3] = vec4( 62,  86,  30, 255);
+    heights[4] = 1024.0;    shades[4] = vec4( 84,  96,  50, 255);
+    heights[5] = 2048.0;    shades[5] = vec4(130, 127,  97, 255);
+    heights[6] = 3072.0;    shades[6] = vec4(184, 163, 141, 255);
+    heights[7] = 4096.0;    shades[7] = vec4(255, 255, 255, 255);
+    heights[8] = 6144.0;    shades[8] = vec4(128, 255, 255, 255);
+    heights[9] = 16384.0;   shades[9] = vec4(  0,   0, 255, 255);
 
-    shade = vec4(shade/255.0) * diffuse + specular;
-    gl_FragColor = shade + (gl_Color + 0.25 * gl_SecondaryColor);
+    vec4 shade;
+    for (int i=0; i<9; i++) {
+        if (height > heights[i] && height <= heights[i+1]) {
+            float scale = heights[i+1] - heights[i];
+            float coeff = (height-heights[i]) / scale;
+            shade = (1.0 - coeff) * shades[i] + coeff * shades[i+1];
+            shade /= 255.0;
+        }
+    }
+
+    shade = shade * diffuse + specular;
+    vec4 final = shade + (gl_Color + 0.25 * gl_SecondaryColor);
+
+    float shadow = 1.0;
+    
+    // Avoid counter shadow 
+    if (shadowcoord.w > 1.0) {
+        // Simple lookup, no PCF
+        //shadow = lookup(vec2(0.0,0.0));
+        // 8x8 kernel PCF
+        float x,y;
+        for (y = -3.5 ; y <=3.5 ; y+=1.0)
+            for (x = -3.5 ; x <=3.5 ; x+=1.0)
+                shadow += lookup(vec2(x,y));
+        
+        shadow /= 64.0 ;
+
+
+    }
+    gl_FragColor = final + (shadow * 0.2);
     gl_FragColor.a = 1.0;
+}
+
+float lookup( vec2 offSet) {
+    // Values are multiplied by shadowcoord.w because shadow2DProj does a W division for us.
+    return shadow2DProj(shadowTexture, shadowcoord + vec4(offSet.x * shadowMapStepX * shadowcoord.w, offSet.y * shadowMapStepY * shadowcoord.w, 0.05, 0.0) ).w;
 }
 
 mat3 fromToRotation(vec3 from, vec3 to) {

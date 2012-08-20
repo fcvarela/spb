@@ -1,5 +1,6 @@
 varying vec4 vertex;
 varying vec4 vvertex;
+varying vec4 shadowcoord;
 
 uniform sampler2D topoTexture;
 uniform vec3 v3CameraPos;
@@ -44,6 +45,8 @@ void main() {
     vertex = vec4(normalize(gl_Vertex.xyz) * (height + radius), 1.0);
     vvertex = gl_ModelViewMatrix * vertex;
     gl_Position = gl_ModelViewProjectionMatrix * vertex;
+    
+    shadowcoord = gl_TextureMatrix[1] * gl_Vertex;
 
     // prepoare
     const vec3  Wavelength = vec3(0.650,0.570,0.475);
