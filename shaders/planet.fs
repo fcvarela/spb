@@ -47,19 +47,19 @@ void main() {
     
     float height = topo.a * 16384.0 - (4096.0 + 2048.0);
 
-    vec4 shades[10];
+    vec3 shades[10];
     float heights[10];
     float diffs[10];
-    heights[0] = -16384.0;  shades[0] = vec4(  3,  29,  63, 255)/255.0;
-    heights[1] = -256.0;    shades[1] = vec4(  3,  29,  63, 255)/255.0;
-    heights[2] = -50.0;     shades[2] = vec4(  7, 106, 127, 255)/255.0;
-    heights[3] = 0.0;       shades[3] = vec4( 62,  86,  30, 255)/255.0;
-    heights[4] = 1024.0;    shades[4] = vec4( 84,  96,  50, 255)/255.0;
-    heights[5] = 2048.0;    shades[5] = vec4(130, 127,  97, 255)/255.0;
-    heights[6] = 3072.0;    shades[6] = vec4(184, 163, 141, 255)/255.0;
-    heights[7] = 4096.0;    shades[7] = vec4(255, 255, 255, 255)/255.0;
-    heights[8] = 6144.0;    shades[8] = vec4(128, 255, 255, 255)/255.0;
-    heights[9] = 16384.0;   shades[9] = vec4(  0,   0, 255, 255)/255.0;
+    heights[0] = -16384.0;  shades[0] = vec3(  3,  29,  63);
+    heights[1] = -256.0;    shades[1] = vec3(  3,  29,  63);
+    heights[2] = -50.0;     shades[2] = vec3(  7, 106, 127);
+    heights[3] = 0.0;       shades[3] = vec3( 62,  86,  30);
+    heights[4] = 1024.0;    shades[4] = vec3( 84,  96,  50);
+    heights[5] = 2048.0;    shades[5] = vec3(130, 127,  97);
+    heights[6] = 3072.0;    shades[6] = vec3(184, 163, 141);
+    heights[7] = 4096.0;    shades[7] = vec3(1.0, 255, 255);
+    heights[8] = 6144.0;    shades[8] = vec3(128, 255, 255);
+    heights[9] = 16384.0;   shades[9] = vec3(  0,   0, 255);
 
     vec4 shade;
     float scale = 0.0;
@@ -67,9 +67,8 @@ void main() {
 
     for (int i=0; i<9; i++) {
         if (height > heights[i] && height <= heights[i+1]) {
-            scale = heights[i+1] - heights[i];
-            coeff = (height-heights[i]) / scale;
-            shade = mix(shades[i], shades[i+1], coeff);
+            scale = smoothstep(heights[i], heights[i+1], height);
+            shade = vec4(mix(shades[i], shades[i+1], scale), 1.0)/255.0;
         }
     }
 
