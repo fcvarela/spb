@@ -2,9 +2,6 @@
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GLUT import *
-from OpenGL.GL.ARB.shader_objects import *
-from OpenGL.GL.ARB.fragment_shader import *
-from OpenGL.GL.ARB.vertex_shader import *
 
 import threading
 
@@ -37,9 +34,6 @@ def main():
 
     initialize()
 
-    factory.camera.position = [0.0, 0.0, 1738140*2.0]
-    factory.sun.position = [0.0, 0.0, 1738140.0*10.0]
-
     glutMainLoop()
 
 def generateShadowFBO(width, height):
@@ -70,11 +64,14 @@ def initialize():
     glEnable(GL_LIGHT0)
     glLightfv(GL_LIGHT0, GL_AMBIENT, array([0.1, 0.1, 0.1, 1.0]))
     glLightfv(GL_LIGHT0, GL_DIFFUSE, array([1.0, 1.0, 1.0, 1.0]))
-    glLightfv(GL_LIGHT0, GL_SPECULAR, array([1.0, 1.0, 1.0, 1.0]))
+    glLightfv(GL_LIGHT0, GL_SPECULAR, array([.6, .6, .6, 1.0]))
 
     # got gl state, spawn factory singleton
     factory.planet = Planet('planets/planet1.conf')
     factory.lastframe = glutGet(GLUT_ELAPSED_TIME)/1000.
+
+    factory.camera.position = [0.0, 0.0, factory.planet.radius*2.0]
+    factory.sun.position = [0.0, 0.0, factory.planet.radius*8.0]
 
 def changeSize(width, height):
     if height == 0:
@@ -93,7 +90,7 @@ def changeSize(width, height):
     glLoadIdentity()
 
     glViewport(0, 0, width, height)
-    gluPerspective(35.0, ratio, 1.0, 1738140.*10.0)
+    gluPerspective(35.0, ratio, 10000.0, factory.planet.radius * 10.0)
 
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
@@ -126,7 +123,7 @@ def step():
     camera = factory.camera
     dt = factory.dt
 
-    dist = (np.linalg.norm(camera.position)-1738140.0)/2.0
+    dist = (np.linalg.norm(camera.position)-factory.planet.radius)/2.0
 
     if keys[ord('w')] == True:
         camera.move((0., 0., -1.*dt*dist))
@@ -164,9 +161,9 @@ def step():
     if specialkeys[GLUT_KEY_DOWN] == True:
         camera.rotate((1., 0., 0.), 25.*dt)
 
-    global sunlon
-    sunlon += factory.dt*10.
-    factory.sun.position = factory.geocentricToCarthesian(0., sunlon, 1738140*10.0)
+    #global sunlon
+    #sunlon += factory.dt*10.
+    #factory.sun.position = factory.geocentricToCarthesian(0., sunlon, factory.planet.radius*8.0)
     glLightfv(GL_LIGHT0, GL_POSITION, factory.sun.position);
 
 def toggleWireframe():
@@ -177,20 +174,38 @@ def toggleWireframe():
         glPolygonMode(GL_FRONT, GL_LINE)
         factory.wireframe = True
 
+def RenderShadowCompareAfter():
+    'reset gl params after comparison'
+    glDisable(GL_TEXTURE_2D)
+
+    glDisable(GL_TEXTURE_GEN_S)
+    glDisable(GL_TEXTURE_GEN_T)
+    glDisable(GL_TEXTURE_GEN_R)
+    glDisable(GL_TEXTURE_GEN_Q)
+
+    glDisable(GL_ALPHA_TEST)
+
+def renderObjects(shader):
+    glPushMatrix()
+    glTranslatef(0., 0., factory.planet.radius)
+    #glutSolidSphere(factory.planet.radius, 100, 100)
+    glPopMatrix()
+
+    glPushMatrix()
+    factory.planet.draw(shader)
+    glPopMatrix()
+
 def display():
     step()
 
+    # Render from camera
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity()
     glMultMatrixd(factory.camera.rotation.gl_matrix())
     glMultMatrixd(factory.camera.nodes['yaw'].rotation.gl_matrix())
     glTranslatef(-factory.camera.position[0], -factory.camera.position[1], -factory.camera.position[2])
-    factory.planet.draw(True)
 
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glLoadIdentity()
-    gluLookAt(factory.sun.position[0], factory.sun.position[1], factory.sun.position[2], 0., 0., 0., 0., 1., 0.)
-    factory.planet.draw(False)
+    renderObjects(True)
 
     glutSwapBuffers()
 

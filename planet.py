@@ -20,7 +20,7 @@ class Planet:
         self.quadtrees = []
 
         self.shader = ShaderProgram('planet')
-        self.shadowshader = ShaderProgram('planetshadow')
+        self.atmosphereshader = ShaderProgram('planetatmosphere')
 
         baselat = 0.
         degreespan = 90.
@@ -33,26 +33,41 @@ class Planet:
             self.quadtrees.append(qt)
 
     def draw(self, shader):
-        if shader is True:
-            self.shader.attach()
-            GL.glUniform1i(GL.glGetUniformLocation(self.shader.shader, 'normalTexture'), 0)
-            GL.glUniform1i(GL.glGetUniformLocation(self.shader.shader, 'topoTexture'), 2)
-            GL.glUniform1i(GL.glGetUniformLocation(self.shader.shader, 'specularTexture'), 3)
-            
-            cameraPos = np.array(factory.camera.position)/self.radius
-            lightPos = np.array(factory.sun.position)/np.linalg.norm(factory.sun.position)
-            GL.glUniform3f(GL.glGetUniformLocation(self.shader.shader, 'v3CameraPos'), cameraPos[0], cameraPos[1], cameraPos[2])
-            GL.glUniform3f(GL.glGetUniformLocation(self.shader.shader, 'v3LightPos'), lightPos[0], lightPos[1], lightPos[2])
+        localshader = None
+        if shader:
+            localshader = self.shader
+            self.drawAtmosphere()
         else:
-            self.shadowshader.attach()
-            GL.glUniform1i(GL.glGetUniformLocation(self.shadowshader.shader, 'topoTexture'), 2)
+            localshader = self.shadowshader
+
+        localshader.attach()
+
+        GL.glUniform1i(GL.glGetUniformLocation(localshader.shader, 'normalTexture'), 0)
+        GL.glUniform1i(GL.glGetUniformLocation(localshader.shader, 'topoTexture'), 2)
+        GL.glUniform1i(GL.glGetUniformLocation(localshader.shader, 'specularTexture'), 3)
+        GL.glUniform1i(GL.glGetUniformLocation(localshader.shader, 'justTopoAndNormals'), not int(shader))
+            
+        cameraPos = np.array(factory.camera.position)/self.radius
+        lightPos = np.array(factory.sun.position)/np.linalg.norm(factory.sun.position)
+        GL.glUniform3f(GL.glGetUniformLocation(localshader.shader, 'v3CameraPos'), cameraPos[0], cameraPos[1], cameraPos[2])
+        GL.glUniform3f(GL.glGetUniformLocation(localshader.shader, 'v3LightPos'), lightPos[0], lightPos[1], lightPos[2])
 
         [x.draw(shader) for x in self.quadtrees]
 
-        if shader is True:
-            self.shader.dettach()
-        else:
-            self.shadowshader.dettach()
+        localshader.dettach()
+
+    def drawAtmosphere(self):
+        self.atmosphereshader.attach()
+
+        cameraPos = np.array(factory.camera.position)/self.radius
+        lightPos = np.array(factory.sun.position)/np.linalg.norm(factory.sun.position)
+        GL.glUniform3f(GL.glGetUniformLocation(self.atmosphereshader.shader, 'v3CameraPos'), cameraPos[0], cameraPos[1], cameraPos[2])
+        GL.glUniform3f(GL.glGetUniformLocation(self.atmosphereshader.shader, 'v3LightPos'), lightPos[0], lightPos[1], lightPos[2])
+
+        GL.glFrontFace(GL.GL_CW)
+        glutSolidSphere(self.atmosphere_radius, 100, 100)
+        GL.glFrontFace(GL.GL_CCW)
+        self.atmosphereshader.dettach()
 
     def generator_seed(self):
         # assemble all options into cli str

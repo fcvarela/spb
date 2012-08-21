@@ -4,6 +4,7 @@ varying vec4 vvertex;
 uniform sampler2D normalTexture;
 uniform sampler2D specularTexture;
 uniform sampler2D topoTexture;
+uniform sampler2D shadowTexture;
 
 float lookup( vec2 offSet);
 mat3 fromToRotation(vec3 from, vec3 to);

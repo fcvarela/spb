@@ -55,11 +55,10 @@ class TerrainQuadtree:
 
     def needFiles(self):
         for file in self.files:
-            if os.path.exists(file):
-                self.ready = True
-                return False
+            if not os.path.exists(file):
+                return True
 
-        return True
+        self.ready = True
 
     def generateTextures(self):
         # make sure we need them
@@ -202,11 +201,8 @@ class TerrainQuadtree:
         GL.glBindBuffer(GL.GL_ARRAY_BUFFER, self.texcoordBufferObject)
         GL.glTexCoordPointer(2, GL.GL_FLOAT, 0, None)
             
-        if textures is True:
-            self.normalTexture.bind(GL.GL_TEXTURE0)
-            self.specularTexture.bind(GL.GL_TEXTURE3)
-
-        # we always need topo texture
+        self.normalTexture.bind(GL.GL_TEXTURE0)
+        self.specularTexture.bind(GL.GL_TEXTURE3)
         self.topoTexture.bind(GL.GL_TEXTURE2)
 
         indexcount = (self.gridSizep1*self.gridSize*2)+(self.gridSize*4)
