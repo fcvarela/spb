@@ -4,11 +4,6 @@ varying vec4 vvertex;
 uniform sampler2D normalTexture;
 uniform sampler2D specularTexture;
 uniform sampler2D topoTexture;
-uniform sampler2D shadowTexture;
-
-varying vec4 shadowcoord;
-uniform float shadowMapStepX;
-uniform float shadowMapStepY;
 
 float lookup( vec2 offSet);
 mat3 fromToRotation(vec3 from, vec3 to);
@@ -78,15 +73,6 @@ void main() {
     }
 
     gl_FragColor = shade * diffuse + specular + (gl_Color + 0.25 * gl_SecondaryColor);
-    
-    float shadow = 1.0;
-    vec4 shadowCoordinateWdivide = shadowcoord / shadowcoord.w;
-    shadowCoordinateWdivide.z += 0.0005;
-    float distanceFromLight = texture2D(shadowTexture, shadowCoordinateWdivide.st).z;
-    if (shadowcoord.w > 0.0)
-        shadow = distanceFromLight < shadowCoordinateWdivide.z ? 0.5 : 1.0 ;
-    gl_FragColor = vec4(shadow) * gl_FragColor;
-    
     gl_FragColor.a = 1.0;
 }
 
