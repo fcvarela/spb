@@ -41,8 +41,7 @@ void main() {
         // specular component
         vec3 r = -reflect(light, normal);
         vec3 v = normalize(-vvertex.xyz);
-        float NdotHV = clamp(dot(r, v), 0.0, 1.0);
-        specular = gl_LightSource[0].specular * pow(NdotHV, 8.0) * spec;
+        specular = gl_LightSource[0].specular * pow(max(dot(r, v), 0.0), 8.0) * spec;
     }
     
     float height = topo.a * 16384.0 - (4096.0 + 2048.0);
@@ -57,7 +56,7 @@ void main() {
     heights[4] = 1024.0;    shades[4] = vec3( 84,  96,  50);
     heights[5] = 2048.0;    shades[5] = vec3(130, 127,  97);
     heights[6] = 3072.0;    shades[6] = vec3(184, 163, 141);
-    heights[7] = 4096.0;    shades[7] = vec3(1.0, 255, 255);
+    heights[7] = 4096.0;    shades[7] = vec3(255, 255, 255);
     heights[8] = 6144.0;    shades[8] = vec3(128, 255, 255);
     heights[9] = 16384.0;   shades[9] = vec3(  0,   0, 255);
 
