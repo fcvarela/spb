@@ -4,7 +4,9 @@ import threading
 from planet import *
 from node import *
 import subprocess
+from Queue import LifoQueue
 
+generatorQueue = LifoQueue()
 
 def geocentricToCarthesian(lat, lon, alt):
     position = [0., 0., 0.]

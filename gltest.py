@@ -69,7 +69,7 @@ def changeSize(width, height):
     glLoadIdentity()
 
     glViewport(0, 0, width, height)
-    gluPerspective(35.0, ratio, 10000.0, factory.planet.radius * 10.0)
+    gluPerspective(35.0, ratio, 1.0, factory.planet.radius * 10.0)
 
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
@@ -159,11 +159,18 @@ def renderObjects(shader):
     glPopMatrix()
 
 def display():
+    # init one
+    try:
+        (instance, ) = factory.generatorQueue.get_nowait()
+        instance.generateTextures()
+    except:
+        pass
+
     step()
 
     # reset the projection matrix
     ratio = float(factory.width)/float(factory.height)
-    
+
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
     glViewport(0, 0, factory.width, factory.height)

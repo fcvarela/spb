@@ -1,6 +1,7 @@
 import os
 from numpy import array
 import numpy as np
+import math
 
 from OpenGL import *
 from OpenGL.GLU import *
@@ -21,7 +22,7 @@ class TerrainQuadtree:
 
         self.gridSize = 16
         self.gridSizep1 = self.gridSize + 1
-        self.textureSize = 256
+        self.textureSize = 512
 
         self.vertices = np.arange(self.gridSizep1*self.gridSizep1*3, dtype='float32')
         self.texcoords = []
@@ -39,47 +40,76 @@ class TerrainQuadtree:
         self.specularTexture = Texture(self.textureSize)
         self.normalTexture = Texture(self.textureSize)
 
-        self.generateTextures()
+        self.ready = False
+
+        factory.generatorQueue.put((self, ))
 
     def generateTextures(self):
         degreesPerVertex = 1./self.textureSize
         
-        south = self.baselat
-        north = self.baselat+self.span+(self.span*degreesPerVertex)
-        west = self.baselon
-        east = self.baselon+self.span+(self.span*degreesPerVertex)
+        baselat = self.baselat
+        latspan = self.span+(self.span*degreesPerVertex)
+        baselon = self.baselon
+        lonspan = self.span+(self.span*degreesPerVertex)
 
         glViewport(0, 0, self.textureSize, self.textureSize)
 
         glMatrixMode(GL_PROJECTION)
+        glPolygonMode(GL_FRONT, GL_FILL)
         glLoadIdentity()
-        glOrtho(-self.textureSize/2.0, self.textureSize/2.0, -self.textureSize/2.0, self.textureSize/2.0, 1, 20)
+        glOrtho(0, self.textureSize, 0, self.textureSize, 0, 1)
         glMatrixMode(GL_MODELVIEW)
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         glLoadIdentity()
         glTranslated(0, 0, -1)
 
         # use the generator shader
         shader = ShaderProgram('generator');
         shader.attach()
+        d2r = math.pi/180.0
+        glUniform1f(GL.glGetUniformLocation(shader.shader, 'baselat'), baselat*d2r)
+        glUniform1f(GL.glGetUniformLocation(shader.shader, 'baselon'), baselon*d2r)
+        glUniform1f(GL.glGetUniformLocation(shader.shader, 'latspan'), latspan*d2r)
+        glUniform1f(GL.glGetUniformLocation(shader.shader, 'lonspan'), lonspan*d2r)
 
         glBegin(GL_QUADS)
-        glTexCoord2d(0, 0)
+        glTexCoord2f(0., 0.)
         glVertex3f(0., 0., 0.)
-        glTexCoord2d(1, 0)
-        glVertex3f(self.textureSize/2., 0., 0.)
-        glTexCoord2d(1, 1)
-        glVertex3f(self.textureSize/2.,self.textureSize/2., 0.)
-        glTexCoord2d(0, 1)
-        glVertex3f(0., self.textureSize/2., 0.)
+        glTexCoord2f(1., 0.)
+        glVertex3f(self.textureSize, 0., 0.)
+        glTexCoord2f(1., 1.)
+        glVertex3f(self.textureSize, self.textureSize, 0.)
+        glTexCoord2f(0., 1.)
+        glVertex3f(0., self.textureSize, 0.)
         glEnd()
-
-        shader.dettach()
-
         self.topoTexture.bind()
         glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, self.textureSize, self.textureSize)
         self.topoTexture.unbind()
+        shader.dettach()
+
+        shader = ShaderProgram('generatornormals');
+        shader.attach()
+        glUniform1f(GL.glGetUniformLocation(shader.shader, 'baselat'), baselat*d2r)
+        glUniform1f(GL.glGetUniformLocation(shader.shader, 'baselon'), baselon*d2r)
+        glUniform1f(GL.glGetUniformLocation(shader.shader, 'latspan'), latspan*d2r)
+        glUniform1f(GL.glGetUniformLocation(shader.shader, 'lonspan'), lonspan*d2r)
+        glBegin(GL_QUADS)
+        glTexCoord2f(0., 0.)
+        glVertex3f(0., 0., 0.)
+        glTexCoord2f(1., 0.)
+        glVertex3f(self.textureSize, 0., 0.)
+        glTexCoord2f(1., 1.)
+        glVertex3f(self.textureSize, self.textureSize, 0.)
+        glTexCoord2f(0., 1.)
+        glVertex3f(0., self.textureSize, 0.)
+        glEnd()
+        self.normalTexture.bind()
+        glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, self.textureSize, self.textureSize)
+        self.normalTexture.unbind()
+        shader.dettach()
 
         glutSwapBuffers()
+        self.ready = True
 
     def generateVertices(self):
         step = self.span / self.gridSize
@@ -170,8 +200,13 @@ class TerrainQuadtree:
         if self.maxlod > 0 and distance < self.sidelength*1.2*1738140.0:
             # are they ready?
             if len(self.children) > 0:
-                [x.draw(textures) for x in self.children]
-                return
+                readycount = 0
+                for x in range(0, len(self.children)):
+                    if self.children[x].ready == True:
+                        readycount += 1
+                if readycount == len(self.children):
+                    [x.draw(textures) for x in self.children]
+                    return
             else:
                 self.initChildren()
 
