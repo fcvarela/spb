@@ -43,35 +43,8 @@ void main() {
         vec3 v = normalize(-vvertex.xyz);
         specular = gl_LightSource[0].specular * pow(max(dot(r, v), 0.0), 8.0) * spec;
     }
-    
-    float height = topo.a * 16384.0 - (4096.0 + 2048.0);
 
-    vec3 shades[10];
-    float heights[10];
-    float diffs[10];
-    heights[0] = -16384.0;  shades[0] = vec3(  3,  29,  63);
-    heights[1] = -256.0;    shades[1] = vec3(  3,  29,  63);
-    heights[2] = -50.0;     shades[2] = vec3(  7, 106, 127);
-    heights[3] = 0.0;       shades[3] = vec3( 62,  86,  30);
-    heights[4] = 1024.0;    shades[4] = vec3( 84,  96,  50);
-    heights[5] = 2048.0;    shades[5] = vec3(130, 127,  97);
-    heights[6] = 3072.0;    shades[6] = vec3(184, 163, 141);
-    heights[7] = 4096.0;    shades[7] = vec3(255, 255, 255);
-    heights[8] = 6144.0;    shades[8] = vec3(128, 255, 255);
-    heights[9] = 16384.0;   shades[9] = vec3(  0,   0, 255);
-
-    vec4 shade;
-    float scale = 0.0;
-    float coeff = 0.0;
-
-    for (int i=0; i<9; i++) {
-        if (height > heights[i] && height <= heights[i+1]) {
-            scale = smoothstep(heights[i], heights[i+1], height);
-            shade = vec4(mix(shades[i], shades[i+1], scale), 1.0)/255.0;
-        }
-    }
-
-    gl_FragColor = shade * diffuse + specular + (gl_Color + 0.25 * gl_SecondaryColor);
+    gl_FragColor = vec4(topo.rgb, 1.0);// * diffuse + specular + (gl_Color + 0.25 * gl_SecondaryColor);
     gl_FragColor.a = 1.0;
 }
 

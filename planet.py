@@ -29,7 +29,7 @@ class Planet:
             if i > 3:
                 baselat = -90.
             
-            qt = TerrainQuadtree(parent=None, maxlod=self.maxlod, index=i+1, baselat=baselat, baselon=baselon, span=degreespan, seed=self.generator_seed())
+            qt = TerrainQuadtree(parent=None, maxlod=self.maxlod, index=i+1, baselat=baselat, baselon=baselon, span=degreespan)
             self.quadtrees.append(qt)
 
     def draw(self, shader):
@@ -68,14 +68,4 @@ class Planet:
         glutSolidSphere(self.atmosphere_radius, 100, 100)
         GL.glFrontFace(GL.GL_CCW)
         self.atmosphereshader.dettach()
-
-    def generator_seed(self):
-        # assemble all options into cli str
-        options = {}
-        for item in self.parser.items('planet'):
-            options[item[0]] = item[1]
-        for item in self.parser.items('terrain'):
-            options[item[0]] = item[1]
-        for item in self.parser.items('cache'):
-            options[item[0]] = item[1]
-        return options
+        

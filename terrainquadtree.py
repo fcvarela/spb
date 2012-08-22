@@ -8,16 +8,16 @@ from OpenGL.GLUT import *
 
 import factory
 from texture import *
+from shaderprogram import *
 
 class TerrainQuadtree:
-    def __init__(self, parent, maxlod, index, baselat, baselon, span, seed):
+    def __init__(self, parent, maxlod, index, baselat, baselon, span):
         self.parent = parent
         self.maxlod = maxlod
         self.baselat = baselat
         self.baselon = baselon
         self.index = index
         self.span = span
-        self.seed = seed
 
         self.gridSize = 16
         self.gridSizep1 = self.gridSize + 1
@@ -34,55 +34,52 @@ class TerrainQuadtree:
 
         # thread this later
         self.generateVertices()
-        self.ready = False
 
-        self.files = [\
-            '%s/%s-topo.raw' % (self.seed['cachedir'], self.index),
-            '%s/%s-specular.bmp' % (self.seed['cachedir'], self.index),
-            '%s/%s-normal.bmp' % (self.seed['cachedir'], self.index)]
-
-        self.topoTexture = None
-        self.specularTexture = None
-        self.normalTexture = None
+        self.topoTexture = Texture(self.textureSize)
+        self.specularTexture = Texture(self.textureSize)
+        self.normalTexture = Texture(self.textureSize)
 
         self.generateTextures()
 
-    def loadTextures(self):
-        # test just the normal
-        self.topoTexture = Texture(self.files[0])
-        self.specularTexture = Texture(self.files[1])
-        self.normalTexture = Texture(self.files[2])
-
-    def needFiles(self):
-        for file in self.files:
-            if not os.path.exists(file):
-                return True
-
-        self.ready = True
-
     def generateTextures(self):
-        # make sure we need them
-        if not self.needFiles():
-            return
-
         degreesPerVertex = 1./self.textureSize
-
-        extra = {\
-            'width': self.textureSize,
-            'height': self.textureSize,
-            'south': self.baselat,
-            'north': self.baselat+self.span+(self.span*degreesPerVertex),
-            'west': self.baselon,
-            'east': self.baselon+self.span+(self.span*degreesPerVertex),
-            'outfile': self.index}
-
-        command = './gen '
-        for k in self.seed.keys():
-            command = "%s --%s %s" % (command, k, self.seed[k])
-        for k in extra.keys():
-            command = "%s --%s %s" % (command, k, extra[k])
         
-        factory.generatorQueue.put((command, self))
+        south = self.baselat
+        north = self.baselat+self.span+(self.span*degreesPerVertex)
+        west = self.baselon
+        east = self.baselon+self.span+(self.span*degreesPerVertex)
+
+        glViewport(0, 0, self.textureSize, self.textureSize)
+
+        glMatrixMode(GL_PROJECTION)
+        glLoadIdentity()
+        glOrtho(-self.textureSize/2.0, self.textureSize/2.0, -self.textureSize/2.0, self.textureSize/2.0, 1, 20)
+        glMatrixMode(GL_MODELVIEW)
+        glLoadIdentity()
+        glTranslated(0, 0, -1)
+
+        # use the generator shader
+        shader = ShaderProgram('generator');
+        shader.attach()
+
+        glBegin(GL_QUADS)
+        glTexCoord2d(0, 0)
+        glVertex3f(0., 0., 0.)
+        glTexCoord2d(1, 0)
+        glVertex3f(self.textureSize/2., 0., 0.)
+        glTexCoord2d(1, 1)
+        glVertex3f(self.textureSize/2.,self.textureSize/2., 0.)
+        glTexCoord2d(0, 1)
+        glVertex3f(0., self.textureSize/2., 0.)
+        glEnd()
+
+        shader.dettach()
+
+        self.topoTexture.bind()
+        glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, self.textureSize, self.textureSize)
+        self.topoTexture.unbind()
+
+        glutSwapBuffers()
 
     def generateVertices(self):
         step = self.span / self.gridSize
@@ -162,12 +159,6 @@ class TerrainQuadtree:
             self.texcoords = None
 
     def draw(self, textures):
-        if self.ready == False:
-            return
-
-        if self.ready == True and self.normalTexture is None:
-            self.loadTextures()
-
         # do we need to draw our children
         d1 = np.linalg.norm(factory.camera.position - self.center*1738140.0)
         d2 = np.linalg.norm(factory.camera.position - self.topleft*1738140.0)
@@ -179,14 +170,8 @@ class TerrainQuadtree:
         if self.maxlod > 0 and distance < self.sidelength*1.2*1738140.0:
             # are they ready?
             if len(self.children) > 0:
-                readycount = 0
-                for x in self.children:
-                    if x.ready == True:
-                        readycount += 1
-                # got children. all ready? draw then. not? draw self
-                if readycount == 4:
-                    [x.draw(textures) for x in self.children]
-                    return
+                [x.draw(textures) for x in self.children]
+                return
             else:
                 self.initChildren()
 
@@ -209,23 +194,23 @@ class TerrainQuadtree:
         GL.glDrawElements(GL.GL_TRIANGLE_STRIP, indexcount, GL.GL_UNSIGNED_SHORT, None)
 
     def initChildren(self):
-        qt = TerrainQuadtree(self, self.maxlod-1, self.index*10+1, self.baselat, self.baselon, self.span/2., self.seed)
+        qt = TerrainQuadtree(self, self.maxlod-1, self.index*10+1, self.baselat, self.baselon, self.span/2.)
 
         qt.texcoordBufferObject = self.texcoordBufferObject
         qt.indexBufferObject = self.indexBufferObject
         self.children.append(qt)
 
-        qt = TerrainQuadtree(self, self.maxlod-1, self.index*10+2, self.baselat, self.baselon+self.span/2., self.span/2., self.seed)
+        qt = TerrainQuadtree(self, self.maxlod-1, self.index*10+2, self.baselat, self.baselon+self.span/2., self.span/2.)
         qt.texcoordBufferObject = self.texcoordBufferObject
         qt.indexBufferObject = self.indexBufferObject
         self.children.append(qt)
 
-        qt = TerrainQuadtree(self, self.maxlod-1, self.index*10+3, self.baselat+self.span/2., self.baselon, self.span/2., self.seed)
+        qt = TerrainQuadtree(self, self.maxlod-1, self.index*10+3, self.baselat+self.span/2., self.baselon, self.span/2.)
         qt.texcoordBufferObject = self.texcoordBufferObject
         qt.indexBufferObject = self.indexBufferObject
         self.children.append(qt)
 
-        qt = TerrainQuadtree(self, self.maxlod-1, self.index*10+4, self.baselat+self.span/2., self.baselon+self.span/2., self.span/2., self.seed)
+        qt = TerrainQuadtree(self, self.maxlod-1, self.index*10+4, self.baselat+self.span/2., self.baselon+self.span/2., self.span/2.)
         qt.texcoordBufferObject = self.texcoordBufferObject
         qt.indexBufferObject = self.indexBufferObject
         self.children.append(qt)

@@ -40,8 +40,9 @@ void main() {
     float radius = 1738140.0;
     
     vec4 heightmap = texture2D(topoTexture, gl_TexCoord[0].st);
-    float height = heightmap.a * 32768.0 - 3000.0;
+    float height = 0.0;//heightmap.a * 16384.0 - 8192.0;
     vertex = vec4(normalize(gl_Vertex.xyz) * (height + radius), 1.0);
+
     vvertex = gl_ModelViewMatrix * vertex;
     gl_Position = gl_ModelViewProjectionMatrix * vertex;
 

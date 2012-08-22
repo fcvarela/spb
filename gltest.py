@@ -9,7 +9,6 @@ from planet import *
 import factory
 import sys
 
-depth_texture = None
 sunlon = 0.
 
 def main():
@@ -24,7 +23,6 @@ def main():
     glutReshapeFunc(changeSize)
     
     glutMouseFunc(mouseclickhandler)
-    #glutPassiveMotionFunc(passivemotionhandler)
     
     glutKeyboardFunc(keydownhandler)
     glutKeyboardUpFunc(keyuphandler)
@@ -35,21 +33,6 @@ def main():
     initialize()
 
     glutMainLoop()
-
-def generateShadowFBO(width, height):
-    depth_texture = glGenTextures(1)
-    glBindTexture(GL_TEXTURE_2D, depth_texture)
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP)
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP)
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, factory.width, factory.height, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, None)
-
-    glBindTexture(GL_TEXTURE_2D, 0)
-
-    return depth_texture
 
 def initialize():
     glDepthFunc(GL_LEQUAL)
@@ -77,14 +60,10 @@ def changeSize(width, height):
     if height == 0:
         height = 1
 
-    print "Setting factory"
     factory.width = width
     factory.height = height
 
     ratio = float(width)/float(height)
-
-    global depth_texture
-    depth_texture = generateShadowFBO(width, height)
 
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
@@ -174,23 +153,7 @@ def toggleWireframe():
         glPolygonMode(GL_FRONT, GL_LINE)
         factory.wireframe = True
 
-def RenderShadowCompareAfter():
-    'reset gl params after comparison'
-    glDisable(GL_TEXTURE_2D)
-
-    glDisable(GL_TEXTURE_GEN_S)
-    glDisable(GL_TEXTURE_GEN_T)
-    glDisable(GL_TEXTURE_GEN_R)
-    glDisable(GL_TEXTURE_GEN_Q)
-
-    glDisable(GL_ALPHA_TEST)
-
 def renderObjects(shader):
-    glPushMatrix()
-    glTranslatef(0., 0., factory.planet.radius)
-    #glutSolidSphere(factory.planet.radius, 100, 100)
-    glPopMatrix()
-
     glPushMatrix()
     factory.planet.draw(shader)
     glPopMatrix()
@@ -198,6 +161,16 @@ def renderObjects(shader):
 def display():
     step()
 
+    # reset the projection matrix
+    ratio = float(factory.width)/float(factory.height)
+    
+    glMatrixMode(GL_PROJECTION)
+    glLoadIdentity()
+    glViewport(0, 0, factory.width, factory.height)
+    gluPerspective(35.0, ratio, 10000.0, factory.planet.radius * 10.0)
+
+    glMatrixMode(GL_MODELVIEW)
+    glLoadIdentity()
     # Render from camera
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity()
