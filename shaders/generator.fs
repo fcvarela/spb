@@ -165,7 +165,7 @@ float ridgedmf(vec4 p/*, float H, float lacunarity, int octaves, float offset, i
   float lacunarity = 1.5;
   int octaves = 40;
   float offset = 0.80;
-  float sharpness = 3.8;
+  float sharpness = 4.0;
   float threshold = 40.0;
   float Kt = 0.1;
 

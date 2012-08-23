@@ -20,7 +20,7 @@ class TerrainQuadtree:
         self.index = index
         self.span = span
 
-        self.gridSize = 8
+        self.gridSize = 16
         self.gridSizep1 = self.gridSize + 1
         self.textureSize = 256
 
