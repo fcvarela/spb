@@ -29,7 +29,5 @@ planet = None
 wireframe = False
 
 keys = []
-specialkeys = []
-for i in range(256):
+for i in range(512):
     keys.append(False)
-    specialkeys.append(False)

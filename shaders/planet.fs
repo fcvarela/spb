@@ -2,21 +2,19 @@ varying vec4 vertex;
 varying vec4 vvertex;
 
 uniform sampler2D normalTexture;
-uniform sampler2D specularTexture;
 uniform sampler2D topoTexture;
-uniform sampler2D shadowTexture;
 
 float lookup( vec2 offSet);
 mat3 fromToRotation(vec3 from, vec3 to);
 
 void main() {
     // fetch base color
-    vec4 spec = texture2D(specularTexture, gl_TexCoord[0].st);
     vec4 topo = texture2D(topoTexture, gl_TexCoord[0].st);
     
     // fetch normals and rotate
     vec3 normal = texture2D(normalTexture, gl_TexCoord[0].st).xyz;
     normal = (normal * 2.0) - 1.0;
+
     mat3 rot_matrix = fromToRotation(vec3(0.0, 0.0, 1.0), normalize(vertex.xyz));
     normal = normalize(normal * rot_matrix);
     normal = normalize(gl_NormalMatrix * normal);
@@ -41,10 +39,14 @@ void main() {
         // specular component
         vec3 r = -reflect(light, normal);
         vec3 v = normalize(-vvertex.xyz);
+
+        float spec = 0.0;
+        if (topo.a*16384.0-8192.0 < 0.0 || topo.a*16384.0-8192.0 > 9000.0)
+            spec = 1.0;
         specular = gl_LightSource[0].specular * pow(max(dot(r, v), 0.0), 8.0) * spec;
     }
 
-    gl_FragColor = vec4(topo.rgb, 1.0) * diffuse + /*specular +*/ (gl_Color + 0.25 * gl_SecondaryColor);
+    gl_FragColor = vec4(topo.rgb, 1.0) * diffuse + specular + (gl_Color + 0.25 * gl_SecondaryColor);
     gl_FragColor.a = 1.0;
 }
 

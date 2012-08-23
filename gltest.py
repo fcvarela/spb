@@ -1,38 +1,64 @@
 #!/usr/bin/env python
 from OpenGL.GL import *
 from OpenGL.GLU import *
-from OpenGL.GLUT import *
+from pygame.locals import *
 
-import threading
+import pygame, math, threading, sys
+import factory
 
 from planet import *
-import factory
-import sys
 
+framenumber = 0
 sunlon = 0.
+screen = None
+stop = False
 
 def main():
-    glutInit(sys.argv)
+    global screen
 
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH)
-    glutInitWindowSize(800, 600)
-    glutFullScreen()
-    glutCreateWindow('spb')
-    glutDisplayFunc(display)
-    glutIdleFunc(display)
-    glutReshapeFunc(changeSize)
-    
-    glutMouseFunc(mouseclickhandler)
-    
-    glutKeyboardFunc(keydownhandler)
-    glutKeyboardUpFunc(keyuphandler)
+    pygame.init()
 
-    glutSpecialFunc(specialkeydownhandler)
-    glutSpecialUpFunc(specialkeyuphandler)
+    factory.width = 800
+    factory.height = 600
+
+    size = (factory.width, factory.height)
+    gl_flags = OPENGL|DOUBLEBUF|HWSURFACE
+
+    screen = pygame.display.set_mode(size, gl_flags)
 
     initialize()
+    while not stop:
+        # handle events
+        handle_events(pygame.event.get())
 
-    glutMainLoop()
+        # process stuff
+        step()
+
+        # render
+        display()
+
+        # switch buffers
+        pygame.display.flip()
+
+        # ask gl to draw
+        glFinish()
+
+def handle_events(events):
+    global stop
+
+    for event in events:
+        if event.type == QUIT:
+            stop = True
+
+        if event.type == KEYDOWN:
+            factory.keys[event.key] = True
+            if event.key == K_ESCAPE:
+                stop = True
+                
+            if event.key == K_l:
+                toggleWireframe()
+        if event.type == KEYUP:
+            factory.keys[event.key] = False
 
 def initialize():
     glDepthFunc(GL_LEQUAL)
@@ -69,75 +95,56 @@ def changeSize(width, height):
     glLoadIdentity()
 
     glViewport(0, 0, width, height)
-    gluPerspective(35.0, ratio, 1.0, factory.planet.radius * 10.0)
+    gluPerspective(35.0, ratio, 1.0, factory.planet.radius * 4.0)
 
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
 
-def keydownhandler(*args):
-    factory.keys[ord(args[0])] = True
-
-def keyuphandler(*args):
-    factory.keys[ord(args[0])] = False
-
-    if args[0] is 'l':
-        toggleWireframe()
-
-def specialkeydownhandler(*args):
-    factory.specialkeys[args[0]] = True
-
-def specialkeyuphandler(*args):
-    factory.specialkeys[args[0]] = False
-    
-def mouseclickhandler(button, state, x, y):
-    global roll, pitch, yaw
-
 def step():
-    time = glutGet(GLUT_ELAPSED_TIME) / 1000.
+    time = pygame.time.get_ticks()/1000.0
     factory.dt = time - factory.lastframe
     factory.lastframe = time
     
     keys = factory.keys
-    specialkeys = factory.specialkeys
     camera = factory.camera
     dt = factory.dt
 
     dist = (np.linalg.norm(camera.position)-factory.planet.radius)/2.0
 
-    if keys[ord('w')] == True:
+    if keys[K_w] == True:
         camera.move((0., 0., -1.*dt*dist))
 
-    if keys[ord('s')] == True:
+    if keys[K_s] == True:
         camera.move((0., 0., 1.*dt*dist))
 
-    if keys[ord('a')] == True:
+    if keys[K_a] == True:
         camera.move((-1.*dt*dist, 0., 0.))
 
-    if keys[ord('d')] == True:
+    if keys[K_d] == True:
         camera.move((1.*dt*dist, 0., 0.))
 
-    if keys[ord('q')] == True:
+    if keys[K_q] == True:
         camera.move((0., 1.*dt*dist, 0.))
 
-    if keys[ord('z')] == True:
+    if keys[K_z] == True:
         camera.move((0., -1.*dt*dist, 0.))
 
-    if keys[ord('x')] == True:
+    if keys[K_x] == True:
         camera.rotate((0., 0., 1.), 25.*dt)
 
-    if keys[ord('c')] == True:
+    if keys[K_c] == True:
         camera.rotate((0., 0., 1.), -25.*dt)
 
-    if specialkeys[GLUT_KEY_LEFT] == True:
+    if keys[K_LEFT] == True:
         camera.rotate((0., 1., 0.), 25.*dt)
 
-    if specialkeys[GLUT_KEY_RIGHT] == True:
+    if keys[K_RIGHT] == True:
         camera.rotate((0., 1., 0.), -25.*dt)
 
-    if specialkeys[GLUT_KEY_UP] == True:
+    if keys[K_UP] == True:
         camera.rotate((1., 0., 0.), -25.*dt)
 
-    if specialkeys[GLUT_KEY_DOWN] == True:
+    if keys[K_DOWN] == True:
         camera.rotate((1., 0., 0.), 25.*dt)
 
     #global sunlon
@@ -159,22 +166,28 @@ def renderObjects(shader):
     glPopMatrix()
 
 def display():
+    global framenumber
+
     # init one
-    try:
-        (instance, ) = factory.generatorQueue.get_nowait()
-        instance.generateTextures()
-    except:
-        pass
+    framenumber += 1
+    if framenumber % 1 == 0:
+        try:
+            (instance, ) = factory.generatorQueue.get_nowait()
+            instance.generateTextures()
+        except:
+            pass
+
+        framenumber = framenumber % 1
 
     step()
-
+    
     # reset the projection matrix
     ratio = float(factory.width)/float(factory.height)
 
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
     glViewport(0, 0, factory.width, factory.height)
-    gluPerspective(35.0, ratio, 10000.0, factory.planet.radius * 10.0)
+    gluPerspective(35.0, ratio, 1.0, factory.planet.radius * 4.0)
 
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
