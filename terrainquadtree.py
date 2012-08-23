@@ -172,6 +172,7 @@ class TerrainQuadtree:
             self.indexes = None
 
         if self.texcoordBufferObject is None:
+            step = self.textureSize/self.gridSizep1
             for y in range(0, self.gridSizep1):
                 for x in range(0, self.gridSizep1):
                     cx = float(x) / float(self.gridSize)

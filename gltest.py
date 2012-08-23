@@ -25,8 +25,8 @@ def main():
     gl_flags = OPENGL|DOUBLEBUF|HWSURFACE
 
     screen = pygame.display.set_mode(size, gl_flags)
-
     initialize()
+    
     while not stop:
         # handle events
         handle_events(pygame.event.get())
@@ -179,8 +179,6 @@ def display():
 
         framenumber = framenumber % 1
 
-    step()
-    
     # reset the projection matrix
     ratio = float(factory.width)/float(factory.height)
 
@@ -199,8 +197,6 @@ def display():
     glTranslatef(-factory.camera.position[0], -factory.camera.position[1], -factory.camera.position[2])
 
     renderObjects(True)
-
-    glutSwapBuffers()
 
 if __name__ == '__main__':
     main()

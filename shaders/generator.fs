@@ -1,3 +1,5 @@
+#version 150
+
 vec2 ds_add (vec2 dsa, vec2 dsb) {
 vec2 dsc;
 float t1, t2, e;
