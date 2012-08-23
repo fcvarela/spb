@@ -1,5 +1,3 @@
-#version 150
-
 vec2 ds_add (vec2 dsa, vec2 dsb) {
 vec2 dsc;
 float t1, t2, e;
@@ -165,9 +163,9 @@ float ridgedmf(vec4 p/*, float H, float lacunarity, int octaves, float offset, i
 {
   float H = 0.8;
   float lacunarity = 1.5;
-  int octaves = 80;
+  int octaves = 40;
   float offset = 0.80;
-  float sharpness = 4.0;
+  float sharpness = 3.8;
   float threshold = 40.0;
   float Kt = 0.1;
 
