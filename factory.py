@@ -18,7 +18,6 @@ def geocentricToCarthesian(lat, lon, alt):
     return position
 
 camera = Node()
-camera.nodes = {'yaw': Node()}
 
 sun = Node()
 

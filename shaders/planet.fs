@@ -5,6 +5,8 @@ uniform sampler2D normalTexture;
 uniform sampler2D topoTexture;
 uniform sampler2D colorTexture;
 
+uniform float weight;
+
 mat3 fromToRotation(vec3 from, vec3 to);
 
 void main() {

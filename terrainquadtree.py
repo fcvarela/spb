@@ -35,6 +35,10 @@ class TerrainQuadtree:
         self.texcoordBufferObject = None
         self.indexBufferObject = None
 
+        # morphing
+        self.distance = 0.0
+        self.deltadist = 0.0
+
         # framebuffer
         self.framebuffer = None
 
@@ -226,7 +230,7 @@ class TerrainQuadtree:
             # release local copy
             self.texcoords = None
 
-    def draw(self, textures):
+    def draw(self, textures, weight = 0.0):
         if not self.ready:
             return
         # do we need to draw our children
@@ -236,8 +240,9 @@ class TerrainQuadtree:
         d4 = np.linalg.norm(factory.camera.position - self.botleft*1738140.0)
         d5 = np.linalg.norm(factory.camera.position - self.botright*1738140.0)
 
-        distance = min(d1, min(d2, min(d3, min(d4, d5))))
-        if self.maxlod > 0 and distance < self.sidelength*1.2*1738140.0:
+        self.distance = min(d1, min(d2, min(d3, min(d4, d5))))
+
+        if self.maxlod > 0 and self.distance < self.sidelength*1.4*1738140.0:
             # are they ready?
             if len(self.children) > 0:
                 readycount = 0
@@ -245,10 +250,31 @@ class TerrainQuadtree:
                     if self.children[x].ready == True:
                         readycount += 1
                 if readycount == len(self.children):
-                    [x.draw(textures) for x in self.children]
+                    # we can and need to draw our children
+                    # two choices. either exclusively or ourself morphed
+
+                    if self.distance > self.sidelength*1.2*1738140.0:
+                        # morphed
+                        # if we're up until 0.8, draw our vertices morphed with the childs
+                        # proportion is 0.8 to 1.2  equals 0 to 1
+                        # self weight is 1-factor
+                        factor = (self.distance - self.sidelength*1.2*1738140.0) / (self.sidelength*1.4*1738140.0-self.sidelength*1.2*1738140.0)
+                        if factor > 1.0:
+                            factor = 1.0
+                        factor = 1.0 - (factor * factor * (3.0 - 2.0 * factor))
+                        [x.draw(textures, factor) for x in self.children]
+                    else:
+                        [x.draw(textures) for x in self.children]
                     return
             else:
                 self.initChildren()
+
+        if weight > 0.0:
+            # we need to attach the parent heightmap (for now)
+            self.parent.normalTexture.bind(GL_TEXTURE3)
+            self.parent.colorTexture.bind(GL_TEXTURE4)
+            self.parent.topoTexture.bind(GL_TEXTURE5)
+            glUniform1f(glGetUniformLocation(factory.planet.shader.shader, 'weight'), weight)
 
         GL.glEnableClientState(GL.GL_VERTEX_ARRAY)
         GL.glBindBuffer(GL.GL_ARRAY_BUFFER, self.positionBufferObject)

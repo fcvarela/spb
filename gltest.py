@@ -32,6 +32,9 @@ def main():
     else:
         gl_flags = FULLSCREEN|OPENGL|DOUBLEBUF|HWSURFACE
 
+    pygame.display.gl_set_attribute(pygame.locals.GL_MULTISAMPLEBUFFERS, 1)
+    pygame.display.gl_set_attribute(pygame.locals.GL_MULTISAMPLESAMPLES, 1)
+
     size = (factory.width, factory.height)
     screen = pygame.display.set_mode(size, gl_flags)
     initialize()
@@ -193,7 +196,6 @@ def display():
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity()
     glMultMatrixd(factory.camera.rotation.gl_matrix())
-    glMultMatrixd(factory.camera.nodes['yaw'].rotation.gl_matrix())
     glTranslatef(-factory.camera.position[0], -factory.camera.position[1], -factory.camera.position[2])
 
     global sunlon

@@ -1,4 +1,5 @@
 from OpenGL import *
+from OpenGL import *
 import math
 import numpy as np
 
@@ -42,18 +43,22 @@ class Planet:
 
         localshader.attach()
 
-        GL.glUniform1i(GL.glGetUniformLocation(localshader.shader, 'normalTexture'), 0)
-        GL.glUniform1i(GL.glGetUniformLocation(localshader.shader, 'colorTexture'), 1)
-        GL.glUniform1i(GL.glGetUniformLocation(localshader.shader, 'topoTexture'), 2)
-        GL.glUniform1i(GL.glGetUniformLocation(localshader.shader, 'justTopoAndNormals'), not int(shader))
+        # tile textures
+        glUniform1i(glGetUniformLocation(localshader.shader, 'normalTexture'), 0)
+        glUniform1i(glGetUniformLocation(localshader.shader, 'colorTexture'), 1)
+        glUniform1i(glGetUniformLocation(localshader.shader, 'topoTexture'), 2)
+        
+        # tile parent textures
+        glUniform1i(glGetUniformLocation(localshader.shader, 'pormalTexture'), 3)
+        glUniform1i(glGetUniformLocation(localshader.shader, 'pcolorTexture'), 4)
+        glUniform1i(glGetUniformLocation(localshader.shader, 'ptopoTexture'), 5)
             
         cameraPos = np.array(factory.camera.position)/self.radius
         lightPos = np.array(factory.sun.position)/np.linalg.norm(factory.sun.position)
-        GL.glUniform3f(GL.glGetUniformLocation(localshader.shader, 'v3CameraPos'), cameraPos[0], cameraPos[1], cameraPos[2])
-        GL.glUniform3f(GL.glGetUniformLocation(localshader.shader, 'v3LightPos'), lightPos[0], lightPos[1], lightPos[2])
+        glUniform3f(glGetUniformLocation(localshader.shader, 'v3CameraPos'), cameraPos[0], cameraPos[1], cameraPos[2])
+        glUniform3f(glGetUniformLocation(localshader.shader, 'v3LightPos'), lightPos[0], lightPos[1], lightPos[2])
 
-        #[x.draw(shader) for x in self.quadtrees]
-        self.quadtrees[2].draw(shader)
+        [x.draw(shader) for x in self.quadtrees]
 
         localshader.dettach()
 
@@ -62,11 +67,11 @@ class Planet:
 
         cameraPos = np.array(factory.camera.position)/self.radius
         lightPos = np.array(factory.sun.position)/np.linalg.norm(factory.sun.position)
-        GL.glUniform3f(GL.glGetUniformLocation(self.atmosphereshader.shader, 'v3CameraPos'), cameraPos[0], cameraPos[1], cameraPos[2])
-        GL.glUniform3f(GL.glGetUniformLocation(self.atmosphereshader.shader, 'v3LightPos'), lightPos[0], lightPos[1], lightPos[2])
+        glUniform3f(glGetUniformLocation(self.atmosphereshader.shader, 'v3CameraPos'), cameraPos[0], cameraPos[1], cameraPos[2])
+        glUniform3f(glGetUniformLocation(self.atmosphereshader.shader, 'v3LightPos'), lightPos[0], lightPos[1], lightPos[2])
 
-        GL.glFrontFace(GL.GL_CW)
+        glFrontFace(GL_CW)
         glutSolidSphere(self.atmosphere_radius, 100, 100)
-        GL.glFrontFace(GL.GL_CCW)
+        glFrontFace(GL_CCW)
         self.atmosphereshader.dettach()
         
