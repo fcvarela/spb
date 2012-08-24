@@ -78,7 +78,7 @@ def initialize():
 
     # got gl state, spawn factory singleton
     factory.planet = Planet('planets/planet1.conf')
-    factory.lastframe = glutGet(GLUT_ELAPSED_TIME)/1000.
+    factory.lastframe = pygame.time.get_ticks()/1000.0
 
     factory.camera.position = [0.0, 0.0, factory.planet.radius*2.0]
     factory.sun.position = [0.0, 0.0, factory.planet.radius*8.0]
@@ -148,11 +148,6 @@ def step():
     if keys[K_DOWN] == True:
         camera.rotate((1., 0., 0.), 25.*dt)
 
-    #global sunlon
-    #sunlon += factory.dt*10.
-    #factory.sun.position = factory.geocentricToCarthesian(0., sunlon, factory.planet.radius*8.0)
-    glLightfv(GL_LIGHT0, GL_POSITION, factory.sun.position);
-
 def toggleWireframe():
     if factory.wireframe is True:
         glPolygonMode(GL_FRONT, GL_FILL)
@@ -196,6 +191,11 @@ def display():
     glMultMatrixd(factory.camera.rotation.gl_matrix())
     glMultMatrixd(factory.camera.nodes['yaw'].rotation.gl_matrix())
     glTranslatef(-factory.camera.position[0], -factory.camera.position[1], -factory.camera.position[2])
+
+    global sunlon
+    sunlon += factory.dt*10.
+    factory.sun.position = factory.geocentricToCarthesian(0., sunlon, factory.planet.radius*8.0)
+    glLightfv(GL_LIGHT0, GL_POSITION, factory.sun.position);
 
     renderObjects(True)
 
