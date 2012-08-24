@@ -20,9 +20,9 @@ class TerrainQuadtree:
         self.index = index
         self.span = span
 
-        self.gridSize = 16
+        self.gridSize = 8
         self.gridSizep1 = self.gridSize + 1
-        self.textureSize = 256
+        self.textureSize = 512
 
         self.vertices = np.arange(self.gridSizep1*self.gridSizep1*3, dtype='float32')
         self.texcoords = []
