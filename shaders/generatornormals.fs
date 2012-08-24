@@ -13,10 +13,15 @@ void main() {
 
   vec2 u = vec2(gl_TexCoord[0].s, gl_TexCoord[0].t + step);
   vec2 r = vec2(gl_TexCoord[0].s + step, gl_TexCoord[0].t + step);
+  vec2 c = gl_TexCoord[0].st;
 
-  float nu = (texture2D(topoTexture, u).a*16384.0-8192.0)*bumpheight;
-  float nr = (texture2D(topoTexture, r).a*16384.0-8192.0)*bumpheight;
-  float nc = (texture2D(topoTexture, gl_TexCoord[0].st).a*16384.0-8192.0)*bumpheight;
+  float heightu = texture2D(topoTexture, u).a*256.0*256.0+texture2D(topoTexture, u).r*256.0-16384.0;
+  float heightr = texture2D(topoTexture, r).a*256.0*256.0+texture2D(topoTexture, r).r*256.0-16384.0;
+  float heightc = texture2D(topoTexture, c).a*256.0*256.0+texture2D(topoTexture, c).r*256.0-16384.0;
+  
+  float nu = heightu*bumpheight;
+  float nr = heightr*bumpheight;
+  float nc = heightc*bumpheight;
 
   float ncr = (nc - nr);
   float ncu = (nc - nu);

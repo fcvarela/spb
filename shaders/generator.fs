@@ -251,40 +251,10 @@ float ridgedmf(vec4 p/*, float H, float lacunarity, int octaves, float offset, i
   return vec4(coords, 1.0);
 }
 
-vec4 getColor(float height) {
-  vec3 shades[10];
-  float heights[10];
-  float diffs[10];
-  heights[0] = -16384.0;  shades[0] = vec3(  3,  29,  63);
-  heights[1] = -256.0;    shades[1] = vec3(  3,  29,  63);
-  heights[2] = -50.0;     shades[2] = vec3(  7, 106, 127);
-  heights[3] = 0.0;       shades[3] = vec3( 62,  86,  30);
-  heights[4] = 1024.0;    shades[4] = vec3( 84,  96,  50);
-  heights[5] = 2048.0;    shades[5] = vec3( 62,  86,  30);
-  heights[6] = 6000.0;    shades[6] = vec3(184, 163, 141);
-  heights[7] = 8000.0;    shades[7] = vec3(130, 127,  97);
-  heights[8] = 9000.0;    shades[8] = vec3(255, 255, 255);
-  heights[9] = 16384.0;   shades[9] = vec3(128, 255, 255);
-
-  vec3 shade;
-  float scale = 0.0;
-  float coeff = 0.0;
-  
-  shade = shades[0]/255.0;
-  for (int i=0; i<9; i++) {
-    if (height > heights[i] && height <= heights[i+1]) {
-      scale = smoothstep(heights[i], heights[i+1], height);
-      shade = vec3(mix(shades[i], shades[i+1], scale))/255.0;
-  }
-}
-
-return vec4(shade, 1.0);
-}
 
 void main() {
   // pipeline here [copy from complexplanet]
-  float height = 0.0;
-  height += ridgedmf(coords()*2.0);
-  gl_FragColor.a = height;
-  gl_FragColor.rgb = getColor(height*32768.0-16384.0).rgb;
+  int height = int(ridgedmf(coords()*2.0)*32768.0);
+  gl_FragColor.a = float(height/256) / 256.0;
+  gl_FragColor.r = float(height%256) / 256.0;
 }

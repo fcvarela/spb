@@ -19,11 +19,11 @@ def main():
 
     pygame.init()
 
-    factory.width = 800
-    factory.height = 600
+    factory.width = 1680
+    factory.height = 1050
 
     size = (factory.width, factory.height)
-    gl_flags = OPENGL|DOUBLEBUF|HWSURFACE
+    gl_flags = FULLSCREEN|OPENGL|DOUBLEBUF|HWSURFACE
 
     screen = pygame.display.set_mode(size, gl_flags)
     initialize()
