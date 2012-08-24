@@ -1,4 +1,5 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2.7
+
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from pygame.locals import *
