@@ -256,5 +256,5 @@ void main() {
   // pipeline here [copy from complexplanet]
   int height = int(ridgedmf(coords()*2.0)*32768.0);
   gl_FragColor.a = float(height/256) / 256.0;
-  gl_FragColor.r = float(height%256) / 256.0;
+  gl_FragColor.r = float(mod(float(height),256.0)) / 256.0;
 }

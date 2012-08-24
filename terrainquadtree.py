@@ -10,6 +10,7 @@ from OpenGL.GLUT import *
 import factory
 from texture import *
 from shaderprogram import *
+from framebuffer import *
 
 class TerrainQuadtree:
     def __init__(self, parent, maxlod, index, baselat, baselon, span):
@@ -22,41 +23,52 @@ class TerrainQuadtree:
 
         self.gridSize = 8
         self.gridSizep1 = self.gridSize + 1
-        self.textureSize = 512
+        self.textureSize = 260
 
         self.vertices = np.arange(self.gridSizep1*self.gridSizep1*3, dtype='float32')
         self.texcoords = []
         self.indexes = []
         self.children = []
 
+        # vbo
         self.positionBufferObject = None
         self.texcoordBufferObject = None
         self.indexBufferObject = None
+
+        # framebuffer
+        self.framebuffer = None
 
         # thread this later
         self.generateVertices()
 
         self.topoTexture = Texture(self.textureSize)
-        self.specularTexture = Texture(self.textureSize)
+        self.colorTexture = Texture(self.textureSize)
         self.normalTexture = Texture(self.textureSize)
 
         self.ready = False
         self.generatorShader = ShaderProgram('generator')
         self.generatorShaderN = ShaderProgram('generatornormals')
+        self.generatorShaderC = ShaderProgram('generatorcolor')
 
         factory.generatorQueue.put((self, ))
 
     def generateTextures(self):
-        degreesPerVertex = 1./self.textureSize
+        # we'll fetch an extra pixel on both directions
+        degreesPerVertex = self.span/(self.textureSize-4.0)
         
-        baselat = self.baselat
-        latspan = self.span+(self.span*degreesPerVertex)
-        baselon = self.baselon
-        lonspan = self.span+(self.span*degreesPerVertex)
+        baselat = self.baselat - degreesPerVertex*2.0
+        latspan = self.span + degreesPerVertex*4.0
+        baselon = self.baselon - degreesPerVertex*2.0
+        lonspan = self.span+ degreesPerVertex*4.0
+
+        if self.framebuffer is None:
+            self.framebuffer = Framebuffer()
+
+        # bind framebuffer to our texture
+        self.framebuffer.bind(self.topoTexture.id)
 
         glDisable(GL_DEPTH_TEST)
         glViewport(0, 0, self.textureSize, self.textureSize)
-
         glMatrixMode(GL_PROJECTION)
         glPolygonMode(GL_FRONT, GL_FILL)
         glLoadIdentity()
@@ -82,12 +94,14 @@ class TerrainQuadtree:
         glTexCoord2f(0., 1.)
         glVertex3f(0., self.textureSize, 0.)
         glEnd()
-        self.topoTexture.bind(GL_TEXTURE0)
-        glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, self.textureSize, self.textureSize)
-        self.topoTexture.unbind()
         self.generatorShader.dettach()
 
-        self.generatorShaderN = ShaderProgram('generatornormals');
+        # unbind framebuffer
+        self.framebuffer.unbind()
+
+        # bind the normals framebuffer
+        self.framebuffer.bind(self.normalTexture.id)
+        self.topoTexture.bind(GL_TEXTURE0)
         self.generatorShaderN.attach()
         glUniform1f(GL.glGetUniformLocation(self.generatorShaderN.shader, 'lonspan'), lonspan)
         glUniform1f(GL.glGetUniformLocation(self.generatorShaderN.shader, 'size'), self.textureSize)
@@ -102,10 +116,30 @@ class TerrainQuadtree:
         glTexCoord2f(0., 1.)
         glVertex3f(0., self.textureSize, 0.)
         glEnd()
-        self.normalTexture.bind(GL_TEXTURE1)
-        glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, self.textureSize, self.textureSize)
-        self.normalTexture.unbind()
         self.generatorShaderN.dettach()
+
+        self.framebuffer.unbind()
+
+        # bind the color framebuffer
+        self.framebuffer.bind(self.colorTexture.id)
+        self.topoTexture.bind(GL_TEXTURE0)
+        self.generatorShaderC.attach()
+        glUniform1f(GL.glGetUniformLocation(self.generatorShaderC.shader, 'lonspan'), lonspan)
+        glUniform1f(GL.glGetUniformLocation(self.generatorShaderC.shader, 'size'), self.textureSize)
+        glUniform1i(GL.glGetUniformLocation(self.generatorShaderC.shader, 'topoTexture'), 0)
+        glBegin(GL_QUADS)
+        glTexCoord2f(0., 0.)
+        glVertex3f(0., 0., 0.)
+        glTexCoord2f(1., 0.)
+        glVertex3f(self.textureSize, 0., 0.)
+        glTexCoord2f(1., 1.)
+        glVertex3f(self.textureSize, self.textureSize, 0.)
+        glTexCoord2f(0., 1.)
+        glVertex3f(0., self.textureSize, 0.)
+        glEnd()
+        self.generatorShaderC.dettach()
+
+        self.framebuffer.unbind()
 
         glEnable(GL_DEPTH_TEST)
         self.ready = True
@@ -172,12 +206,16 @@ class TerrainQuadtree:
             self.indexes = None
 
         if self.texcoordBufferObject is None:
-            step = self.textureSize/self.gridSizep1
             for y in range(0, self.gridSizep1):
                 for x in range(0, self.gridSizep1):
                     cx = float(x) / float(self.gridSize)
                     cy = float(self.gridSize-y) / float(self.gridSize)
-                    self.texcoords.append([cx, cy])
+
+                    # coords are 0,1. map to texelstep,1-texelstep
+                    texelstep = 1.0/self.textureSize
+                    steprange = 1.0 - texelstep*4.0
+
+                    self.texcoords.append([texelstep*2.0+cx*steprange, texelstep*2.0+cy*steprange])
 
             # store in gl
             self.texcoords = array(self.texcoords, dtype='float32')
@@ -224,7 +262,7 @@ class TerrainQuadtree:
         GL.glTexCoordPointer(2, GL.GL_FLOAT, 0, None)
             
         self.normalTexture.bind(GL.GL_TEXTURE0)
-        self.specularTexture.bind(GL.GL_TEXTURE3)
+        self.colorTexture.bind(GL.GL_TEXTURE1)
         self.topoTexture.bind(GL.GL_TEXTURE2)
 
         indexcount = (self.gridSizep1*self.gridSize*2)+(self.gridSize*4)

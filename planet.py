@@ -43,8 +43,8 @@ class Planet:
         localshader.attach()
 
         GL.glUniform1i(GL.glGetUniformLocation(localshader.shader, 'normalTexture'), 0)
+        GL.glUniform1i(GL.glGetUniformLocation(localshader.shader, 'colorTexture'), 1)
         GL.glUniform1i(GL.glGetUniformLocation(localshader.shader, 'topoTexture'), 2)
-        GL.glUniform1i(GL.glGetUniformLocation(localshader.shader, 'specularTexture'), 3)
         GL.glUniform1i(GL.glGetUniformLocation(localshader.shader, 'justTopoAndNormals'), not int(shader))
             
         cameraPos = np.array(factory.camera.position)/self.radius
@@ -52,7 +52,8 @@ class Planet:
         GL.glUniform3f(GL.glGetUniformLocation(localshader.shader, 'v3CameraPos'), cameraPos[0], cameraPos[1], cameraPos[2])
         GL.glUniform3f(GL.glGetUniformLocation(localshader.shader, 'v3LightPos'), lightPos[0], lightPos[1], lightPos[2])
 
-        [x.draw(shader) for x in self.quadtrees]
+        #[x.draw(shader) for x in self.quadtrees]
+        self.quadtrees[2].draw(shader)
 
         localshader.dettach()
 

@@ -18,13 +18,21 @@ def main():
     global screen
 
     pygame.init()
-
-    factory.width = 1680
-    factory.height = 1050
+    pygame.display.init()
+    info = pygame.display.Info()
+    factory.width = info.current_w
+    factory.height = info.current_h
+    
+    fullscreen = False
+    
+    if fullscreen is False:
+        factory.width /= 2
+        factory.height /= 2
+        gl_flags = OPENGL|DOUBLEBUF|HWSURFACE
+    else:
+        gl_flags = FULLSCREEN|OPENGL|DOUBLEBUF|HWSURFACE
 
     size = (factory.width, factory.height)
-    gl_flags = FULLSCREEN|OPENGL|DOUBLEBUF|HWSURFACE
-
     screen = pygame.display.set_mode(size, gl_flags)
     initialize()
     
@@ -162,18 +170,14 @@ def renderObjects(shader):
     glPopMatrix()
 
 def display():
-    global framenumber
+    instance = None
+    try:
+        (instance, ) = factory.generatorQueue.get_nowait()
+    except:
+        pass
 
-    # init one
-    framenumber += 1
-    if framenumber % 1 == 0:
-        try:
-            (instance, ) = factory.generatorQueue.get_nowait()
-            instance.generateTextures()
-        except:
-            pass
-
-        framenumber = framenumber % 1
+    if instance is not None:
+        instance.generateTextures()
 
     # reset the projection matrix
     ratio = float(factory.width)/float(factory.height)
@@ -193,7 +197,7 @@ def display():
     glTranslatef(-factory.camera.position[0], -factory.camera.position[1], -factory.camera.position[2])
 
     global sunlon
-    sunlon += factory.dt*10.
+    #sunlon += factory.dt*10.
     factory.sun.position = factory.geocentricToCarthesian(0., sunlon, factory.planet.radius*8.0)
     glLightfv(GL_LIGHT0, GL_POSITION, factory.sun.position);
 
