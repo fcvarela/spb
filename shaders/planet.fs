@@ -2,11 +2,9 @@ varying vec4 vertex;
 varying vec4 vvertex;
 
 uniform sampler2D normalTexture;
-uniform sampler2D topoTexture;
 uniform sampler2D colorTexture;
 
 uniform sampler2D pnormalTexture;
-uniform sampler2D ptopoTexture;
 uniform sampler2D pcolorTexture;
 
 uniform float weight;
@@ -15,9 +13,14 @@ uniform int index;
 mat3 fromToRotation(vec3 from, vec3 to);
 
 void main() {
-    vec4 topo = texture2D(topoTexture, gl_TexCoord[0].st);
     vec3 normal = texture2D(normalTexture, gl_TexCoord[0].st).xyz;
     vec4 color = texture2D(colorTexture, gl_TexCoord[0].st);
+
+    // fetch normals and rotate
+    normal = (normal * 2.0) - 1.0;
+    mat3 rot_matrix = fromToRotation(vec3(0.0, 0.0, 1.0), normalize(vertex.xyz));
+    normal = normalize(normal * rot_matrix);
+    normal = normalize(gl_NormalMatrix * normal);
 
     /*
         we may need to morph with our parent for smooth
@@ -30,23 +33,16 @@ void main() {
     */
     if (weight > 0.0 && index == 1) {
         vec2 parentCoords = 1.0/256.0+vec2(gl_TexCoord[0].s/2.0, gl_TexCoord[0].t/2.0);
-        
-        vec4 ptopo = texture2D(ptopoTexture, parentCoords);
         vec3 pnormal = texture2D(pnormalTexture, parentCoords).xyz;
         vec4 pcolor = texture2D(pcolorTexture, parentCoords);
-
-        // mix. weight is parent weight
-        topo = mix(topo, ptopo, weight);
-
-        //normal = mix(normal, pnormal, weight);
         color = mix(color, pcolor, weight);
+
+        pnormal = (pnormal * 2.0) - 1.0;
+        pnormal = normalize(pnormal * rot_matrix);
+        pnormal = normalize(gl_NormalMatrix * pnormal);
+
+        normal = mix(normal, pnormal, weight);
     }
-    
-    // fetch normals and rotate
-    normal = (normal * 2.0) - 1.0;
-    mat3 rot_matrix = fromToRotation(vec3(0.0, 0.0, 1.0), normalize(vertex.xyz));
-    normal = normalize(normal * rot_matrix);
-    normal = normalize(gl_NormalMatrix * normalize(vertex.xyz));
 
     // lighting stuff
     vec4 s = normalize(gl_LightSource[0].position - vertex);

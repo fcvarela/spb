@@ -1,7 +1,12 @@
+uniform float weight;
+uniform int index;
+
 varying vec4 vertex;
 varying vec4 vvertex;
 
 uniform sampler2D topoTexture;
+uniform sampler2D ptopoTexture;
+
 uniform vec3 v3CameraPos;
 uniform vec3 v3LightPos;
 
@@ -41,6 +46,13 @@ void main() {
     
     vec4 heightmap = texture2D(topoTexture, gl_TexCoord[0].st);
     float height = heightmap.a*256.0*256.0 + heightmap.r*256.0;
+
+    if (weight > 0.0 && index == 1) {
+        vec2 parentCoords = 1.0/256.0+vec2(gl_TexCoord[0].s/2.0, gl_TexCoord[0].t/2.0);
+        vec4 pheightmap = texture2D(ptopoTexture, parentCoords);
+        float pheight = pheightmap.a*256.0*256.0 + pheightmap.r*256.0;
+        height = mix(height, pheight, weight);
+    }
     height -= 16384.0;
     vertex = vec4(normalize(gl_Vertex.xyz) * (height + radius), 1.0);
 
