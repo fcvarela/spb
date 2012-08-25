@@ -242,7 +242,7 @@ class TerrainQuadtree:
 
         self.distance = min(d1, min(d2, min(d3, min(d4, d5))))
 
-        if self.maxlod > 0 and self.distance < self.sidelength*1.4*1738140.0:
+        if self.maxlod > 0 and self.distance < self.sidelength*1.5*1738140.0:
             # are they ready?
             if len(self.children) > 0:
                 readycount = 0
@@ -253,15 +253,11 @@ class TerrainQuadtree:
                     # we can and need to draw our children
                     # two choices. either exclusively or ourself morphed
 
-                    if self.distance > self.sidelength*1.2*1738140.0:
-                        # morphed
-                        # if we're up until 0.8, draw our vertices morphed with the childs
-                        # proportion is 0.8 to 1.2  equals 0 to 1
-                        # self weight is 1-factor
-                        factor = (self.distance - self.sidelength*1.2*1738140.0) / (self.sidelength*1.4*1738140.0-self.sidelength*1.2*1738140.0)
+                    if self.distance > self.sidelength*1.1*1738140.0:
+                        factor = (self.distance - self.sidelength*1.1*1738140.0) / (self.sidelength*1.4*1738140.0-self.sidelength*1.1*1738140.0)
                         if factor > 1.0:
                             factor = 1.0
-                        factor = 1.0 - (factor * factor * (3.0 - 2.0 * factor))
+                        factor = factor * factor * (3.0 - 2.0 * factor)
                         [x.draw(textures, factor) for x in self.children]
                     else:
                         [x.draw(textures) for x in self.children]
@@ -269,12 +265,14 @@ class TerrainQuadtree:
             else:
                 self.initChildren()
 
-        if weight > 0.0:
+        if self.parent is not None:
             # we need to attach the parent heightmap (for now)
             self.parent.normalTexture.bind(GL_TEXTURE3)
             self.parent.colorTexture.bind(GL_TEXTURE4)
             self.parent.topoTexture.bind(GL_TEXTURE5)
-            glUniform1f(glGetUniformLocation(factory.planet.shader.shader, 'weight'), weight)
+        
+        glUniform1f(glGetUniformLocation(factory.planet.shader.shader, 'weight'), weight)
+        glUniform1i(glGetUniformLocation(factory.planet.shader.shader, 'index'), self.index)
 
         GL.glEnableClientState(GL.GL_VERTEX_ARRAY)
         GL.glBindBuffer(GL.GL_ARRAY_BUFFER, self.positionBufferObject)
@@ -295,23 +293,23 @@ class TerrainQuadtree:
         GL.glDrawElements(GL.GL_TRIANGLE_STRIP, indexcount, GL.GL_UNSIGNED_SHORT, None)
 
     def initChildren(self):
-        qt = TerrainQuadtree(self, self.maxlod-1, self.index*10+1, self.baselat, self.baselon, self.span/2.)
+        qt = TerrainQuadtree(self, self.maxlod-1, 1, self.baselat, self.baselon, self.span/2.)
 
         qt.texcoordBufferObject = self.texcoordBufferObject
         qt.indexBufferObject = self.indexBufferObject
         self.children.append(qt)
 
-        qt = TerrainQuadtree(self, self.maxlod-1, self.index*10+2, self.baselat, self.baselon+self.span/2., self.span/2.)
+        qt = TerrainQuadtree(self, self.maxlod-1, 2, self.baselat, self.baselon+self.span/2., self.span/2.)
         qt.texcoordBufferObject = self.texcoordBufferObject
         qt.indexBufferObject = self.indexBufferObject
         self.children.append(qt)
 
-        qt = TerrainQuadtree(self, self.maxlod-1, self.index*10+3, self.baselat+self.span/2., self.baselon, self.span/2.)
+        qt = TerrainQuadtree(self, self.maxlod-1, 3, self.baselat+self.span/2., self.baselon, self.span/2.)
         qt.texcoordBufferObject = self.texcoordBufferObject
         qt.indexBufferObject = self.indexBufferObject
         self.children.append(qt)
 
-        qt = TerrainQuadtree(self, self.maxlod-1, self.index*10+4, self.baselat+self.span/2., self.baselon+self.span/2., self.span/2.)
+        qt = TerrainQuadtree(self, self.maxlod-1, 4, self.baselat+self.span/2., self.baselon+self.span/2., self.span/2.)
         qt.texcoordBufferObject = self.texcoordBufferObject
         qt.indexBufferObject = self.indexBufferObject
         self.children.append(qt)
