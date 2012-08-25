@@ -31,13 +31,14 @@ void main() {
     if (weight > 0.0 && index == 1) {
         vec2 parentCoords = 1.0/256.0+vec2(gl_TexCoord[0].s/2.0, gl_TexCoord[0].t/2.0);
         
-        //vec4 ptopo = texture2D(ptopoTexture, parentCoords);
-        //vec3 pnormal = texture2D(pnormalTexture, parentCoords).xyz;
+        vec4 ptopo = texture2D(ptopoTexture, parentCoords);
+        vec3 pnormal = texture2D(pnormalTexture, parentCoords).xyz;
         vec4 pcolor = texture2D(pcolorTexture, parentCoords);
 
-        // mix
-        //topo = mix(ptopo, topo, weight);
-        //normal = mix(pnormal, normal, weight);
+        // mix. weight is parent weight
+        topo = mix(topo, ptopo, weight);
+
+        //normal = mix(normal, pnormal, weight);
         color = mix(color, pcolor, weight);
     }
     
@@ -45,7 +46,7 @@ void main() {
     normal = (normal * 2.0) - 1.0;
     mat3 rot_matrix = fromToRotation(vec3(0.0, 0.0, 1.0), normalize(vertex.xyz));
     normal = normalize(normal * rot_matrix);
-    normal = normalize(gl_NormalMatrix * normal);
+    normal = normalize(gl_NormalMatrix * normalize(vertex.xyz));
 
     // lighting stuff
     vec4 s = normalize(gl_LightSource[0].position - vertex);

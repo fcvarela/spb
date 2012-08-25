@@ -242,7 +242,10 @@ class TerrainQuadtree:
 
         self.distance = min(d1, min(d2, min(d3, min(d4, d5))))
 
-        if self.maxlod > 0 and self.distance < self.sidelength*1.5*1738140.0:
+        far = self.sidelength*1.4*1738140.0
+        near = self.sidelength*1.1*1738140.0
+
+        if self.maxlod > 0 and self.distance <= far:
             # are they ready?
             if len(self.children) > 0:
                 readycount = 0
@@ -253,10 +256,12 @@ class TerrainQuadtree:
                     # we can and need to draw our children
                     # two choices. either exclusively or ourself morphed
 
-                    if self.distance > self.sidelength*1.1*1738140.0:
-                        factor = (self.distance - self.sidelength*1.1*1738140.0) / (self.sidelength*1.4*1738140.0-self.sidelength*1.1*1738140.0)
+                    if self.distance >= near:
+                        factor = (self.distance - near) / (far-near)
                         if factor > 1.0:
                             factor = 1.0
+                        if factor < 0.0:
+                            factor = 0.0
                         factor = factor * factor * (3.0 - 2.0 * factor)
                         [x.draw(textures, factor) for x in self.children]
                     else:
@@ -265,11 +270,13 @@ class TerrainQuadtree:
             else:
                 self.initChildren()
 
-        if self.parent is not None:
+        try:
             # we need to attach the parent heightmap (for now)
             self.parent.normalTexture.bind(GL_TEXTURE3)
             self.parent.colorTexture.bind(GL_TEXTURE4)
             self.parent.topoTexture.bind(GL_TEXTURE5)
+        except:
+            pass
         
         glUniform1f(glGetUniformLocation(factory.planet.shader.shader, 'weight'), weight)
         glUniform1i(glGetUniformLocation(factory.planet.shader.shader, 'index'), self.index)
@@ -285,9 +292,9 @@ class TerrainQuadtree:
         GL.glBindBuffer(GL.GL_ARRAY_BUFFER, self.texcoordBufferObject)
         GL.glTexCoordPointer(2, GL.GL_FLOAT, 0, None)
             
-        self.normalTexture.bind(GL.GL_TEXTURE0)
-        self.colorTexture.bind(GL.GL_TEXTURE1)
-        self.topoTexture.bind(GL.GL_TEXTURE2)
+        self.normalTexture.bind(GL_TEXTURE0)
+        self.colorTexture.bind(GL_TEXTURE1)
+        self.topoTexture.bind(GL_TEXTURE2)
 
         indexcount = (self.gridSizep1*self.gridSize*2)+(self.gridSize*4)
         GL.glDrawElements(GL.GL_TRIANGLE_STRIP, indexcount, GL.GL_UNSIGNED_SHORT, None)
