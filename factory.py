@@ -98,6 +98,7 @@ planet = None
 
 # some properties
 wireframe = False
+trackFrustum = True
 
 keys = []
 for i in range(512):

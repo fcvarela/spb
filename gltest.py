@@ -1,11 +1,10 @@
 #!/usr/bin/env python2.7
-import pycallgraph
 
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from pygame.locals import *
 
-import pygame, math, threading, sys
+import pygame, math, sys
 import factory
 
 from planet import *
@@ -56,7 +55,7 @@ def main():
         # ask gl to draw
         glFinish()
 
-    pycallgraph.make_dot_graph('test.png')
+    #pycallgraph.make_dot_graph('test.png')
 
 def handle_events(events):
     global stop
@@ -72,6 +71,7 @@ def handle_events(events):
                 
             if event.key == K_l:
                 toggleWireframe()
+
         if event.type == KEYUP:
             factory.keys[event.key] = False
 
@@ -182,6 +182,7 @@ def display():
     instance = None
     try:
         (instance, ) = factory.generatorQueue.get_nowait()
+        framenumber = 0
     except:
         pass
 
@@ -206,13 +207,11 @@ def display():
 
     factory.calculateFrustum()
     global sunlon
-    sunlon += factory.dt*10.
+    #sunlon += factory.dt*10.
     factory.sun.position = factory.geocentricToCarthesian(0., sunlon, factory.planet.radius*8.0)
     glLightfv(GL_LIGHT0, GL_POSITION, factory.sun.position);
 
     renderObjects(True)
-    print "Drawn: %d" % factory.drawnNodes
 
 if __name__ == '__main__':
-    pycallgraph.start_trace()
     main()
