@@ -23,7 +23,7 @@ def main():
     factory.width = info.current_w
     factory.height = info.current_h
     
-    fullscreen = False
+    fullscreen = True
     
     if fullscreen is False:
         factory.width /= 2
@@ -199,7 +199,7 @@ def display():
     glTranslatef(-factory.camera.position[0], -factory.camera.position[1], -factory.camera.position[2])
 
     global sunlon
-    #sunlon += factory.dt*10.
+    sunlon += factory.dt*10.
     factory.sun.position = factory.geocentricToCarthesian(0., sunlon, factory.planet.radius*8.0)
     glLightfv(GL_LIGHT0, GL_POSITION, factory.sun.position);
 
