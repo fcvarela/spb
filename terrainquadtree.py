@@ -23,7 +23,7 @@ class TerrainQuadtree:
 
         self.gridSize = 16
         self.gridSizep1 = self.gridSize + 1
-        self.textureSize = 256+4
+        self.textureSize = 512+4
 
         self.vertices = np.arange(self.gridSizep1*self.gridSizep1*3, dtype='float32')
         self.texcoords = []
@@ -272,6 +272,7 @@ class TerrainQuadtree:
         
         glUniform1f(glGetUniformLocation(factory.planet.shader.shader, 'weight'), weight)
         glUniform1i(glGetUniformLocation(factory.planet.shader.shader, 'index'), self.index)
+        glUniform1f(glGetUniformLocation(factory.planet.shader.shader, 'texturesize'), self.textureSize-4.0)
 
         GL.glEnableClientState(GL.GL_VERTEX_ARRAY)
         GL.glBindBuffer(GL.GL_ARRAY_BUFFER, self.positionBufferObject)

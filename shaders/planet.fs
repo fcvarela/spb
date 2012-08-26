@@ -8,6 +8,7 @@ uniform sampler2D pnormalTexture;
 uniform sampler2D pcolorTexture;
 
 uniform float weight;
+uniform float texturesize;
 uniform int index;
 
 mat3 fromToRotation(vec3 from, vec3 to);
@@ -34,13 +35,13 @@ void main() {
     if (weight > 0.0) {
         vec2 parentCoords;
         if (index == 1)
-            parentCoords = 1.0/256.0+vec2(gl_TexCoord[0].s/2.0, gl_TexCoord[0].t/2.0);
+            parentCoords = 1.0/texturesize+vec2(gl_TexCoord[0].s/2.0, gl_TexCoord[0].t/2.0);
         if (index == 2)
-            parentCoords = vec2(0.5-1.0/256.0+gl_TexCoord[0].s/2.0, 1.0/256.0+gl_TexCoord[0].t/2.0);
+            parentCoords = vec2(0.5-1.0/texturesize+gl_TexCoord[0].s/2.0, 1.0/texturesize+gl_TexCoord[0].t/2.0);
         if (index == 3)
-            parentCoords = vec2(1.0/256.0+gl_TexCoord[0].s/2.0, 0.5-1.0/256.0+gl_TexCoord[0].t/2.0);
+            parentCoords = vec2(1.0/texturesize+gl_TexCoord[0].s/2.0, 0.5-1.0/texturesize+gl_TexCoord[0].t/2.0);
         if (index == 4)
-            parentCoords = 0.5-1.0/256.0+vec2(gl_TexCoord[0].s/2.0, gl_TexCoord[0].t/2.0);
+            parentCoords = 0.5-1.0/texturesize+vec2(gl_TexCoord[0].s/2.0, gl_TexCoord[0].t/2.0);
         
         vec3 pnormal = texture2D(pnormalTexture, parentCoords).xyz;
         vec4 pcolor = texture2D(pcolorTexture, parentCoords);

@@ -1,5 +1,6 @@
 uniform float weight;
 uniform int index;
+uniform float texturesize;
 
 varying vec4 vertex;
 varying vec4 vvertex;
@@ -50,13 +51,13 @@ void main() {
     if (weight > 0.0) {
         vec2 parentCoords;
         if (index == 1)
-            parentCoords = 1.0/256.0+vec2(gl_TexCoord[0].s/2.0, gl_TexCoord[0].t/2.0);
+            parentCoords = 1.0/texturesize+vec2(gl_TexCoord[0].s/2.0, gl_TexCoord[0].t/2.0);
         if (index == 2)
-            parentCoords = vec2(0.5-1.0/256.0+gl_TexCoord[0].s/2.0, 1.0/256.0+gl_TexCoord[0].t/2.0);
+            parentCoords = vec2(0.5-1.0/texturesize+gl_TexCoord[0].s/2.0, 1.0/texturesize+gl_TexCoord[0].t/2.0);
         if (index == 3)
-            parentCoords = vec2(1.0/256.0+gl_TexCoord[0].s/2.0, 0.5-1.0/256.0+gl_TexCoord[0].t/2.0);
+            parentCoords = vec2(1.0/texturesize+gl_TexCoord[0].s/2.0, 0.5-1.0/texturesize+gl_TexCoord[0].t/2.0);
         if (index == 4)
-            parentCoords = 0.5-1.0/256.0+vec2(gl_TexCoord[0].s/2.0, gl_TexCoord[0].t/2.0);
+            parentCoords = 0.5-1.0/texturesize+vec2(gl_TexCoord[0].s/2.0, gl_TexCoord[0].t/2.0);
         vec4 pheightmap = texture2D(ptopoTexture, parentCoords);
         float pheight = pheightmap.a*256.0*256.0 + pheightmap.r*256.0;
         height = mix(height, pheight, weight);
