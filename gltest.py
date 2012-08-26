@@ -23,7 +23,7 @@ def main():
     factory.width = info.current_w
     factory.height = info.current_h
     
-    fullscreen = True
+    fullscreen = False
     
     if fullscreen is False:
         factory.width /= 2
@@ -32,7 +32,7 @@ def main():
     else:
         gl_flags = FULLSCREEN|OPENGL|DOUBLEBUF|HWSURFACE
 
-    pygame.display.gl_set_attribute(pygame.locals.GL_MULTISAMPLEBUFFERS, 1)
+    pygame.display.gl_set_attribute(pygame.locals.GL_MULTISAMPLEBUFFERS, 0)
     pygame.display.gl_set_attribute(pygame.locals.GL_MULTISAMPLESAMPLES, 1)
 
     size = (factory.width, factory.height)
@@ -86,6 +86,8 @@ def initialize():
     glLightfv(GL_LIGHT0, GL_AMBIENT, array([0.1, 0.1, 0.1, 1.0]))
     glLightfv(GL_LIGHT0, GL_DIFFUSE, array([1.0, 1.0, 1.0, 1.0]))
     glLightfv(GL_LIGHT0, GL_SPECULAR, array([.6, .6, .6, 1.0]))
+
+    factory.calculateFrustum()
 
     # got gl state, spawn factory singleton
     factory.planet = Planet('planets/planet1.conf')
@@ -173,6 +175,7 @@ def renderObjects(shader):
     glPopMatrix()
 
 def display():
+    factory.drawnNodes = 0
     instance = None
     try:
         (instance, ) = factory.generatorQueue.get_nowait()
@@ -198,12 +201,14 @@ def display():
     glMultMatrixd(factory.camera.rotation.gl_matrix())
     glTranslatef(-factory.camera.position[0], -factory.camera.position[1], -factory.camera.position[2])
 
+    factory.calculateFrustum()
     global sunlon
     sunlon += factory.dt*10.
     factory.sun.position = factory.geocentricToCarthesian(0., sunlon, factory.planet.radius*8.0)
     glLightfv(GL_LIGHT0, GL_POSITION, factory.sun.position);
 
     renderObjects(True)
+    print "Drawn: %d" % factory.drawnNodes
 
 if __name__ == '__main__':
     main()

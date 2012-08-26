@@ -180,9 +180,9 @@ float ridge(float h, float offset) {
 
 float ridgedmf(vec4 p/*, float H, float lacunarity, int octaves, float offset, int sharpness, int threshold, float K*/)
 {
-    float H = 1.1;
-  float lacunarity = 2.0;
-  int octaves = 10;
+  float H = 1.1;
+  float lacunarity = 1.8;
+  int octaves = 40;
   float offset = 0.80;
   float sharpness = 3.0;
   float threshold = 20.0;

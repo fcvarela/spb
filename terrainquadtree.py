@@ -23,7 +23,7 @@ class TerrainQuadtree:
 
         self.gridSize = 16
         self.gridSizep1 = self.gridSize + 1
-        self.textureSize = 512+4
+        self.textureSize = 256+4
 
         self.vertices = np.arange(self.gridSizep1*self.gridSizep1*3, dtype='float32')
         self.texcoords = []
@@ -233,6 +233,14 @@ class TerrainQuadtree:
     def draw(self, textures, weight = 0.0):
         if not self.ready:
             return
+
+        sphere = list(array(self.center*1738140.0))
+        sphere.append(self.sidelength*1738140.0)
+        sphere = np.array(sphere)
+
+        if not factory.sphereInFrustum(sphere):
+            return
+
         # do we need to draw our children
         d1 = np.linalg.norm(factory.camera.position - self.center*1738140.0)
         d2 = np.linalg.norm(factory.camera.position - self.topleft*1738140.0)
@@ -298,6 +306,7 @@ class TerrainQuadtree:
 
         indexcount = (self.gridSizep1*self.gridSize*2)+(self.gridSize*4)
         GL.glDrawElements(GL.GL_TRIANGLE_STRIP, indexcount, GL.GL_UNSIGNED_SHORT, None)
+        factory.drawnNodes += 1
 
     def initChildren(self):
         qt = TerrainQuadtree(self, self.maxlod-1, 1, self.baselat, self.baselon, self.span/2.)
