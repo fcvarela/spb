@@ -1,4 +1,5 @@
 #!/usr/bin/env python2.7
+import pycallgraph
 
 from OpenGL.GL import *
 from OpenGL.GLU import *
@@ -54,6 +55,8 @@ def main():
 
         # ask gl to draw
         glFinish()
+
+    pycallgraph.make_dot_graph('test.png')
 
 def handle_events(events):
     global stop
@@ -211,4 +214,5 @@ def display():
     print "Drawn: %d" % factory.drawnNodes
 
 if __name__ == '__main__':
+    pycallgraph.start_trace()
     main()
