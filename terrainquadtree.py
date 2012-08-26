@@ -21,9 +21,9 @@ class TerrainQuadtree:
         self.index = index
         self.span = span
 
-        self.gridSize = 8
+        self.gridSize = 16
         self.gridSizep1 = self.gridSize + 1
-        self.textureSize = 260
+        self.textureSize = 256+4
 
         self.vertices = np.arange(self.gridSizep1*self.gridSizep1*3, dtype='float32')
         self.texcoords = []
@@ -243,7 +243,7 @@ class TerrainQuadtree:
         self.distance = min(d1, min(d2, min(d3, min(d4, d5))))
 
         far = self.sidelength*1.4*1738140.0
-        near = self.sidelength*1.1*1738140.0
+        near = self.sidelength*1.01*1738140.0
 
         if self.maxlod > 0 and self.distance <= far:
             # are they ready?
@@ -269,14 +269,6 @@ class TerrainQuadtree:
                     return
             else:
                 self.initChildren()
-
-        try:
-            # we need to attach the parent heightmap (for now)
-            self.parent.normalTexture.bind(GL_TEXTURE3)
-            self.parent.colorTexture.bind(GL_TEXTURE4)
-            self.parent.topoTexture.bind(GL_TEXTURE5)
-        except:
-            pass
         
         glUniform1f(glGetUniformLocation(factory.planet.shader.shader, 'weight'), weight)
         glUniform1i(glGetUniformLocation(factory.planet.shader.shader, 'index'), self.index)
@@ -295,6 +287,13 @@ class TerrainQuadtree:
         self.normalTexture.bind(GL_TEXTURE0)
         self.colorTexture.bind(GL_TEXTURE1)
         self.topoTexture.bind(GL_TEXTURE2)
+        try:
+            # we need to attach the parent heightmap (for now)
+            self.parent.normalTexture.bind(GL_TEXTURE3)
+            self.parent.colorTexture.bind(GL_TEXTURE4)
+            self.parent.topoTexture.bind(GL_TEXTURE5)
+        except:
+            pass
 
         indexcount = (self.gridSizep1*self.gridSize*2)+(self.gridSize*4)
         GL.glDrawElements(GL.GL_TRIANGLE_STRIP, indexcount, GL.GL_UNSIGNED_SHORT, None)

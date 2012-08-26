@@ -49,7 +49,7 @@ class Planet:
         glUniform1i(glGetUniformLocation(localshader.shader, 'topoTexture'), 2)
         
         # tile parent textures
-        glUniform1i(glGetUniformLocation(localshader.shader, 'pormalTexture'), 3)
+        glUniform1i(glGetUniformLocation(localshader.shader, 'pnormalTexture'), 3)
         glUniform1i(glGetUniformLocation(localshader.shader, 'pcolorTexture'), 4)
         glUniform1i(glGetUniformLocation(localshader.shader, 'ptopoTexture'), 5)
             

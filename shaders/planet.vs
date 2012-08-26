@@ -47,8 +47,16 @@ void main() {
     vec4 heightmap = texture2D(topoTexture, gl_TexCoord[0].st);
     float height = heightmap.a*256.0*256.0 + heightmap.r*256.0;
 
-    if (weight > 0.0 && index == 1) {
-        vec2 parentCoords = 1.0/256.0+vec2(gl_TexCoord[0].s/2.0, gl_TexCoord[0].t/2.0);
+    if (weight > 0.0) {
+        vec2 parentCoords;
+        if (index == 1)
+            parentCoords = 1.0/256.0+vec2(gl_TexCoord[0].s/2.0, gl_TexCoord[0].t/2.0);
+        if (index == 2)
+            parentCoords = vec2(0.5-1.0/256.0+gl_TexCoord[0].s/2.0, 1.0/256.0+gl_TexCoord[0].t/2.0);
+        if (index == 3)
+            parentCoords = vec2(1.0/256.0+gl_TexCoord[0].s/2.0, 0.5-1.0/256.0+gl_TexCoord[0].t/2.0);
+        if (index == 4)
+            parentCoords = 0.5-1.0/256.0+vec2(gl_TexCoord[0].s/2.0, gl_TexCoord[0].t/2.0);
         vec4 pheightmap = texture2D(ptopoTexture, parentCoords);
         float pheight = pheightmap.a*256.0*256.0 + pheightmap.r*256.0;
         height = mix(height, pheight, weight);
