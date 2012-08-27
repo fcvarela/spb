@@ -65,6 +65,9 @@ void main() {
     height -= 16384.0;
     vertex = vec4(normalize(gl_Vertex.xyz) * (height + radius), 1.0);
 
+    if (length(gl_Vertex.xyz) < 0.1)
+        vertex = vec4(0.0, 0.0, 0.0, 1.0);
+
     vvertex = gl_ModelViewMatrix * vertex;
     gl_Position = gl_ModelViewProjectionMatrix * vertex;
 

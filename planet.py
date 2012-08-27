@@ -59,7 +59,8 @@ class Planet:
         glUniform3f(glGetUniformLocation(localshader.shader, 'v3CameraPos'), cameraPos[0], cameraPos[1], cameraPos[2])
         glUniform3f(glGetUniformLocation(localshader.shader, 'v3LightPos'), lightPos[0], lightPos[1], lightPos[2])
 
-        [x.draw(shader) for x in self.quadtrees]
+        #[x.draw(shader) for x in self.quadtrees]
+        self.quadtrees[1].draw(shader)
 
         localshader.dettach()
 

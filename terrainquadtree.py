@@ -43,7 +43,7 @@ class TerrainQuadtree:
             self.indexBufferObject = parent.indexBufferObject
 
         # vertices
-        self.vertices = np.arange(self.gridSizep1*self.gridSizep1*3, dtype='float32')
+        self.vertices = np.arange(self.gridSizep1*self.gridSizep1*3 + 3, dtype='float32')
 
         # generation programs
         self.generatorShader = None
@@ -217,6 +217,11 @@ class TerrainQuadtree:
                 if y == self.gridSize and x == self.gridSize:
                     self.botright = coord
 
+        # add planet center vertex for skirts
+        self.vertices[self.gridSizep1*self.gridSizep1*3 + 0] = 0.0
+        self.vertices[self.gridSizep1*self.gridSizep1*3 + 1] = 0.0
+        self.vertices[self.gridSizep1*self.gridSizep1*3 + 2] = 0.0
+
         self.sidelength = math.sqrt(\
             (self.topleft[0] - self.botleft[0])**2+\
             (self.topleft[1] - self.botleft[1])**2+\
@@ -270,6 +275,12 @@ class TerrainQuadtree:
                         # add next triangle
                         indexes.append((y+2) * self.gridSizep1 )
 
+            # first skirt
+            indexes.append(self.gridSizep1*self.gridSizep1)
+            for y in range(0, self.gridSizep1):
+                indexes.append((self.gridSize-y) * self.gridSizep1)
+            #indexes.append(self.gridSizep1*self.gridSizep1)
+
             # store in gl
             indexes = array(indexes, dtype='ushort')
             self.indexBufferObject = GL.glGenBuffers(1)
@@ -288,6 +299,8 @@ class TerrainQuadtree:
                     steprange = 1.0 - texelstep*4.0
 
                     texcoords.append([texelstep*2.0+cx*steprange, texelstep*2.0+cy*steprange])
+
+            texcoords.append([0.5, 0.5])
 
             # store in gl
             texcoords = array(texcoords, dtype='float32')
@@ -380,7 +393,9 @@ class TerrainQuadtree:
             pass
 
         indexcount = (self.gridSizep1*self.gridSize*2)+(self.gridSize*4)
-        GL.glDrawElements(GL.GL_TRIANGLE_STRIP, indexcount, GL.GL_UNSIGNED_SHORT, None)
+        skirtcount = self.gridSizep1 + 2
+        glDrawElements(GL_TRIANGLE_STRIP, indexcount, GL_UNSIGNED_SHORT, None)
+        glDrawElements(GL_TRIANGLE_FAN, skirtcount, GL_UNSIGNED_SHORT, c_void_p(indexcount))
         factory.drawnNodes += 1
 
     def initChildren(self):
