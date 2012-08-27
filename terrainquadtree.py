@@ -3,6 +3,7 @@ from numpy import array
 import numpy as np
 import math
 import threading
+from ctypes import *
 
 from OpenGL import *
 from OpenGL.GLU import *
@@ -22,10 +23,11 @@ class TerrainQuadtree:
         self.index = index
         self.span = span
 
-        self.gridSize = 32
+        self.gridSize = 16
         self.gridSizep1 = self.gridSize + 1
-        self.textureSize = 512+4
+        self.textureSize = 256+4
 
+        self.centerHeight = 0
         self.sphere = None
         self.box = None
 
@@ -137,14 +139,11 @@ class TerrainQuadtree:
         glEnd()
         self.generatorShader.dettach()
 
-        # load data into localfile and get min and max altitude
-        #data = range(self.textureSize**2 * 4)
-        #glReadPixels(0, 0, self.textureSize-1, self.textureSize-1, GL_RGBA, GL_UNSIGNED_BYTE, data)
-
-        # box based culling
-        self.box = [self.topleft, self.topright, self.botleft, self.botright]
-
         # unbind framebuffer
+        # load data into localfile and get min and max altitude
+        offset = self.textureSize*(self.textureSize/2)+self.textureSize/2
+        offset *= 4
+
         self.framebuffer.unbind()
 
         # bind the normals framebuffer
@@ -203,7 +202,6 @@ class TerrainQuadtree:
                 lon = self.baselon + x*step
 
                 coord = array(factory.geocentricToCarthesian(lat, lon, 1.0))
-                #coord /= np.linalg.norm(coord)
                 self.vertices[self.gridSizep1*y*3 + x*3 + 0] = coord[0]
                 self.vertices[self.gridSizep1*y*3 + x*3 + 1] = coord[1]
                 self.vertices[self.gridSizep1*y*3 + x*3 + 2] = coord[2]
@@ -222,8 +220,24 @@ class TerrainQuadtree:
         self.sidelength = math.sqrt(\
             (self.topleft[0] - self.botleft[0])**2+\
             (self.topleft[1] - self.botleft[1])**2+\
-            (self.topleft[2] - self.botleft[2])**2)#np.linalg.norm(self.topleft - self.botleft)
+            (self.topleft[2] - self.botleft[2])**2)
         self.vertices = array(self.vertices, dtype='float32')
+
+        minradius = 1738140.0-32768.0
+        maxradius = 1738140.0+32768.0
+        box = array([self.topleft*minradius, self.topright*minradius, self.botleft*minradius, self.botright*minradius, self.topleft*maxradius, self.topright*maxradius, self.botleft*maxradius, self.botright*maxradius])
+
+        box_p = c_double*24
+        self.box = box_p(*array(box).flatten())
+
+        sphere = list(self.center*1738140.0)
+        sphere.append((self.sidelength*1738140.0)*2.0)
+
+        sphere_p = c_double*4
+        self.sphere = sphere_p(*array(sphere).flatten())
+
+        # normal
+        self.normal = factory.normalize(factory.cross(self.topleft, self.botleft))
 
         self.initStep += 1
         self.busy = False
@@ -234,10 +248,6 @@ class TerrainQuadtree:
         GL.glBindBuffer(GL.GL_ARRAY_BUFFER, self.positionBufferObject)
         GL.glBufferData(GL.GL_ARRAY_BUFFER, self.vertices, GL.GL_STATIC_DRAW)
         self.vertices = None
-
-        # sphere based culling
-        self.sphere = list(array(self.center*1738140.0))
-        self.sphere.append((self.sidelength/2.0)*1738140.0)
 
         # texture coords
         if self.indexBufferObject is None:
@@ -303,12 +313,15 @@ class TerrainQuadtree:
         if not factory.sphereInFrustum(self.sphere):
             return
 
+        #if not factory.boxInFrustum(self.box):
+        #   return
+
         # do we need to draw our children
-        d1 = np.linalg.norm(factory.camera.position - self.center*1738140.0)
-        d2 = np.linalg.norm(factory.camera.position - self.topleft*1738140.0)
-        d3 = np.linalg.norm(factory.camera.position - self.topright*1738140.0)
-        d4 = np.linalg.norm(factory.camera.position - self.botleft*1738140.0)
-        d5 = np.linalg.norm(factory.camera.position - self.botright*1738140.0)
+        d1 = factory.veclen(factory.camera.position - self.center*1738140.0)
+        d2 = factory.veclen(factory.camera.position - self.topleft*1738140.0)
+        d3 = factory.veclen(factory.camera.position - self.topright*1738140.0)
+        d4 = factory.veclen(factory.camera.position - self.botleft*1738140.0)
+        d5 = factory.veclen(factory.camera.position - self.botright*1738140.0)
 
         self.distance = min(d1, min(d2, min(d3, min(d4, d5))))
 

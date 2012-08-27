@@ -72,6 +72,10 @@ def handle_events(events):
             if event.key == K_l:
                 toggleWireframe()
 
+            if event.key == K_f:
+                factory.trackFrustum = not factory.trackFrustum
+                print factory.trackFrustum
+
         if event.type == KEYUP:
             factory.keys[event.key] = False
 
@@ -86,9 +90,9 @@ def initialize():
 
     glEnable(GL_LIGHTING)
     glEnable(GL_LIGHT0)
-    glLightfv(GL_LIGHT0, GL_AMBIENT, array([0.1, 0.1, 0.1, 1.0]))
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, array([1.0, 1.0, 1.0, 1.0]))
-    glLightfv(GL_LIGHT0, GL_SPECULAR, array([.6, .6, .6, 1.0]))
+    glLightfv(GL_LIGHT0, GL_AMBIENT, array([.05, .05, .05, 1.0]))
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, array([.8, .8, .8, 1.0]))
+    glLightfv(GL_LIGHT0, GL_SPECULAR, array([.4, .4, .4, 1.0]))
 
     factory.calculateFrustum()
 
@@ -125,8 +129,7 @@ def step():
     keys = factory.keys
     camera = factory.camera
     dt = factory.dt
-
-    dist = (np.linalg.norm(camera.position)-factory.planet.radius)/2.0
+    dist = (factory.veclen(camera.position)-factory.planet.radius)/2.0
 
     if keys[K_w] == True:
         camera.move((0., 0., -1.*dt*dist))
@@ -204,8 +207,8 @@ def display():
     glLoadIdentity()
     glMultMatrixd(factory.camera.rotation.gl_matrix())
     glTranslatef(-factory.camera.position[0], -factory.camera.position[1], -factory.camera.position[2])
-
     factory.calculateFrustum()
+    
     global sunlon
     #sunlon += factory.dt*10.
     factory.sun.position = factory.geocentricToCarthesian(0., sunlon, factory.planet.radius*8.0)

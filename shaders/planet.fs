@@ -77,7 +77,7 @@ void main() {
         specular = gl_LightSource[0].specular * pow(max(dot(r, v), 0.0), 8.0) * color.a;
     }
 
-    gl_FragColor = color * diffuse + specular + (gl_Color + 0.25 * gl_SecondaryColor);
+    gl_FragColor = color * ambient + color * diffuse + specular + (gl_Color + 0.25 * gl_SecondaryColor);
     gl_FragColor.a = 1.0;
 }
 

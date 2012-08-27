@@ -17,7 +17,7 @@ class Planet:
         self.radius = float(self.parser.get('planet', 'circumference')) / (2.0 * math.pi)
         self.maxlod = int(self.parser.get('terrain', 'maxlod'))
 
-        self.atmosphere_radius = 1.025*self.radius
+        self.atmosphere_radius = 1.025
         self.quadtrees = []
 
         self.shader = ShaderProgram('planet')
@@ -54,7 +54,8 @@ class Planet:
         glUniform1i(glGetUniformLocation(localshader.shader, 'ptopoTexture'), 5)
             
         cameraPos = np.array(factory.camera.position)/self.radius
-        lightPos = np.array(factory.sun.position)/np.linalg.norm(factory.sun.position)
+        lightPos = factory.normalize(factory.sun.position)
+        
         glUniform3f(glGetUniformLocation(localshader.shader, 'v3CameraPos'), cameraPos[0], cameraPos[1], cameraPos[2])
         glUniform3f(glGetUniformLocation(localshader.shader, 'v3LightPos'), lightPos[0], lightPos[1], lightPos[2])
 
@@ -66,7 +67,7 @@ class Planet:
         self.atmosphereshader.attach()
 
         cameraPos = np.array(factory.camera.position)/self.radius
-        lightPos = np.array(factory.sun.position)/np.linalg.norm(factory.sun.position)
+        lightPos = lightPos = factory.normalize(factory.sun.position)
         glUniform3f(glGetUniformLocation(self.atmosphereshader.shader, 'v3CameraPos'), cameraPos[0], cameraPos[1], cameraPos[2])
         glUniform3f(glGetUniformLocation(self.atmosphereshader.shader, 'v3LightPos'), lightPos[0], lightPos[1], lightPos[2])
 

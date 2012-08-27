@@ -11,11 +11,16 @@ from OpenGL.GL import *
 from planet import *
 from node import *
 
-generatorQueue = LifoQueue()
+from ctypes import *
 
-# lrbtnf
-globalFrustum = range(0, 6)
+lib = cdll.LoadLibrary('./frustumtools.dylib')
+lib.boxInFrustum.restype = c_int
+lib.sphereInFrustum.restype = c_int
+lib.veclen.restype = c_double
+
+generatorQueue = LifoQueue()
 drawnNodes = 0
+trackFrustum = True
 
 def geocentricToCarthesian(lat, lon, alt):
     position = [0., 0., 0.]
@@ -27,94 +32,42 @@ def geocentricToCarthesian(lat, lon, alt):
     return position
 
 def calculateFrustum():
-    projectionMatrix = glGetFloatv(GL_PROJECTION_MATRIX)
-    modelviewMatrix = glGetFloatv(GL_MODELVIEW_MATRIX)
-
-    glPushMatrix()
-    glLoadMatrixf(projectionMatrix)
-    glMultMatrixf(modelviewMatrix)
-    modelviewMatrix = glGetFloatv(GL_MODELVIEW_MATRIX).flatten('C')
-    glPopMatrix()
-
-    # extract planes
-    global globalFrustum
-    globalFrustum[0] = extractPlane(modelviewMatrix, 1)
-    globalFrustum[1] = extractPlane(modelviewMatrix, -1)
-    globalFrustum[2] = extractPlane(modelviewMatrix, 2)
-    globalFrustum[3] = extractPlane(modelviewMatrix, -2)
-    globalFrustum[4] = extractPlane(modelviewMatrix, 3)
-    globalFrustum[5] = extractPlane(modelviewMatrix, -3)
-
-def extractPlane(matrix, row):
-    scale = 1.0
-    if row < 0:
-        scale = -1.0
-
-    row = abs(row) - 1
-
-    # calculate plane coefficients from the matrix
-    plane = [0, 0, 0, 0]
-    plane[0] = matrix[3] + scale * matrix[row]
-    plane[1] = matrix[7] + scale * matrix[row + 4]
-    plane[2] = matrix[11] + scale * matrix[row + 8]
-    plane[3] = matrix[15] + scale * matrix[row + 12]
-
-    # normalize the plane
-    length = math.sqrt(\
-        plane[0] * plane[0] + \
-        plane[1] * plane[1] + \
-        plane[2] * plane[2])
-    plane[0] /= length
-    plane[1] /= length
-    plane[2] /= length
-    plane[3] /= length
-
-    return plane
+    if trackFrustum:
+        lib.calculateFrustum()
 
 def boxInFrustum(box):
-    total_inside = 0
-
-    for i in range(0, 6):
-        in_count = 8
-        pt_in = 1
-
-        for j in range(0, 8):
-           dist = \
-            globalFrustum[i][0] * sphere[0] +\
-            globalFrustum[i][1] * sphere[1] +\
-            globalFrustum[i][2] * sphere[2] +\
-            globalFrustum[i][3]
-        
-        if dist < 0:
-            in_count -= 1
-        if in_count == 0:
-            return False
-
-    return True
+    return lib.boxInFrustum(box)
 
 def sphereInFrustum(sphere):
-    global drawnNodes
+    return lib.sphereInFrustum(sphere)
 
-    # first check if the camera is inside the sphere
-    distance = np.linalg.norm(array(factory.camera.position) - array(sphere[:3]))
-    if abs(distance) < abs(sphere[3]):
-        print "Camera inside sphere"
-        return True
+def veclen(vec):
+    vecptr = c_double*3
+    length = lib.veclen(vecptr(*vec))
+    return length
 
-    dist = 0.0;
-    for i in range(0, 6):
-        dist = \
-            globalFrustum[i][0] * sphere[0] +\
-            globalFrustum[i][1] * sphere[1] +\
-            globalFrustum[i][2] * sphere[2] +\
-            globalFrustum[i][3]
-        
-        if dist < -sphere[3]:
-            return False
-        if abs(dist) < sphere[3]:
-            return True
+def cross(a, b):
+    output = range(0, 3)
+    output[0] = a[1] * b[2] - a[2] * b[1];
+    output[1] = a[2] * b[0] - a[0] * b[2];
+    output[2] = a[0] * b[1] - a[1] * b[0];
 
-    return True
+    return output
+
+def normalize(a):
+    output = a
+
+    nlen = math.sqrt(a[0]**2 + a[1]**2 + a[2]**2)
+    output[0] /= nlen
+    output[1] /= nlen
+    output[2] /= nlen
+
+    return output
+
+def dot(a, b):
+    output = a[0]*b[0] + a[1] * b[1] + a[2] * b[2]
+    return output
+
 
 camera = Node()
 
