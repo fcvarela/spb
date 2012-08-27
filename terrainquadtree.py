@@ -22,9 +22,9 @@ class TerrainQuadtree:
         self.index = index
         self.span = span
 
-        self.gridSize = 16
+        self.gridSize = 32
         self.gridSizep1 = self.gridSize + 1
-        self.textureSize = 256+4
+        self.textureSize = 512+4
 
         self.sphere = None
 
@@ -74,7 +74,6 @@ class TerrainQuadtree:
         if self.initStep == 0:
             self.busy = True
             # spawn thread for first step of vertex init (non opengl, so threaded)
-            print "initializing"
             t1 = threading.Thread(target=self.generateVertices(), args=(self, ))
             t1.start()
 
