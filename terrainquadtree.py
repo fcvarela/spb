@@ -27,6 +27,7 @@ class TerrainQuadtree:
         self.textureSize = 512+4
 
         self.sphere = None
+        self.box = None
 
         # children
         self.children = []
@@ -136,6 +137,13 @@ class TerrainQuadtree:
         glEnd()
         self.generatorShader.dettach()
 
+        # load data into localfile and get min and max altitude
+        #data = range(self.textureSize**2 * 4)
+        #glReadPixels(0, 0, self.textureSize-1, self.textureSize-1, GL_RGBA, GL_UNSIGNED_BYTE, data)
+
+        # box based culling
+        self.box = [self.topleft, self.topright, self.botleft, self.botright]
+
         # unbind framebuffer
         self.framebuffer.unbind()
 
@@ -180,7 +188,6 @@ class TerrainQuadtree:
         self.generatorShaderC.dettach()
 
         self.framebuffer.unbind()
-
         glEnable(GL_DEPTH_TEST)
 
         self.busy = False
@@ -227,6 +234,8 @@ class TerrainQuadtree:
         GL.glBindBuffer(GL.GL_ARRAY_BUFFER, self.positionBufferObject)
         GL.glBufferData(GL.GL_ARRAY_BUFFER, self.vertices, GL.GL_STATIC_DRAW)
         self.vertices = None
+
+        # sphere based culling
         self.sphere = list(array(self.center*1738140.0))
         self.sphere.append((self.sidelength/2.0)*1738140.0)
 

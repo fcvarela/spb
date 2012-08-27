@@ -71,8 +71,35 @@ def extractPlane(matrix, row):
 
     return plane
 
+def boxInFrustum(box):
+    total_inside = 0
+
+    for i in range(0, 6):
+        in_count = 8
+        pt_in = 1
+
+        for j in range(0, 8):
+           dist = \
+            globalFrustum[i][0] * sphere[0] +\
+            globalFrustum[i][1] * sphere[1] +\
+            globalFrustum[i][2] * sphere[2] +\
+            globalFrustum[i][3]
+        
+        if dist < 0:
+            in_count -= 1
+        if in_count == 0:
+            return False
+
+    return True
+
 def sphereInFrustum(sphere):
     global drawnNodes
+
+    # first check if the camera is inside the sphere
+    distance = np.linalg.norm(array(factory.camera.position) - array(sphere[:3]))
+    if abs(distance) < abs(sphere[3]):
+        print "Camera inside sphere"
+        return True
 
     dist = 0.0;
     for i in range(0, 6):
