@@ -83,7 +83,7 @@ void main() {
   	float fCameraHeight = length(v3CameraPos);
   	float fCameraHeight2 = fCameraHeight*fCameraHeight;
 
-    vec3 v3Pos = gl_Vertex.xyz;
+    vec3 v3Pos = normalize(gl_Vertex.xyz);
     vec3 v3Ray = v3Pos - v3CameraPos;
     float fFar = length(v3Ray);
     v3Ray /= fFar;
