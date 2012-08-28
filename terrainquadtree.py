@@ -202,12 +202,24 @@ class TerrainQuadtree:
     def generateVertices(self):
         step = self.span / self.gridSize
 
+        # bounding box blues
+        bmin = [0.0, 0.0, 0.0]
+        bmax = [0.0, 0.0, 0.0]
+
         for y in range(0, self.gridSizep1):
             lat = self.baselat + (self.gridSize-y)*step
             for x in range(0, self.gridSizep1):
                 lon = self.baselon + x*step
 
                 coord = array(factory.geocentricToCarthesian(lat, lon, 1.0))
+
+                # box
+                for i in range(0, 3):
+                    if coord[i] < bmin[i]
+                        bmin[i] = coord[i]
+                    if coord[i] > bmax[i]:
+                        bmax[i] = coord[i]
+
                 self.vertices[self.gridSizep1*y*3 + x*3 + 0] = coord[0]
                 self.vertices[self.gridSizep1*y*3 + x*3 + 1] = coord[1]
                 self.vertices[self.gridSizep1*y*3 + x*3 + 2] = coord[2]
@@ -223,6 +235,8 @@ class TerrainQuadtree:
                 if y == self.gridSize and x == self.gridSize:
                     self.botright = coord
 
+        # finish bounding box
+
         # add planet center vertex for skirts
         self.vertices[self.gridSizep1*self.gridSizep1*3 + 0] = 0.0
         self.vertices[self.gridSizep1*self.gridSizep1*3 + 1] = 0.0
@@ -234,8 +248,6 @@ class TerrainQuadtree:
             (self.topleft[2] - self.botleft[2])**2)
         self.vertices = array(self.vertices, dtype='float32')
 
-        minradius = 1738140.0-32768.0
-        maxradius = 1738140.0+32768.0
         box = array([self.topleft*minradius, self.topright*minradius, self.botleft*minradius, self.botright*minradius, self.topleft*maxradius, self.topright*maxradius, self.botleft*maxradius, self.botright*maxradius])
 
         box_p = c_double*24
@@ -351,11 +363,8 @@ class TerrainQuadtree:
         if not self.ready:
             return
 
-        if not factory.sphereInFrustum(self.sphere):
-            return
-
-        #if not factory.boxInFrustum(self.box):
-        #   return
+        if not factory.boxInFrustum(self.box):
+           return
 
         # do we need to draw our children
         d1 = factory.veclen(factory.camera.position - self.center*1738140.0)
