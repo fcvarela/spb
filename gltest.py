@@ -28,12 +28,14 @@ def main():
     if fullscreen is False:
         factory.width /= 2
         factory.height /= 2
+        factory.aspect_ratio = float(factory.width)/float(factory.height)
+        factory.hfov = 60.0
+        factory.vfov = 2.0 * math.atan(math.tan(factory.hfov/2.0*math.pi/180.0)/factory.aspect_ratio)*180.0/math.pi
+        print factory.vfov
+
         gl_flags = OPENGL|DOUBLEBUF|HWSURFACE
     else:
         gl_flags = FULLSCREEN|OPENGL|DOUBLEBUF|HWSURFACE
-
-    pygame.display.gl_set_attribute(pygame.locals.GL_MULTISAMPLEBUFFERS, 0)
-    pygame.display.gl_set_attribute(pygame.locals.GL_MULTISAMPLESAMPLES, 1)
 
     size = (factory.width, factory.height)
     screen = pygame.display.set_mode(size, gl_flags)
@@ -74,7 +76,6 @@ def handle_events(events):
 
             if event.key == K_f:
                 factory.trackFrustum = not factory.trackFrustum
-                print factory.trackFrustum
 
         if event.type == KEYUP:
             factory.keys[event.key] = False
@@ -86,7 +87,7 @@ def initialize():
     glCullFace(GL_BACK)
     glEnable(GL_CULL_FACE)
 
-    glHint(GL_PERSPECTIVE_CORRECTION_HINT,GL_NICEST);
+    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
     glEnable(GL_LIGHTING)
     glEnable(GL_LIGHT0)
@@ -114,10 +115,7 @@ def changeSize(width, height):
 
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
-
     glViewport(0, 0, width, height)
-    gluPerspective(35.0, ratio, 1.0, factory.planet.radius * 4.0)
-
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
 
@@ -180,6 +178,19 @@ def renderObjects(shader):
     factory.planet.draw(shader)
     glPopMatrix()
 
+def determineFrustum(camera, planet):
+    distance = factory.veclen(camera.position)
+    altitude = distance - planet.radius
+
+    if distance > planet.radius * planet.atmosphere_radius:
+        near = max(1.0, (distance - planet.radius)/2.0)
+        far = distance+planet.radius*3.0
+    else:
+        near = max(1.0, altitude)
+        far = planet.radius
+
+    return (near, far)
+
 def display():
     factory.drawnNodes = 0
     instance = None
@@ -198,10 +209,14 @@ def display():
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
     glViewport(0, 0, factory.width, factory.height)
-    gluPerspective(35.0, ratio, 1.0, factory.planet.radius * 4.0)
+
+    # outside atmosphere? from surface to radius*2
+    (near, far) = determineFrustum(factory.camera, factory.planet)
+    gluPerspective(factory.vfov, factory.aspect_ratio, near, far)
 
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
+
     # Render from camera
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity()

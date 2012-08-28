@@ -6,7 +6,7 @@ import threading
 from ctypes import *
 
 from OpenGL import *
-from OpenGL.GLU import *
+from OpenGL.GL import *
 from OpenGL.GLUT import *
 
 import factory
@@ -23,7 +23,7 @@ class TerrainQuadtree:
         self.index = index
         self.span = span
 
-        self.gridSize = 16
+        self.gridSize = 8
         self.gridSizep1 = self.gridSize + 1
         self.textureSize = 256+4
 
@@ -34,13 +34,19 @@ class TerrainQuadtree:
         # children
         self.children = []
 
+        # sorting
+        self.distance = 0.0
+        self.weight = 1.0
+
         # vbo
         self.positionBufferObject = None
         self.texcoordBufferObject = None
         self.indexBufferObject = None
+        self.skirtIndexBufferObject = None
         if parent is not None:
             self.texcoordBufferObject = parent.texcoordBufferObject
             self.indexBufferObject = parent.indexBufferObject
+            self.skirtIndexBufferObject = parent.skirtIndexBufferObject
 
         # vertices
         self.vertices = np.arange(self.gridSizep1*self.gridSizep1*3 + 3, dtype='float32')
@@ -123,10 +129,10 @@ class TerrainQuadtree:
         # use the generator shader
         self.generatorShader.attach()
         d2r = math.pi/180.0
-        glUniform1f(GL.glGetUniformLocation(self.generatorShader.shader, 'baselat'), baselat*d2r)
-        glUniform1f(GL.glGetUniformLocation(self.generatorShader.shader, 'baselon'), baselon*d2r)
-        glUniform1f(GL.glGetUniformLocation(self.generatorShader.shader, 'latspan'), latspan*d2r)
-        glUniform1f(GL.glGetUniformLocation(self.generatorShader.shader, 'lonspan'), lonspan*d2r)
+        glUniform1f(glGetUniformLocation(self.generatorShader.shader, 'baselat'), baselat*d2r)
+        glUniform1f(glGetUniformLocation(self.generatorShader.shader, 'baselon'), baselon*d2r)
+        glUniform1f(glGetUniformLocation(self.generatorShader.shader, 'latspan'), latspan*d2r)
+        glUniform1f(glGetUniformLocation(self.generatorShader.shader, 'lonspan'), lonspan*d2r)
         glBegin(GL_QUADS)
         glTexCoord2f(0., 0.)
         glVertex3f(0., 0., 0.)
@@ -150,9 +156,9 @@ class TerrainQuadtree:
         self.framebuffer.bind(self.normalTexture.id)
         self.topoTexture.bind(GL_TEXTURE0)
         self.generatorShaderN.attach()
-        glUniform1f(GL.glGetUniformLocation(self.generatorShaderN.shader, 'lonspan'), lonspan)
-        glUniform1f(GL.glGetUniformLocation(self.generatorShaderN.shader, 'size'), self.textureSize)
-        glUniform1i(GL.glGetUniformLocation(self.generatorShaderN.shader, 'topoTexture'), 0)
+        glUniform1f(glGetUniformLocation(self.generatorShaderN.shader, 'lonspan'), lonspan)
+        glUniform1f(glGetUniformLocation(self.generatorShaderN.shader, 'size'), self.textureSize)
+        glUniform1i(glGetUniformLocation(self.generatorShaderN.shader, 'topoTexture'), 0)
         glBegin(GL_QUADS)
         glTexCoord2f(0., 0.)
         glVertex3f(0., 0., 0.)
@@ -171,9 +177,9 @@ class TerrainQuadtree:
         self.framebuffer.bind(self.colorTexture.id)
         self.topoTexture.bind(GL_TEXTURE0)
         self.generatorShaderC.attach()
-        glUniform1f(GL.glGetUniformLocation(self.generatorShaderC.shader, 'lonspan'), lonspan)
-        glUniform1f(GL.glGetUniformLocation(self.generatorShaderC.shader, 'size'), self.textureSize)
-        glUniform1i(GL.glGetUniformLocation(self.generatorShaderC.shader, 'topoTexture'), 0)
+        glUniform1f(glGetUniformLocation(self.generatorShaderC.shader, 'lonspan'), lonspan)
+        glUniform1f(glGetUniformLocation(self.generatorShaderC.shader, 'size'), self.textureSize)
+        glUniform1i(glGetUniformLocation(self.generatorShaderC.shader, 'topoTexture'), 0)
         glBegin(GL_QUADS)
         glTexCoord2f(0., 0.)
         glVertex3f(0., 0., 0.)
@@ -249,9 +255,9 @@ class TerrainQuadtree:
         self.processInit()
 
     def finishVertices(self):
-        self.positionBufferObject = GL.glGenBuffers(1)
-        GL.glBindBuffer(GL.GL_ARRAY_BUFFER, self.positionBufferObject)
-        GL.glBufferData(GL.GL_ARRAY_BUFFER, self.vertices, GL.GL_STATIC_DRAW)
+        self.positionBufferObject = glGenBuffers(1)
+        glBindBuffer(GL_ARRAY_BUFFER, self.positionBufferObject)
+        glBufferData(GL_ARRAY_BUFFER, self.vertices, GL_STATIC_DRAW)
         self.vertices = None
 
         # texture coords
@@ -273,19 +279,41 @@ class TerrainQuadtree:
                         indexes.append((y+1) * self.gridSizep1)
 
                         # add next triangle
-                        indexes.append((y+2) * self.gridSizep1 )
+                        indexes.append((y+2) * self.gridSizep1)
 
-            # first skirt
-            indexes.append(self.gridSizep1*self.gridSizep1)
-            for y in range(0, self.gridSizep1):
-                indexes.append((self.gridSize-y) * self.gridSizep1)
-            #indexes.append(self.gridSizep1*self.gridSizep1)
+            # skirts
+            skirt_indexes = []
+
+            # left skirt
+            skirt_indexes.append(self.gridSizep1*self.gridSizep1)
+            for i in range(0, self.gridSizep1):
+                skirt_indexes.append(self.gridSizep1*(self.gridSizep1-i-1))
+
+            # right skirt
+            skirt_indexes.append(self.gridSizep1*self.gridSizep1)
+            for i in range(0, self.gridSizep1):
+                skirt_indexes.append(self.gridSizep1*i + self.gridSize)
+
+            # top skirt
+            skirt_indexes.append(self.gridSizep1*self.gridSizep1)
+            for i in range(0, self.gridSizep1):
+                skirt_indexes.append(i)
+
+            # bottom skirt
+            skirt_indexes.append(self.gridSizep1*self.gridSizep1)
+            for i in range(0, self.gridSizep1):
+                skirt_indexes.append(self.gridSizep1*self.gridSizep1-i-1)
 
             # store in gl
             indexes = array(indexes, dtype='ushort')
-            self.indexBufferObject = GL.glGenBuffers(1)
-            GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, self.indexBufferObject)
-            GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indexes, GL.GL_STATIC_DRAW)
+            self.indexBufferObject = glGenBuffers(1)
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.indexBufferObject)
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexes, GL_STATIC_DRAW)
+
+            skirt_indexes = array(skirt_indexes, dtype='ushort')
+            self.skirtIndexBufferObject = glGenBuffers(1)
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.skirtIndexBufferObject)
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, skirt_indexes, GL_STATIC_DRAW)
 
         if self.texcoordBufferObject is None:
             texcoords = []
@@ -304,9 +332,9 @@ class TerrainQuadtree:
 
             # store in gl
             texcoords = array(texcoords, dtype='float32')
-            self.texcoordBufferObject = GL.glGenBuffers(1)
-            GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, self.texcoordBufferObject)
-            GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, texcoords, GL.GL_STATIC_DRAW)
+            self.texcoordBufferObject = glGenBuffers(1)
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.texcoordBufferObject)
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, texcoords, GL_STATIC_DRAW)
 
         self.topoTexture = Texture(self.textureSize)
         self.colorTexture = Texture(self.textureSize)
@@ -319,7 +347,7 @@ class TerrainQuadtree:
 
         self.processInit()
 
-    def draw(self, textures, weight = 0.0):
+    def analyse(self, weight = 0.0):
         if not self.ready:
             return
 
@@ -336,12 +364,13 @@ class TerrainQuadtree:
         d4 = factory.veclen(factory.camera.position - self.botleft*1738140.0)
         d5 = factory.veclen(factory.camera.position - self.botright*1738140.0)
 
-        self.distance = min(d1, min(d2, min(d3, min(d4, d5))))
+        self.distance = d1
+        mindistance = min(d1, min(d2, min(d3, min(d4, d5))))
 
         far = self.sidelength*1.4*1738140.0
         near = self.sidelength*1.01*1738140.0
 
-        if self.maxlod > 0 and self.distance <= far:
+        if self.maxlod > 0 and mindistance <= far:
             # are they ready?
             if len(self.children) > 0:
                 readycount = 0
@@ -352,34 +381,38 @@ class TerrainQuadtree:
                     # we can and need to draw our children
                     # two choices. either exclusively or ourself morphed
 
-                    if self.distance >= near:
-                        factor = (self.distance - near) / (far-near)
+                    if mindistance >= near:
+                        factor = (mindistance - near) / (far-near)
                         if factor > 1.0:
                             factor = 1.0
                         if factor < 0.0:
                             factor = 0.0
                         factor = factor * factor * (3.0 - 2.0 * factor)
-                        [x.draw(textures, factor) for x in self.children]
+                        [x.analyse(weight=factor) for x in self.children]
                     else:
-                        [x.draw(textures) for x in self.children]
+                        [x.analyse() for x in self.children]
                     return
             else:
                 self.initChildren()
-        
-        glUniform1f(glGetUniformLocation(factory.planet.shader.shader, 'weight'), weight)
+
+        self.weight = weight
+        factory.planet.scenegraph.append(self)
+
+    def draw(self, skirts=False):
+        glUniform1f(glGetUniformLocation(factory.planet.shader.shader, 'weight'), self.weight)
         glUniform1i(glGetUniformLocation(factory.planet.shader.shader, 'index'), self.index)
         glUniform1f(glGetUniformLocation(factory.planet.shader.shader, 'texturesize'), self.textureSize-4.0)
 
-        GL.glEnableClientState(GL.GL_VERTEX_ARRAY)
-        GL.glBindBuffer(GL.GL_ARRAY_BUFFER, self.positionBufferObject)
-        GL.glVertexPointer(3, GL.GL_FLOAT, 0, None)
+        glEnableClientState(GL_VERTEX_ARRAY)
+        glBindBuffer(GL_ARRAY_BUFFER, self.positionBufferObject)
+        glVertexPointer(3, GL_FLOAT, 0, None)
 
-        GL.glEnableClientState(GL.GL_INDEX_ARRAY)
-        GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, self.indexBufferObject)
+        glEnableClientState(GL_INDEX_ARRAY)
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.indexBufferObject)
 
-        GL.glEnableClientState(GL.GL_TEXTURE_COORD_ARRAY)
-        GL.glBindBuffer(GL.GL_ARRAY_BUFFER, self.texcoordBufferObject)
-        GL.glTexCoordPointer(2, GL.GL_FLOAT, 0, None)
+        glEnableClientState(GL_TEXTURE_COORD_ARRAY)
+        glBindBuffer(GL_ARRAY_BUFFER, self.texcoordBufferObject)
+        glTexCoordPointer(2, GL_FLOAT, 0, None)
             
         self.normalTexture.bind(GL_TEXTURE0)
         self.colorTexture.bind(GL_TEXTURE1)
@@ -392,11 +425,16 @@ class TerrainQuadtree:
         except:
             pass
 
+        #if not skirts:
+            # vertices
         indexcount = (self.gridSizep1*self.gridSize*2)+(self.gridSize*4)
-        skirtcount = self.gridSizep1 + 2
-        glDrawElements(GL_TRIANGLE_STRIP, indexcount, GL_UNSIGNED_SHORT, None)
-        glDrawElements(GL_TRIANGLE_FAN, skirtcount, GL_UNSIGNED_SHORT, c_void_p(indexcount))
-        factory.drawnNodes += 1
+        glDrawElements(GL_TRIANGLE_STRIP, indexcount, GL_UNSIGNED_SHORT, c_void_p(0))
+        #else:
+        #glDepthMask(GL_FALSE)
+        skirtcount = (self.gridSizep1 + 2) * 4
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.skirtIndexBufferObject)
+        glDrawElements(GL_TRIANGLE_FAN, skirtcount, GL_UNSIGNED_SHORT, c_void_p(0))
+        #glDepthMask(GL_TRUE)
 
     def initChildren(self):
         qt1 = TerrainQuadtree(self, self.maxlod-1, 1, self.baselat, self.baselon, self.span/2.)

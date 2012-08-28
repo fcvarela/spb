@@ -2,6 +2,7 @@ from OpenGL import *
 from OpenGL import *
 import math
 import numpy as np
+from operator import attrgetter
 
 from ConfigParser import SafeConfigParser
 
@@ -19,6 +20,7 @@ class Planet:
 
         self.atmosphere_radius = 1.025
         self.quadtrees = []
+        self.scenegraph = []
 
         self.shader = ShaderProgram('planet')
         self.atmosphereshader = ShaderProgram('planetatmosphere')
@@ -37,7 +39,9 @@ class Planet:
         localshader = None
         if shader:
             localshader = self.shader
+            glDepthMask(GL_FALSE)
             self.drawAtmosphere()
+            glDepthMask(GL_TRUE)
         else:
             localshader = self.shadowshader
 
@@ -59,8 +63,14 @@ class Planet:
         glUniform3f(glGetUniformLocation(localshader.shader, 'v3CameraPos'), cameraPos[0], cameraPos[1], cameraPos[2])
         glUniform3f(glGetUniformLocation(localshader.shader, 'v3LightPos'), lightPos[0], lightPos[1], lightPos[2])
 
-        #[x.draw(shader) for x in self.quadtrees]
-        self.quadtrees[1].draw(shader)
+        # push drawables to local scenegraph
+        self.scenegraph = []
+        [x.analyse() for x in self.quadtrees]
+
+        # sort to draw near to far
+        self.scenegraph.sort(key=attrgetter('distance'))
+        [x.draw(skirts = True) for x in self.scenegraph]
+        #[x.draw(skirts = False) for x in self.scenegraph]
 
         localshader.dettach()
 
