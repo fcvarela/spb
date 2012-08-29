@@ -192,11 +192,12 @@ def determineFrustum(camera, planet):
     return (near, far)
 
 def display():
+    global framenumber
+    
     factory.drawnNodes = 0
     instance = None
     try:
         (instance, ) = factory.generatorQueue.get_nowait()
-        framenumber = 0
     except:
         pass
 
@@ -230,8 +231,6 @@ def display():
     glLightfv(GL_LIGHT0, GL_POSITION, list(factory.sun.position))
 
     renderObjects(True)
-
-    global framenumber
     framenumber += 1
 
 if __name__ == '__main__':
