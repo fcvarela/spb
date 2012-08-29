@@ -175,7 +175,7 @@ def toggleWireframe():
 
 def renderObjects(shader):
     glPushMatrix()
-    factory.planet.draw(shader)
+    factory.planet.draw(shader, framenumber)
     glPopMatrix()
 
 def determineFrustum(camera, planet):
@@ -225,11 +225,14 @@ def display():
     factory.calculateFrustum()
     
     global sunlon
-    #sunlon += factory.dt*10.
-    factory.sun.position = factory.geocentricToCarthesian(0., sunlon, factory.planet.radius*8.0)
-    glLightfv(GL_LIGHT0, GL_POSITION, factory.sun.position);
+    sunlon += factory.dt*2.
+    factory.sun.position = factory.geocentricToCarthesian(0.0, sunlon, factory.planet.radius*8.0)
+    glLightfv(GL_LIGHT0, GL_POSITION, list(factory.sun.position))
 
     renderObjects(True)
+
+    global framenumber
+    framenumber += 1
 
 if __name__ == '__main__':
     main()

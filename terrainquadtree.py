@@ -28,8 +28,8 @@ class TerrainQuadtree:
         self.textureSize = 256+4
 
         self.centerHeight = 0
-        self.sphere = None
-        self.box = None
+        self.sphere = []
+        self.box = []
 
         # children
         self.children = []
@@ -215,7 +215,7 @@ class TerrainQuadtree:
 
                 # box
                 for i in range(0, 3):
-                    if coord[i] < bmin[i]
+                    if coord[i] < bmin[i]:
                         bmin[i] = coord[i]
                     if coord[i] > bmax[i]:
                         bmax[i] = coord[i]
@@ -236,6 +236,19 @@ class TerrainQuadtree:
                     self.botright = coord
 
         # finish bounding box
+        self.box.extend([bmin[0], bmax[1], bmin[2]]);
+        self.box.extend([bmin[0], bmax[1], bmax[2]]);
+
+        self.box.extend([bmax[0], bmax[1], bmin[2]]);
+        self.box.extend([bmax[0], bmax[1], bmax[2]]);
+
+        self.box.extend([bmin[0], bmin[1], bmin[2]]);
+        self.box.extend([bmin[0], bmin[1], bmax[2]]);
+
+        self.box.extend([bmax[0], bmin[1], bmin[2]]);
+        self.box.extend([bmax[0], bmin[1], bmax[2]]);
+
+        self.box = array(self.box)*1738140.0
 
         # add planet center vertex for skirts
         self.vertices[self.gridSizep1*self.gridSizep1*3 + 0] = 0.0
@@ -248,10 +261,8 @@ class TerrainQuadtree:
             (self.topleft[2] - self.botleft[2])**2)
         self.vertices = array(self.vertices, dtype='float32')
 
-        box = array([self.topleft*minradius, self.topright*minradius, self.botleft*minradius, self.botright*minradius, self.topleft*maxradius, self.topright*maxradius, self.botleft*maxradius, self.botright*maxradius])
-
         box_p = c_double*24
-        self.box = box_p(*array(box).flatten())
+        self.box = box_p(*array(self.box).flatten())
 
         sphere = list(self.center*1738140.0)
         sphere.append((self.sidelength*1738140.0)*2.0)
@@ -376,7 +387,7 @@ class TerrainQuadtree:
         self.distance = d1
         mindistance = min(d1, min(d2, min(d3, min(d4, d5))))
 
-        far = self.sidelength*1.4*1738140.0
+        far = self.sidelength*1.2*1738140.0
         near = self.sidelength*1.01*1738140.0
 
         if self.maxlod > 0 and mindistance <= far:
@@ -444,6 +455,8 @@ class TerrainQuadtree:
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.skirtIndexBufferObject)
         glDrawElements(GL_TRIANGLE_FAN, skirtcount, GL_UNSIGNED_SHORT, c_void_p(0))
         #glDepthMask(GL_TRUE)
+
+        factory.drawnNodes += 1
 
     def initChildren(self):
         qt1 = TerrainQuadtree(self, self.maxlod-1, 1, self.baselat, self.baselon, self.span/2.)

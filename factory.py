@@ -17,19 +17,16 @@ lib = cdll.LoadLibrary('./frustumtools.dylib')
 lib.boxInFrustum.restype = c_int
 lib.sphereInFrustum.restype = c_int
 lib.veclen.restype = c_double
+vecptr = c_double*3
 
 generatorQueue = LifoQueue()
 drawnNodes = 0
 trackFrustum = True
 
 def geocentricToCarthesian(lat, lon, alt):
-    position = [0., 0., 0.]
-
-    position[2] = math.cos(lon * 0.0174532925) * math.cos(lat * 0.0174532925) * alt
-    position[0] = math.sin(lon * 0.0174532925) * math.cos(lat * 0.0174532925) * alt
-    position[1] = math.sin(lat * 0.0174532925) * alt
-
-    return position
+    position1 = vecptr()
+    lib.geocentricToCarthesian(position1, c_float(lat), c_float(lon))
+    return array(list(position1))*alt
 
 def calculateFrustum():
     if trackFrustum:
@@ -42,7 +39,6 @@ def sphereInFrustum(sphere):
     return lib.sphereInFrustum(sphere)
 
 def veclen(vec):
-    vecptr = c_double*3
     length = lib.veclen(vecptr(*vec))
     return length
 

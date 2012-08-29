@@ -15,8 +15,18 @@ void calculateFrustum();
 int sphereInFrustum(double *sphere);
 int boxInFrustum(double *boundingBox);
 double veclen(double *vec);
+void geocentricToCarthesian(double *position, float latitude, float longitude);
 
 union frustum_t globalFrustum;
+
+void geocentricToCarthesian(double *position, float latitude, float longitude) {
+    double lat = latitude;
+    double lon = longitude;
+
+    position[2] = cos(lon * 0.0174532925) * cos(lat * 0.0174532925);
+    position[0] = sin(lon * 0.0174532925) * cos(lat * 0.0174532925);
+    position[1] = sin(lat * 0.0174532925);
+}
 
 void extractPlane(plane_t *plane, GLfloat *mat, int row) {
     int scale = (row < 0) ? -1 : 1;
@@ -86,29 +96,24 @@ int boxInFrustum(double *boundingBox) {
     double dist;
 
     // calculate camera distance to frustum
-    uint8_t i;
+    uint8_t i, k;
+    uint8_t in, out;
     for (i=0; i<6; i++) {
-        int InCount = 8;
-        int PtIn = 1;
-        uint8_t k;
-        for (k=0; k<8; k++) {
-            dist =
+        in = out = 0;
+        for (k=0; k<8 && (in==0 || out==0); k++) {
+            dist = 
             globalFrustum.planes[i].A * boundingBox[k*3+0] +
             globalFrustum.planes[i].B * boundingBox[k*3+1] +
             globalFrustum.planes[i].C * boundingBox[k*3+2] +
             globalFrustum.planes[i].D;
 
-            if (dist <= 0)
-                --InCount;
-            else
-                InCount++;
+            if (dist < 0) out++;
+            else in++;
         }
-
-        if (InCount <= 0)
+        if (!in)
             return 0;
-        else {
+        else if (out)
             return 1;
-        }
     }
 
     return 1;

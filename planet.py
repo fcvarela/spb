@@ -35,7 +35,7 @@ class Planet:
             qt = TerrainQuadtree(parent=None, maxlod=self.maxlod, index=i+1, baselat=baselat, baselon=baselon, span=degreespan)
             self.quadtrees.append(qt)
 
-    def draw(self, shader):
+    def draw(self, shader, framenumber):
         localshader = None
         if shader:
             localshader = self.shader
@@ -63,9 +63,10 @@ class Planet:
         glUniform3f(glGetUniformLocation(localshader.shader, 'v3CameraPos'), cameraPos[0], cameraPos[1], cameraPos[2])
         glUniform3f(glGetUniformLocation(localshader.shader, 'v3LightPos'), lightPos[0], lightPos[1], lightPos[2])
 
-        # push drawables to local scenegraph
-        self.scenegraph = []
-        [x.analyse() for x in self.quadtrees]
+        if framenumber % 4 == 0:
+            # push drawables to local scenegraph
+            self.scenegraph = []
+            [x.analyse() for x in self.quadtrees]
 
         # sort to draw near to far
         self.scenegraph.sort(key=attrgetter('distance'))
