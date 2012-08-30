@@ -25,7 +25,9 @@ class TerrainQuadtree:
 
         self.gridSize = 16
         self.gridSizep1 = self.gridSize + 1
-        self.textureSize = 256+4
+
+        self.textureBorder = 2
+        self.textureSize = 256+2*self.textureBorder
 
         self.centerHeight = 0
         self.sphere = []
@@ -103,12 +105,12 @@ class TerrainQuadtree:
 
     def generateTextures(self):
         # we'll fetch an extra pixel on both directions
-        degreesPerVertex = self.span/(self.textureSize-4.0)
+        degreesPerPixel = self.span/float(self.textureSize-self.textureBorder*2)
         
-        baselat = self.baselat - degreesPerVertex*2.0
-        latspan = self.span + degreesPerVertex*4.0
-        baselon = self.baselon - degreesPerVertex*2.0
-        lonspan = self.span+ degreesPerVertex*4.0
+        baselat = self.baselat - degreesPerPixel*float(self.textureBorder)
+        latspan = self.span + degreesPerPixel*float(self.textureBorder*2.0)
+        baselon = self.baselon - degreesPerPixel*float(self.textureBorder)
+        lonspan = self.span + degreesPerPixel*float(self.textureBorder*2.0)
 
         if self.framebuffer is None:
             self.framebuffer = Framebuffer()
@@ -347,9 +349,12 @@ class TerrainQuadtree:
 
                     # coords are 0,1. map to texelstep,1-texelstep
                     texelstep = 1.0/self.textureSize
-                    steprange = 1.0 - texelstep*4.0
+                    steprange = 1.0 - texelstep*float(self.textureBorder)*2.0
 
-                    texcoords.append([texelstep*2.0+cx*steprange, texelstep*2.0+cy*steprange])
+                    cx = texelstep*self.textureBorder+cx*steprange
+                    cy = texelstep*self.textureBorder+cy*steprange
+
+                    texcoords.append([cx, cy])
 
             texcoords.append([0.5, 0.5])
 
@@ -421,7 +426,7 @@ class TerrainQuadtree:
     def draw(self, skirts=False):
         glUniform1f(glGetUniformLocation(factory.planet.shader.shader, 'weight'), self.weight)
         glUniform1i(glGetUniformLocation(factory.planet.shader.shader, 'index'), self.index)
-        glUniform1f(glGetUniformLocation(factory.planet.shader.shader, 'texturesize'), self.textureSize-4.0)
+        glUniform1f(glGetUniformLocation(factory.planet.shader.shader, 'texturesize'), self.textureSize-self.textureBorder)
 
         glEnableClientState(GL_VERTEX_ARRAY)
         glBindBuffer(GL_ARRAY_BUFFER, self.positionBufferObject)
