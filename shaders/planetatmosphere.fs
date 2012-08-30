@@ -8,15 +8,15 @@ const float fOuterRadius2 = fOuterRadius * fOuterRadius;
 const float fInnerRadius2 = fInnerRadius * fInnerRadius;
 const float fKrESun = 0.0025 * 15.0;
 const float fKmESun = 0.0015 * 15.0;
-const float fKr4PI = 0.0025 * 4.0 * 3.142;
-const float fKm4PI = 0.0015 * 4.0 * 3.142;
+const float fKr4PI = 0.0025 * 4.0 * 3.14159;
+const float fKm4PI = 0.0015 * 4.0 * 3.14159;
 const float fScale = 1.0 / (fOuterRadius - fInnerRadius);
 const float fScaleDepth = 0.25;
 const float fScaleOverScaleDepth = (1.0 / (fOuterRadius - fInnerRadius)) / fScaleDepth;
-const int nSamples = 2;
-const float fSamples = 2.0;
-const float g = -0.95;
-const float g2 = g*g;
+const int nSamples = 3;
+const float fSamples = 3.0;
+const float g = -0.90;
+const float g2 = 0.81;
 
 float scale(float fCos) {
     float x = 1.0 - fCos;
@@ -92,4 +92,5 @@ void main (void) {
     float fMiePhase = 1.5 * ((1.0 - g2) / (2.0 + g2)) * (1.0 + fCos*fCos) / pow(1.0 + g2 - 2.0*g*fCos, 1.5);
     
     gl_FragColor = fRayleighPhase * primaryColor + fMiePhase * secondaryColor;
+    gl_FragColor = 1.0 - exp(-2.0 * gl_FragColor);
 }

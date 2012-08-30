@@ -22,8 +22,8 @@ const float fKm4PI = 0.0015 * 4.0 * 3.142;
 const float fScale = 1.0 / (fOuterRadius - fInnerRadius);
 const float fScaleDepth = 0.25;
 const float fScaleOverScaleDepth = (1.0 / (fOuterRadius - fInnerRadius)) / fScaleDepth;
-const int nSamples = 2;
-const float fSamples = 2.0;
+const int nSamples = 3;
+const float fSamples = 3.0;
 
 float scale(float fCos);
 float getNearIntersection(vec3 pos, vec3 ray, float distance2, float radius2);
