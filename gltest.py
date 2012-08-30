@@ -28,15 +28,14 @@ def main():
     if fullscreen is False:
         factory.width /= 2
         factory.height /= 2
-        factory.aspect_ratio = float(factory.width)/float(factory.height)
-        factory.hfov = 60.0
-        factory.vfov = 2.0 * math.atan(math.tan(factory.hfov/2.0*math.pi/180.0)/factory.aspect_ratio)*180.0/math.pi
-        print factory.vfov
-
         gl_flags = OPENGL|DOUBLEBUF|HWSURFACE
     else:
         gl_flags = FULLSCREEN|OPENGL|DOUBLEBUF|HWSURFACE
 
+    factory.aspect_ratio = float(factory.width)/float(factory.height)
+    factory.hfov = 60.0
+    factory.vfov = 2.0 * math.atan(math.tan(factory.hfov/2.0*math.pi/180.0)/factory.aspect_ratio)*180.0/math.pi
+    
     size = (factory.width, factory.height)
     screen = pygame.display.set_mode(size, gl_flags)
     initialize()
@@ -186,8 +185,11 @@ def determineFrustum(camera, planet):
         near = max(1.0, (distance - planet.radius)/2.0)
         far = distance+planet.radius*3.0
     else:
-        near = max(1.0, altitude)
-        far = planet.radius
+        near = 1.0
+        far = math.sqrt(altitude * (2 * planet.radius + altitude))*1000.0
+
+    factory.near = near
+    factory.far = far
 
     return (near, far)
 

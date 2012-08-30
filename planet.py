@@ -58,7 +58,6 @@ class Planet:
         glUniform1i(glGetUniformLocation(localshader.shader, 'ptopoTexture'), 5)
 
         # near far
-        glUniform1f(glGetUniformLocation(localshader.shader, 'near'), factory.near)
         glUniform1f(glGetUniformLocation(localshader.shader, 'far'), factory.far)
             
         cameraPos = np.array(factory.camera.position)/self.radius
@@ -69,13 +68,15 @@ class Planet:
 
         if framenumber % 4 == 0:
             # push drawables to local scenegraph
-            for x in self.quadtrees:
-                x.analyse()
+            self.scenegraph = []
+            [x.analyse() for x in self.quadtrees]
 
         # sort to draw near to far
         self.scenegraph.sort(key=attrgetter('distance'))
-        for x in self.scenegraph:
-            x.draw()
+
+        # draw skirts
+        [x.draw(skirts = True) for x in self.scenegraph]
+        [x.draw(skirts = False) for x in self.scenegraph]
 
         localshader.dettach()
 

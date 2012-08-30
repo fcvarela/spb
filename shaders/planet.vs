@@ -44,6 +44,7 @@ void main() {
     if (length(gl_Vertex.xyz) < 0.1) {
         vvertex = gl_ModelViewMatrix * gl_Vertex;
         gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+        gl_TexCoord[6] = gl_Position;
         return;
     }
     gl_TexCoord[0] = gl_MultiTexCoord0;
@@ -126,4 +127,5 @@ void main() {
     }
     gl_FrontColor.rgb = v3FrontColor * (v3InvWavelength * fKrESun + fKmESun);
     gl_FrontSecondaryColor.rgb = v3Attenuate;
+    gl_TexCoord[6] = gl_Position;
 }

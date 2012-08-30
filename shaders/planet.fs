@@ -10,10 +10,15 @@ uniform sampler2D pcolorTexture;
 uniform float weight;
 uniform float texturesize;
 uniform int index;
+uniform float far;
 
 mat3 fromToRotation(vec3 from, vec3 to);
 
 void main() {
+    const float near = 1.0;
+    const float offset = 1.0;
+    gl_FragDepth = (log(near * gl_TexCoord[6].z + offset) / log(near * far + offset));
+
     vec3 normal = texture2D(normalTexture, gl_TexCoord[0].st).xyz;
     vec4 color = texture2D(colorTexture, gl_TexCoord[0].st);
 

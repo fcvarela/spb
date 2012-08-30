@@ -450,16 +450,14 @@ class TerrainQuadtree:
         except:
             pass
 
-        #if not skirts:
+        if not skirts:
             # vertices
-        indexcount = (self.gridSizep1*self.gridSize*2)+(self.gridSize*4)
-        glDrawElements(GL_TRIANGLE_STRIP, indexcount, GL_UNSIGNED_SHORT, c_void_p(0))
-        #else:
-        #glDepthMask(GL_FALSE)
-        skirtcount = (self.gridSizep1 + 2) * 4
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.skirtIndexBufferObject)
-        glDrawElements(GL_TRIANGLE_FAN, skirtcount, GL_UNSIGNED_SHORT, c_void_p(0))
-        #glDepthMask(GL_TRUE)
+            indexcount = (self.gridSizep1*self.gridSize*2)+(self.gridSize*4)
+            glDrawElements(GL_TRIANGLE_STRIP, indexcount, GL_UNSIGNED_SHORT, c_void_p(0))
+        else:
+            skirtcount = (self.gridSizep1 + 2) * 4
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.skirtIndexBufferObject)
+            glDrawElements(GL_TRIANGLE_FAN, skirtcount, GL_UNSIGNED_SHORT, c_void_p(0))
 
         factory.drawnNodes += 1
 
