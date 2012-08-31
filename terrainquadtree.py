@@ -253,9 +253,9 @@ class TerrainQuadtree:
         self.box = array(self.box)*1738140.0
 
         # add planet center vertex for skirts
-        self.vertices[self.gridSizep1*self.gridSizep1*3 + 0] = 0.0
-        self.vertices[self.gridSizep1*self.gridSizep1*3 + 1] = 0.0
-        self.vertices[self.gridSizep1*self.gridSizep1*3 + 2] = 0.0
+        self.vertices[self.gridSizep1*self.gridSizep1*3 + 0] = self.center[0] * 0.1
+        self.vertices[self.gridSizep1*self.gridSizep1*3 + 1] = self.center[1] * 0.1
+        self.vertices[self.gridSizep1*self.gridSizep1*3 + 2] = self.center[2] * 0.1
 
         self.sidelength = math.sqrt(\
             (self.topleft[0] - self.botleft[0])**2+\

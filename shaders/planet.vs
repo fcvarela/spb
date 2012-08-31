@@ -41,9 +41,10 @@ float getNearIntersection(vec3 pos, vec3 ray, float distance2, float radius2) {
 }
 
 void main() {
-    if (length(gl_Vertex.xyz) < 0.1) {
-        vvertex = gl_ModelViewMatrix * gl_Vertex;
-        gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+    if (length(gl_Vertex.xyz) < 0.2) {
+        vertex = vec4(normalize(gl_Vertex.xyz) * (1738140.0/2.0), 1.0);
+        vvertex = gl_ModelViewMatrix * vertex;
+        gl_Position = gl_ModelViewProjectionMatrix * vertex;
         gl_TexCoord[6] = gl_Position;
         return;
     }
