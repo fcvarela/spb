@@ -1,7 +1,10 @@
 #!/usr/bin/env python2.7
 
+import OpenGL
 from OpenGL.GL import *
 from OpenGL.GLU import *
+from OpenGL.arrays import numpymodule
+
 from pygame.locals import *
 
 import pygame, math, sys
@@ -13,12 +16,18 @@ framenumber = 0
 sunlon = 0.
 screen = None
 stop = False
+clock = None
 
 def main():
     global screen
+    global clock
 
     pygame.init()
     pygame.display.init()
+
+    # initialize clock
+    clock = pygame.time.Clock()
+
     info = pygame.display.Info()
     factory.width = info.current_w
     factory.height = info.current_h
@@ -38,11 +47,19 @@ def main():
     
     size = (factory.width, factory.height)
     screen = pygame.display.set_mode(size, gl_flags)
+
+    rendererString = "Renderer: %s %s" % (\
+        glGetString(GL_RENDERER),\
+        glGetString(GL_VERSION))
+    print rendererString
     initialize()
     
     while not stop:
         # handle events
         handle_events(pygame.event.get())
+
+        # tick the clock
+        clock.tick()
 
         # process stuff
         step()
@@ -228,12 +245,14 @@ def display():
     factory.calculateFrustum()
     
     global sunlon
-    sunlon += factory.dt*2.
+    #sunlon += factory.dt*2.
     factory.sun.position = factory.geocentricToCarthesian(0.0, sunlon, factory.planet.radius*8.0)
     glLightfv(GL_LIGHT0, GL_POSITION, list(factory.sun.position))
 
     renderObjects(True)
     framenumber += 1
+    #print factory.drawnNodes
+    print clock.get_fps()
 
 if __name__ == '__main__':
     main()

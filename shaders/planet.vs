@@ -66,7 +66,7 @@ void main() {
         if (index == 4)
             parentCoords = 0.5-1.0/texturesize+vec2(gl_TexCoord[0].s/2.0, gl_TexCoord[0].t/2.0);
         vec4 pheightmap = texture2D(ptopoTexture, parentCoords);
-        float pheight = pheightmap.a*256.0*256.0 + pheightmap.r*256.0;
+        float pheight = pheightmap.a*65536.0 + pheightmap.r*256.0;
         height = mix(height, pheight, weight);
     }
     height -= 16384.0;

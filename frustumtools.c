@@ -28,29 +28,12 @@ void geocentricToCarthesian(double *position, float latitude, float longitude) {
     position[1] = sin(lat * 0.0174532925);
 }
 
-void extractPlane(plane_t *plane, GLfloat *mat, int row) {
-    int scale = (row < 0) ? -1 : 1;
-    row = abs(row) - 1;
-
-    // calculate plane coefficients from the matrix
-    plane->A = mat[3] + scale * mat[row];
-    plane->B = mat[7] + scale * mat[row + 4];
-    plane->C = mat[11] + scale * mat[row + 8];
-    plane->D = mat[15] + scale * mat[row + 12];
-
-    // normalize the plane
-    double length = sqrtf(plane->A * plane->A + plane->B * plane->B + plane->C * plane->C);
-    plane->A /= length;
-    plane->B /= length;
-    plane->C /= length;
-    plane->D /= length;
-}
-
-    // determines the current view frustum
+// determines the current view frustum
 void calculateFrustum() {
     // get the projection and modelview matrices
     GLfloat projection[16];
     GLfloat modelview[16];
+    GLfloat modelviewprojection[16];
 
     glGetFloatv(GL_PROJECTION_MATRIX, projection);
     glGetFloatv(GL_MODELVIEW_MATRIX, modelview);
@@ -59,16 +42,55 @@ void calculateFrustum() {
     glPushMatrix();
     glLoadMatrixf(projection);
     glMultMatrixf(modelview);
-    glGetFloatv(GL_MODELVIEW_MATRIX, modelview);
+    glGetFloatv(GL_MODELVIEW_MATRIX, modelviewprojection);
     glPopMatrix();
 
-    // extract each plane
-    extractPlane(&globalFrustum.l, modelview, 1);
-    extractPlane(&globalFrustum.r, modelview, -1);
-    extractPlane(&globalFrustum.b, modelview, 2);
-    extractPlane(&globalFrustum.t, modelview, -2);
-    extractPlane(&globalFrustum.n, modelview, 3);
-    extractPlane(&globalFrustum.f, modelview, -3);
+    // Left clipping plane
+    globalFrustum.planes[0].A = modelviewprojection[3] +  modelviewprojection[0];
+    globalFrustum.planes[0].B = modelviewprojection[7] +  modelviewprojection[4];
+    globalFrustum.planes[0].C = modelviewprojection[11] + modelviewprojection[8];
+    globalFrustum.planes[0].D = modelviewprojection[15] + modelviewprojection[12];
+
+    // Right clipping plane
+    globalFrustum.planes[1].A = modelviewprojection[3] -  modelviewprojection[0];
+    globalFrustum.planes[1].B = modelviewprojection[7] -  modelviewprojection[4];
+    globalFrustum.planes[1].C = modelviewprojection[11] - modelviewprojection[8];
+    globalFrustum.planes[1].D = modelviewprojection[15] - modelviewprojection[12];
+
+    // Top clipping plane
+    globalFrustum.planes[2].A = modelviewprojection[3] -  modelviewprojection[1];
+    globalFrustum.planes[2].B = modelviewprojection[7] -  modelviewprojection[5];
+    globalFrustum.planes[2].C = modelviewprojection[11] - modelviewprojection[9];
+    globalFrustum.planes[2].D = modelviewprojection[15] - modelviewprojection[13];
+
+    // Bottom clipping plane
+    globalFrustum.planes[3].A = modelviewprojection[3] +  modelviewprojection[1];
+    globalFrustum.planes[3].B = modelviewprojection[7] +  modelviewprojection[5];
+    globalFrustum.planes[3].C = modelviewprojection[11] + modelviewprojection[9];
+    globalFrustum.planes[3].D = modelviewprojection[15] + modelviewprojection[13];
+
+    // Near clipping plane
+    globalFrustum.planes[4].A = modelviewprojection[3] +  modelviewprojection[2];
+    globalFrustum.planes[4].B = modelviewprojection[7] +  modelviewprojection[6];
+    globalFrustum.planes[4].C = modelviewprojection[11] + modelviewprojection[10];
+    globalFrustum.planes[4].D = modelviewprojection[15] + modelviewprojection[14];
+
+    // Far clipping plane
+    globalFrustum.planes[5].A = modelviewprojection[3] -  modelviewprojection[2];
+    globalFrustum.planes[5].B = modelviewprojection[7] -  modelviewprojection[6];
+    globalFrustum.planes[5].C = modelviewprojection[11] - modelviewprojection[10];
+    globalFrustum.planes[5].D = modelviewprojection[15] - modelviewprojection[14];
+
+    int i;
+    plane_t *plane;
+    for (i=0; i<6; i++) {
+        plane = &globalFrustum.planes[i];
+        double length = sqrtf(plane->A * plane->A + plane->B * plane->B + plane->C * plane->C);
+        plane->A /= length;
+        plane->B /= length;
+        plane->C /= length;
+        plane->D /= length;
+    }
 }
 
 int sphereInFrustum(double *sphere) {
@@ -79,11 +101,9 @@ int sphereInFrustum(double *sphere) {
             globalFrustum.planes[i].B * sphere[1] +
             globalFrustum.planes[i].C * sphere[2] +
             globalFrustum.planes[i].D;
+        
         if (dist < -sphere[3])
             return 0;
-
-        if (fabs(dist) < sphere[3])
-            return 1;
     }
     return 1;
 }

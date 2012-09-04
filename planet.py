@@ -66,7 +66,7 @@ class Planet:
         glUniform3f(glGetUniformLocation(localshader.shader, 'v3CameraPos'), cameraPos[0], cameraPos[1], cameraPos[2])
         glUniform3f(glGetUniformLocation(localshader.shader, 'v3LightPos'), lightPos[0], lightPos[1], lightPos[2])
 
-        if framenumber % 4 == 0:
+        if framenumber % 2 == 0:
             # push drawables to local scenegraph
             self.scenegraph = []
             [x.analyse() for x in self.quadtrees]
@@ -84,7 +84,7 @@ class Planet:
         self.atmosphereshader.attach()
 
         cameraPos = np.array(factory.camera.position)/self.radius
-        lightPos = lightPos = factory.normalize(factory.sun.position)
+        lightPos = factory.normalize(factory.sun.position)
         glUniform3f(glGetUniformLocation(self.atmosphereshader.shader, 'v3CameraPos'), cameraPos[0], cameraPos[1], cameraPos[2])
         glUniform3f(glGetUniformLocation(self.atmosphereshader.shader, 'v3LightPos'), lightPos[0], lightPos[1], lightPos[2])
 

@@ -215,12 +215,25 @@ class TerrainQuadtree:
 
                 coord = array(factory.geocentricToCarthesian(lat, lon, 1.0))
 
+                coordLow = coord*(1738140.0-32768.0)
+                coordHigh = coord*(1738140.0+32768.0)
+
                 # box
                 for i in range(0, 3):
                     if coord[i] < bmin[i]:
                         bmin[i] = coord[i]
                     if coord[i] > bmax[i]:
                         bmax[i] = coord[i]
+
+                    if coordLow[i] < bmin[i]:
+                        bmin[i] = coordLow[i]
+                    if coordLow[i] > bmax[i]:
+                        bmax[i] = coordLow[i]
+
+                    if coordHigh[i] < bmin[i]:
+                        bmin[i] = coordHigh[i]
+                    if coordHigh[i] > bmax[i]:
+                        bmax[i] = coordHigh[i]
 
                 self.vertices[self.gridSizep1*y*3 + x*3 + 0] = coord[0]
                 self.vertices[self.gridSizep1*y*3 + x*3 + 1] = coord[1]
@@ -250,8 +263,6 @@ class TerrainQuadtree:
         self.box.extend([bmax[0], bmin[1], bmin[2]]);
         self.box.extend([bmax[0], bmin[1], bmax[2]]);
 
-        self.box = array(self.box)*1738140.0
-
         # add planet center vertex for skirts
         self.vertices[self.gridSizep1*self.gridSizep1*3 + 0] = self.center[0] * 0.1
         self.vertices[self.gridSizep1*self.gridSizep1*3 + 1] = self.center[1] * 0.1
@@ -261,13 +272,18 @@ class TerrainQuadtree:
             (self.topleft[0] - self.botleft[0])**2+\
             (self.topleft[1] - self.botleft[1])**2+\
             (self.topleft[2] - self.botleft[2])**2)
+        self.diagonal = math.sqrt(\
+            (self.topleft[0] - self.botright[0])**2+\
+            (self.topleft[1] - self.botright[1])**2+\
+            (self.topleft[2] - self.botright[2])**2)
+
         self.vertices = array(self.vertices, dtype='float32')
 
         box_p = c_double*24
         self.box = box_p(*array(self.box).flatten())
 
         sphere = list(self.center*1738140.0)
-        sphere.append((self.sidelength*1738140.0)*2.0)
+        sphere.append((self.diagonal*1738140.0)/2.0)
 
         sphere_p = c_double*4
         self.sphere = sphere_p(*array(sphere).flatten())
@@ -379,8 +395,13 @@ class TerrainQuadtree:
         if not self.ready:
             return
 
-        if not factory.boxInFrustum(self.box):
+        if not factory.sphereInFrustum(self.sphere):
            return
+
+        #normalized_cam = factory.normalize(factory.camera.position)
+        #dot = factory.dot(list(normalized_cam), self.normal)
+        #if dot < -0.8:
+        #    return
 
         # do we need to draw our children
         d1 = factory.veclen(factory.camera.position - self.center*1738140.0)
@@ -458,6 +479,18 @@ class TerrainQuadtree:
             skirtcount = (self.gridSizep1 + 2) * 4
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.skirtIndexBufferObject)
             glDrawElements(GL_TRIANGLE_FAN, skirtcount, GL_UNSIGNED_SHORT, c_void_p(0))
+
+        factory.drawnNodes += 1
+        
+        # draw bounding sphere
+        return
+        glPushMatrix()
+        factory.planet.shader.dettach()
+        #glTranslatef(factory.camera.position[0], factory.camera.position[1], factory.camera.position[2])
+        glTranslatef(-self.sphere[0], -self.sphere[1], -self.sphere[2])
+        glutSolidSphere(self.sidelength*1738140.0/2.0, 20, 20);
+        factory.planet.shader.attach()
+        glPopMatrix()
 
         factory.drawnNodes += 1
 

@@ -51,7 +51,8 @@ def cross(a, b):
     return output
 
 def normalize(a):
-    output = a
+    output = []
+    output.extend(a)
 
     nlen = math.sqrt(a[0]**2 + a[1]**2 + a[2]**2)
     output[0] /= nlen
