@@ -22,8 +22,8 @@ const float fKm4PI = 0.0015 * 4.0 * 3.142;
 const float fScale = 1.0 / (fOuterRadius - fInnerRadius);
 const float fScaleDepth = 0.25;
 const float fScaleOverScaleDepth = (1.0 / (fOuterRadius - fInnerRadius)) / fScaleDepth;
-const int nSamples = 3;
-const float fSamples = 3.0;
+const int nSamples = 2;
+const float fSamples = 2.0;
 
 float scale(float fCos);
 float getNearIntersection(vec3 pos, vec3 ray, float distance2, float radius2);
@@ -53,7 +53,7 @@ void main() {
     float radius = 1738140.0;
     
     vec4 heightmap = texture2D(topoTexture, gl_TexCoord[0].st);
-    float height = heightmap.a*256.0*256.0 + heightmap.r*256.0;
+    float height = heightmap.a*65536.0 + heightmap.r*256.0 - 32768.0;
 
     if (weight > 0.0) {
         vec2 parentCoords;
@@ -66,10 +66,10 @@ void main() {
         if (index == 4)
             parentCoords = 0.5-1.0/texturesize+vec2(gl_TexCoord[0].s/2.0, gl_TexCoord[0].t/2.0);
         vec4 pheightmap = texture2D(ptopoTexture, parentCoords);
-        float pheight = pheightmap.a*65536.0 + pheightmap.r*256.0;
+        float pheight = pheightmap.a*65536.0 + pheightmap.r*256.0 - 32768.0;
         height = mix(height, pheight, weight);
     }
-    height -= 16384.0;
+    
     vertex = vec4(normalize(gl_Vertex.xyz) * (height + radius), 1.0);
 
     vvertex = gl_ModelViewMatrix * vertex;

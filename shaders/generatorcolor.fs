@@ -2,7 +2,9 @@ uniform sampler2D topoTexture;
 
 void main() {
   vec4 topo = texture2D(topoTexture, gl_TexCoord[0].st);
-  float height = topo.a*65536.0+topo.r*256.0-16384.0;
+  float height = topo.a * 65536.0 + topo.r * 256.0;
+  height = (height / 65536.0) * 2.0 - 1.0;
+  height = height * 16384.0;
   
   vec4 shades[10];
   float heights[10];

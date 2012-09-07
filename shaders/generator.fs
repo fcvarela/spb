@@ -253,8 +253,10 @@ float ridgedmf(vec4 p/*, float H, float lacunarity, int octaves, float offset, i
 
 
 void main() {
-  // pipeline here [copy from complexplanet]
-  int height = int(ridgedmf(coords()*2.0)*32768.0);
-  gl_FragColor.a = float(height/256) / 256.0;
-  gl_FragColor.r = float(mod(float(height),256.0)) / 256.0;
+  float height = ridgedmf(coords())*65536.0;
+  int heighti = int(height);
+  height = fract(height);
+  gl_FragColor.a = float(heighti/256) / 256.0;
+  gl_FragColor.r = float(mod(float(heighti), 256.0)) / 256.0;
+  gl_FragColor.g = height;
 }
