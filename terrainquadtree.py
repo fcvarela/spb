@@ -15,18 +15,24 @@ from shaderprogram import *
 from framebuffer import *
 
 class TerrainQuadtree:
-    def __init__(self, parent, maxlod, index, baselat, baselon, span):
+    def __init__(self, parent, maxlod, face, index, center, dx, dy):
         self.parent = parent
         self.maxlod = maxlod
-        self.baselat = baselat
-        self.baselon = baselon
+        self.face = face
         self.index = index
-        self.span = span
+        self.center = center
+        self.dx = dx
+        self.dy = dy
 
-        self.gridSize = 16
+        self.latspan = 0.0
+        self.lonspan = 0.0
+        self.baselat = 0.0
+        self.baselon = 0.0
+
+        self.gridSize = 32
         self.gridSizep1 = self.gridSize + 1
 
-        self.textureBorder = 2
+        self.textureBorder = 1
         self.textureSize = 256+2*self.textureBorder
 
         self.centerHeight = 0
@@ -45,6 +51,7 @@ class TerrainQuadtree:
         self.texcoordBufferObject = None
         self.indexBufferObject = None
         self.skirtIndexBufferObject = None
+
         if parent is not None:
             self.texcoordBufferObject = parent.texcoordBufferObject
             self.indexBufferObject = parent.indexBufferObject
@@ -105,19 +112,21 @@ class TerrainQuadtree:
 
     def generateTextures(self):
         # we'll fetch an extra pixel on both directions
-        degreesPerPixel = self.span/float(self.textureSize-self.textureBorder*2)
+        degreesPerPixelLat = self.latspan/float(self.textureSize-self.textureBorder*2)
+        degreesPerPixelLon = self.lonspan/float(self.textureSize-self.textureBorder*2)
         
-        baselat = self.baselat - degreesPerPixel*float(self.textureBorder)
-        latspan = self.span + degreesPerPixel*float(self.textureBorder*2.0)
-        baselon = self.baselon - degreesPerPixel*float(self.textureBorder)
-        lonspan = self.span + degreesPerPixel*float(self.textureBorder*2.0)
+        baselat = self.baselat - degreesPerPixelLat*float(self.textureBorder)
+        latspan = self.latspan + degreesPerPixelLat*float(self.textureBorder*2.0)
+
+        baselon = self.baselon - degreesPerPixelLon*float(self.textureBorder)
+        lonspan = self.lonspan + degreesPerPixelLon*float(self.textureBorder*2.0)
 
         if self.framebuffer is None:
             self.framebuffer = Framebuffer()
 
         # bind framebuffer to our texture
         self.framebuffer.bind(self.topoTexture.id)
-
+        self.positionTexture.bind(GL_TEXTURE0)
         glDisable(GL_DEPTH_TEST)
         glViewport(0, 0, self.textureSize, self.textureSize)
         glMatrixMode(GL_PROJECTION)
@@ -131,10 +140,7 @@ class TerrainQuadtree:
         # use the generator shader
         self.generatorShader.attach()
         d2r = math.pi/180.0
-        glUniform1f(glGetUniformLocation(self.generatorShader.shader, 'baselat'), baselat*d2r)
-        glUniform1f(glGetUniformLocation(self.generatorShader.shader, 'baselon'), baselon*d2r)
-        glUniform1f(glGetUniformLocation(self.generatorShader.shader, 'latspan'), latspan*d2r)
-        glUniform1f(glGetUniformLocation(self.generatorShader.shader, 'lonspan'), lonspan*d2r)
+        glUniform1i(glGetUniformLocation(self.generatorShader.shader, 'positionTexture'), 0)
         glBegin(GL_QUADS)
         glTexCoord2f(0., 0.)
         glVertex3f(0., 0., 0.)
@@ -202,18 +208,15 @@ class TerrainQuadtree:
         self.processInit()
 
     def generateVertices(self):
-        step = self.span / self.gridSize
-
         # bounding box blues
         bmin = [0.0, 0.0, 0.0]
         bmax = [0.0, 0.0, 0.0]
 
-        for y in range(0, self.gridSizep1):
-            lat = self.baselat + (self.gridSize-y)*step
-            for x in range(0, self.gridSizep1):
-                lon = self.baselon + x*step
-
-                coord = array(factory.geocentricToCarthesian(lat, lon, 1.0))
+        for u in range(0, self.gridSizep1):
+            for v in range(0, self.gridSizep1):
+                coord = array(self.center +\
+                    (self.dx/self.gridSize) * (v-self.gridSize/2.) +\
+                    (self.dy/self.gridSize) * (self.gridSize/2. - u))
 
                 coordLow = coord*(1738140.0-32768.0)
                 coordHigh = coord*(1738140.0+32768.0)
@@ -235,20 +238,25 @@ class TerrainQuadtree:
                     if coordHigh[i] > bmax[i]:
                         bmax[i] = coordHigh[i]
 
-                self.vertices[self.gridSizep1*y*3 + x*3 + 0] = coord[0]
-                self.vertices[self.gridSizep1*y*3 + x*3 + 1] = coord[1]
-                self.vertices[self.gridSizep1*y*3 + x*3 + 2] = coord[2]
+                self.vertices[self.gridSizep1*u*3 + v*3 + 0] = coord[0]
+                self.vertices[self.gridSizep1*u*3 + v*3 + 1] = coord[1]
+                self.vertices[self.gridSizep1*u*3 + v*3 + 2] = coord[2]
 
-                if y == x and x == self.gridSize/2:
-                    self.center = coord
-                if y == 0 and x == 0:
+                if u == 0 and v == 0:
                     self.topleft = coord
-                if y == 0 and x == self.gridSize:
+                if u == 0 and v == self.gridSize:
                     self.topright = coord
-                if y == self.gridSize and x == 0:
+                if u == self.gridSize and v == 0:
                     self.botleft = coord
-                if y == self.gridSize and x == self.gridSize:
+                if u == self.gridSize and v == self.gridSize:
                     self.botright = coord
+
+        baselatlon = factory.carthesianToGeocentric(self.botleft)
+        maxlatlon = factory.carthesianToGeocentric(self.topright)
+        self.baselat = baselatlon[0]
+        self.baselon = baselatlon[1]
+        self.latspan = maxlatlon[0] - baselatlon[0]
+        self.lonspan = maxlatlon[1] - baselatlon[1]
 
         # finish bounding box
         self.box.extend([bmin[0], bmax[1], bmin[2]]);
@@ -283,7 +291,7 @@ class TerrainQuadtree:
         self.box = box_p(*array(self.box).flatten())
 
         sphere = list(self.center*1738140.0)
-        sphere.append((self.diagonal*1738140.0)/2.0)
+        sphere.append((self.diagonal*1738140.0))
 
         sphere_p = c_double*4
         self.sphere = sphere_p(*array(sphere).flatten())
@@ -296,6 +304,12 @@ class TerrainQuadtree:
         self.processInit()
 
     def finishVertices(self):
+        # copy vertex data to position texture
+        self.positionTexture = Texture(self.textureSize, False)
+        self.positionTexture.bind()
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, self.gridSizep1, self.gridSizep1, 0, GL_RGB, GL_FLOAT, self.vertices)
+        self.positionTexture.unbind()
+
         self.positionBufferObject = glGenBuffers(1)
         glBindBuffer(GL_ARRAY_BUFFER, self.positionBufferObject)
         glBufferData(GL_ARRAY_BUFFER, self.vertices, GL_STATIC_DRAW)
@@ -487,17 +501,31 @@ class TerrainQuadtree:
         glPushMatrix()
         factory.planet.shader.dettach()
         #glTranslatef(factory.camera.position[0], factory.camera.position[1], factory.camera.position[2])
-        glTranslatef(-self.sphere[0], -self.sphere[1], -self.sphere[2])
-        glutSolidSphere(self.sidelength*1738140.0/2.0, 20, 20);
+        glTranslatef(self.sphere[0], self.sphere[1], self.sphere[2])
+        glutSolidSphere(self.diagonal*1738140.0/2.0, 20, 20);
         factory.planet.shader.attach()
         glPopMatrix()
 
         factory.drawnNodes += 1
 
     def initChildren(self):
-        qt1 = TerrainQuadtree(self, self.maxlod-1, 1, self.baselat, self.baselon, self.span/2.)
-        qt2 = TerrainQuadtree(self, self.maxlod-1, 2, self.baselat, self.baselon+self.span/2., self.span/2.)
-        qt3 = TerrainQuadtree(self, self.maxlod-1, 3, self.baselat+self.span/2., self.baselon, self.span/2.)
-        qt4 = TerrainQuadtree(self, self.maxlod-1, 4, self.baselat+self.span/2., self.baselon+self.span/2., self.span/2.)
+        dx = self.dx / 2.0
+        dy = self.dy / 2.0
 
+        # index 1
+        center = self.center - self.dx/4.0 + self.dy/4.0
+        qt1 = TerrainQuadtree(self, self.maxlod-1, self.face, 1, center, dx, dy)
+
+        # index 2
+        center = self.center + self.dx/4.0 + self.dy/4.0
+        qt2 = TerrainQuadtree(self, self.maxlod-1, self.face, 2, center, dx, dy)
+
+        # index 3
+        center = self.center - self.dx/4.0 - self.dy/4.0
+        qt3 = TerrainQuadtree(self, self.maxlod-1, self.face, 3, center, dx, dy)
+        
+        # index 4
+        center = self.center + self.dx/4.0 - self.dy/4.0
+        qt4 = TerrainQuadtree(self, self.maxlod-1, self.face, 4, center, dx, dy)
+        
         self.children = [qt1, qt2, qt3, qt4]

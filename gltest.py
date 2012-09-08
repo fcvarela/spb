@@ -253,7 +253,7 @@ def display():
     framenumber += 1
     #print factory.drawnNodes
     #print clock.get_fps()
-    print factory.veclen(factory.camera.position) - factory.planet.radius;
+    #print factory.veclen(factory.camera.position) - factory.planet.radius;
 
 if __name__ == '__main__':
     main()

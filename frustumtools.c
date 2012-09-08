@@ -16,6 +16,7 @@ int sphereInFrustum(double *sphere);
 int boxInFrustum(double *boundingBox);
 double veclen(double *vec);
 void geocentricToCarthesian(double *position, float latitude, float longitude);
+void carthesianToGeocentric(double *latlon, double *position);
 
 union frustum_t globalFrustum;
 
@@ -26,6 +27,14 @@ void geocentricToCarthesian(double *position, float latitude, float longitude) {
     position[2] = cos(lon * 0.0174532925) * cos(lat * 0.0174532925);
     position[0] = sin(lon * 0.0174532925) * cos(lat * 0.0174532925);
     position[1] = sin(lat * 0.0174532925);
+}
+
+void carthesianToGeocentric(double *latlon, double *position) {
+    double longitude = atan2(position[0], position[2]) * 180.0/M_PI;
+    double latitude = M_PI/2.0 - atan2(sqrt(position[2]*position[2] + position[0]*position[0]), position[1]);
+    latitude *= 180.0/M_PI;
+    latlon[0] = latitude;
+    latlon[1] = longitude;
 }
 
 // determines the current view frustum

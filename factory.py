@@ -28,6 +28,11 @@ def geocentricToCarthesian(lat, lon, alt):
     lib.geocentricToCarthesian(position1, c_float(lat), c_float(lon))
     return array(list(position1))*alt
 
+def carthesianToGeocentric(position):
+    latlon = vecptr()
+    lib.carthesianToGeocentric(latlon, vecptr(*position))
+    return array(list(latlon))
+
 def calculateFrustum():
     if trackFrustum:
         lib.calculateFrustum()

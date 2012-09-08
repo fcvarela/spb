@@ -24,16 +24,45 @@ class Planet:
 
         self.shader = ShaderProgram('planet')
         self.atmosphereshader = ShaderProgram('planetatmosphere')
+        
+        # top
+        center = array([.0, .5, .0])
+        dx = array([1., 0., 0.])
+        dy = array([0., 0., -1.])
+        qt1 = TerrainQuadtree(parent=None, maxlod=self.maxlod, face=0, index=2, center=center, dx=dx, dy=dy)
 
-        baselat = 0.
-        degreespan = 90.
-        for i in range(0,8):
-            baselon = -180 + (i%4 * 90.)
-            if i > 3:
-                baselat = -90.
-            
-            qt = TerrainQuadtree(parent=None, maxlod=self.maxlod, index=i+1, baselat=baselat, baselon=baselon, span=degreespan)
-            self.quadtrees.append(qt)
+        # left
+        center = array([-.5, 0., 0.])
+        dx = array([0., 0., 1.])
+        dy = array([0., 1., 0.])
+        qt2 = TerrainQuadtree(parent=None, maxlod=self.maxlod, face=0, index=2, center=center, dx=dx, dy=dy)
+        
+        # front
+        center = array([.0, .0, .5])
+        dx = array([1., .0, .0])
+        dy = array([.0, 1., .0])
+        qt3 = TerrainQuadtree(parent=None, maxlod=self.maxlod, face=0, index=3, center=center, dx=dx, dy=dy)
+
+        # right
+        center = array([.5, .0, .0])
+        dx = array([0., .0, -1.])
+        dy = array([.0, 1., .0])
+        qt4 = TerrainQuadtree(parent=None, maxlod=self.maxlod, face=0, index=4, center=center, dx=dx, dy=dy)
+
+        # back
+        center = array([.0, .0, -.5])
+        dx = array([-1., .0, 0.])
+        dy = array([.0, 1., .0])
+        qt5 = TerrainQuadtree(parent=None, maxlod=self.maxlod, face=0, index=4, center=center, dx=dx, dy=dy)
+
+        # bbottom
+        center = array([.0, -.5, .0])
+        dx = array([1., .0, 0.])
+        dy = array([.0, 0., 1.])
+        qt6 = TerrainQuadtree(parent=None, maxlod=self.maxlod, face=0, index=4, center=center, dx=dx, dy=dy)
+
+        # add them
+        self.quadtrees.extend([qt1, qt2, qt3, qt4, qt5, qt6])
 
     def draw(self, shader, framenumber):
         localshader = None
