@@ -182,7 +182,7 @@ float ridgedmf(vec4 p/*, float H, float lacunarity, int octaves, float offset, i
 {
   float H = 1.1;
   float lacunarity = 1.8;
-  int octaves = 20;
+  int octaves = 40;
   float offset = 0.80;
   float sharpness = 3.0;
   float threshold = 20.0;
@@ -237,10 +237,10 @@ uniform sampler2D positionTexture;
 
 void main() {
 
-  vec2 tc = vec2(gl_TexCoord[0].s, 1.0-gl_TexCoord[0].t);
-  float offset = 1.0/62.0;
+  vec2 tc = vec2(gl_TexCoord[0].s, gl_TexCoord[0].t);
+  /*float offset = 1.0/29.0;
   tc = tc * (1.0 - offset*2.0);
-  tc = tc + offset;
+  tc = tc + offset;*/
   vec4 coords = vec4(texture2D(positionTexture, tc).rgb, 1.0);
   float height = ridgedmf(coords*2.0)*65536.0;
   int heighti = int(height);

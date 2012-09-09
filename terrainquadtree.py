@@ -32,7 +32,7 @@ class TerrainQuadtree:
         self.gridSize = 32
         self.gridSizep1 = self.gridSize + 1
 
-        self.textureBorder = 1
+        self.textureBorder = 2
         self.textureSize = 256+2*self.textureBorder
 
         self.centerHeight = 0
@@ -139,7 +139,6 @@ class TerrainQuadtree:
 
         # use the generator shader
         self.generatorShader.attach()
-        d2r = math.pi/180.0
         glUniform1i(glGetUniformLocation(self.generatorShader.shader, 'positionTexture'), 0)
         glBegin(GL_QUADS)
         glTexCoord2f(0., 0.)
@@ -152,12 +151,6 @@ class TerrainQuadtree:
         glVertex3f(0., self.textureSize, 0.)
         glEnd()
         self.generatorShader.dettach()
-
-        # unbind framebuffer
-        # load data into localfile and get min and max altitude
-        offset = self.textureSize*(self.textureSize/2)+self.textureSize/2
-        offset *= 4
-
         self.framebuffer.unbind()
 
         # bind the normals framebuffer
@@ -165,8 +158,10 @@ class TerrainQuadtree:
         self.topoTexture.bind(GL_TEXTURE0)
         self.generatorShaderN.attach()
         glUniform1f(glGetUniformLocation(self.generatorShaderN.shader, 'lonspan'), lonspan)
+        glUniform1f(glGetUniformLocation(self.generatorShaderN.shader, 'latspan'), latspan)
         glUniform1f(glGetUniformLocation(self.generatorShaderN.shader, 'size'), self.textureSize)
         glUniform1i(glGetUniformLocation(self.generatorShaderN.shader, 'topoTexture'), 0)
+        glUniform1i(glGetUniformLocation(self.generatorShaderN.shader, 'positionTexture'), 1)
         glBegin(GL_QUADS)
         glTexCoord2f(0., 0.)
         glVertex3f(0., 0., 0.)
@@ -178,15 +173,12 @@ class TerrainQuadtree:
         glVertex3f(0., self.textureSize, 0.)
         glEnd()
         self.generatorShaderN.dettach()
-
         self.framebuffer.unbind()
 
         # bind the color framebuffer
         self.framebuffer.bind(self.colorTexture.id)
         self.topoTexture.bind(GL_TEXTURE0)
         self.generatorShaderC.attach()
-        glUniform1f(glGetUniformLocation(self.generatorShaderC.shader, 'lonspan'), lonspan)
-        glUniform1f(glGetUniformLocation(self.generatorShaderC.shader, 'size'), self.textureSize)
         glUniform1i(glGetUniformLocation(self.generatorShaderC.shader, 'topoTexture'), 0)
         glBegin(GL_QUADS)
         glTexCoord2f(0., 0.)
@@ -212,11 +204,27 @@ class TerrainQuadtree:
         bmin = [0.0, 0.0, 0.0]
         bmax = [0.0, 0.0, 0.0]
 
+        # generate the position buffer for position texture
+        length = (self.gridSizep1+2)*(self.gridSizep1+2)*3
+        self.positionTextureContent = np.arange(length, dtype='float32')
+        for u in range(0, self.gridSizep1+2):
+            for v in range(0, self.gridSizep1+2):
+                coord = array(self.center +\
+                    (self.dx/self.gridSize) * ((v-1)-self.gridSize/2.) +\
+                    (self.dy/self.gridSize) * (self.gridSize/2. - (u-1)))
+
+                coord = array(factory.normalize(coord))
+                self.positionTextureContent[(self.gridSize+2-u)*(self.gridSizep1+2)*3 + v*3 + 0] = coord[0]
+                self.positionTextureContent[(self.gridSize+2-u)*(self.gridSizep1+2)*3 + v*3 + 1] = coord[1]
+                self.positionTextureContent[(self.gridSize+2-u)*(self.gridSizep1+2)*3 + v*3 + 2] = coord[2]
+
         for u in range(0, self.gridSizep1):
             for v in range(0, self.gridSizep1):
                 coord = array(self.center +\
                     (self.dx/self.gridSize) * (v-self.gridSize/2.) +\
                     (self.dy/self.gridSize) * (self.gridSize/2. - u))
+
+                coord = array(factory.normalize(coord))
 
                 coordLow = coord*(1738140.0-32768.0)
                 coordHigh = coord*(1738140.0+32768.0)
@@ -307,7 +315,7 @@ class TerrainQuadtree:
         # copy vertex data to position texture
         self.positionTexture = Texture(self.textureSize, False)
         self.positionTexture.bind()
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, self.gridSizep1, self.gridSizep1, 0, GL_RGB, GL_FLOAT, self.vertices)
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, self.gridSizep1+2, self.gridSizep1+2, 0, GL_RGB, GL_FLOAT, self.positionTextureContent)
         self.positionTexture.unbind()
 
         self.positionBufferObject = glGenBuffers(1)

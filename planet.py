@@ -55,7 +55,7 @@ class Planet:
         dy = array([.0, 1., .0])
         qt5 = TerrainQuadtree(parent=None, maxlod=self.maxlod, face=0, index=4, center=center, dx=dx, dy=dy)
 
-        # bbottom
+        # bottom
         center = array([.0, -.5, .0])
         dx = array([1., .0, 0.])
         dy = array([.0, 0., 1.])

@@ -15,10 +15,9 @@ uniform float far;
 mat3 fromToRotation(vec3 from, vec3 to);
 
 void main() {
-    const float near = 1000.0;
-    const float offset = 0.0;
+    const float near = 1.0;
+    float offset = 0.0;
     gl_FragDepth = (log(near * gl_TexCoord[6].z + offset) / log(near * far + offset));
-
     vec3 normal = texture2D(normalTexture, gl_TexCoord[0].st).xyz;
     vec4 color = texture2D(colorTexture, gl_TexCoord[0].st);
 
@@ -37,6 +36,7 @@ void main() {
         |1|2|
         +-+-+
     */
+    /*
     if (weight > 0.0) {
         vec2 parentCoords;
         vec2 localCoords = vec2(gl_TexCoord[0].s, gl_TexCoord[0].t);
@@ -59,6 +59,7 @@ void main() {
 
         normal = mix(normal, pnormal, weight);
     }
+    */
 
     // lighting stuff
     vec4 s = normalize(gl_LightSource[0].position - vertex);
