@@ -52,9 +52,6 @@ class TerrainQuadtree:
             self.indexBufferObject = parent.indexBufferObject
             self.skirtIndexBufferObject = parent.skirtIndexBufferObject
 
-        # vertices
-        self.vertices = np.arange(self.gridSizep1*self.gridSizep1*3 + 3, dtype='float32')
-
         # generation programs
         self.generatorShader = None
         self.generatorShaderN = None
@@ -184,13 +181,15 @@ class TerrainQuadtree:
         self.processInit()
 
     def generateVertices(self):
+        # vertices
+        self.vertices = np.arange(self.gridSizep1*self.gridSizep1*3 + 3, dtype='float32')
+        self.positionTextureContent = np.arange((self.gridSizep1+2)*(self.gridSizep1+2)*3, dtype='float32')
+
         # bounding box blues
         bmin = [0.0, 0.0, 0.0]
         bmax = [0.0, 0.0, 0.0]
 
         # generate the position buffer for position texture
-        length = (self.gridSizep1+2)*(self.gridSizep1+2)*3
-        self.positionTextureContent = np.arange(length, dtype='float32')
         for u in range(0, self.gridSizep1+2):
             for v in range(0, self.gridSizep1+2):
                 coord = array(self.center +\

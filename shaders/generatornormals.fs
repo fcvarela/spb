@@ -25,11 +25,11 @@ void main() {
   float heightd = texture2D(topoTexture, d).a*65536.0+texture2D(topoTexture, d).r*256.0+texture2D(topoTexture, d).g-32768.0;
   float heightc = texture2D(topoTexture, c).a*65536.0+texture2D(topoTexture, c).r*256.0+texture2D(topoTexture, c).g-32768.0;
   
-  vl = normalize(vl) * (1738140.0 + heightl);
-  vr = normalize(vr) * (1738140.0 + heightr);
-  vu = normalize(vu) * (1738140.0 + heightu);
-  vd = normalize(vd) * (1738140.0 + heightd);
-  vc = normalize(vc) * (1738140.0 + heightc);
+  vl *= (1738140.0 + heightl);
+  vr *= (1738140.0 + heightr);
+  vu *= (1738140.0 + heightu);
+  vd *= (1738140.0 + heightd);
+  vc *= (1738140.0 + heightc);
 
   vec3 v1 = vu - vc;
   vec3 v2 = vl - vc;
@@ -37,10 +37,10 @@ void main() {
   vec3 v4 = vr - vc;
 
   vec3 normal = vec3(0.0);
-  normal += normalize(cross(v1, v2));
-  normal += normalize(cross(v2, v3));
-  normal += normalize(cross(v3, v4));
-  normal += cross(v4, v1);
+  normal += cross(v1, v2);
+  /*normal += cross(v2, v3);
+  normal += cross(v3, v4);
+  normal += cross(v4, v1);*/
   normal = normalize(normal);
   
   gl_FragColor.rgb = (normal + 1.0) / 2.0;
