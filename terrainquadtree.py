@@ -24,11 +24,6 @@ class TerrainQuadtree:
         self.dx = dx
         self.dy = dy
 
-        self.latspan = 0.0
-        self.lonspan = 0.0
-        self.baselat = 0.0
-        self.baselon = 0.0
-
         self.gridSize = 32
         self.gridSizep1 = self.gridSize + 1
 
@@ -111,16 +106,6 @@ class TerrainQuadtree:
             self.ready = True
 
     def generateTextures(self):
-        # we'll fetch an extra pixel on both directions
-        degreesPerPixelLat = self.latspan/float(self.textureSize-self.textureBorder*2)
-        degreesPerPixelLon = self.lonspan/float(self.textureSize-self.textureBorder*2)
-        
-        baselat = self.baselat - degreesPerPixelLat*float(self.textureBorder)
-        latspan = self.latspan + degreesPerPixelLat*float(self.textureBorder*2.0)
-
-        baselon = self.baselon - degreesPerPixelLon*float(self.textureBorder)
-        lonspan = self.lonspan + degreesPerPixelLon*float(self.textureBorder*2.0)
-
         if self.framebuffer is None:
             self.framebuffer = Framebuffer()
 
@@ -156,9 +141,8 @@ class TerrainQuadtree:
         # bind the normals framebuffer
         self.framebuffer.bind(self.normalTexture.id)
         self.topoTexture.bind(GL_TEXTURE0)
+        self.positionTexture.bind(GL_TEXTURE1)
         self.generatorShaderN.attach()
-        glUniform1f(glGetUniformLocation(self.generatorShaderN.shader, 'lonspan'), lonspan)
-        glUniform1f(glGetUniformLocation(self.generatorShaderN.shader, 'latspan'), latspan)
         glUniform1f(glGetUniformLocation(self.generatorShaderN.shader, 'size'), self.textureSize)
         glUniform1i(glGetUniformLocation(self.generatorShaderN.shader, 'topoTexture'), 0)
         glUniform1i(glGetUniformLocation(self.generatorShaderN.shader, 'positionTexture'), 1)
@@ -258,13 +242,6 @@ class TerrainQuadtree:
                     self.botleft = coord
                 if u == self.gridSize and v == self.gridSize:
                     self.botright = coord
-
-        baselatlon = factory.carthesianToGeocentric(self.botleft)
-        maxlatlon = factory.carthesianToGeocentric(self.topright)
-        self.baselat = baselatlon[0]
-        self.baselon = baselatlon[1]
-        self.latspan = maxlatlon[0] - baselatlon[0]
-        self.lonspan = maxlatlon[1] - baselatlon[1]
 
         # finish bounding box
         self.box.extend([bmin[0], bmax[1], bmin[2]]);
@@ -386,11 +363,11 @@ class TerrainQuadtree:
                     cy = float(self.gridSize-y) / float(self.gridSize)
 
                     # coords are 0,1. map to texelstep,1-texelstep
-                    texelstep = 1.0/self.textureSize
-                    steprange = 1.0 - texelstep*float(self.textureBorder)*2.0
+                    texelstep = 1.0/23.0
+                    steprange = 1.0 - texelstep*2.0
 
-                    cx = texelstep*self.textureBorder+cx*steprange
-                    cy = texelstep*self.textureBorder+cy*steprange
+                    cx = texelstep + cx*steprange
+                    cy = texelstep + cy*steprange
 
                     texcoords.append([cx, cy])
 

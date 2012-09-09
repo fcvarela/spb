@@ -26,7 +26,6 @@ void main() {
     mat3 rot_matrix = fromToRotation(vec3(0.0, 0.0, 1.0), normalize(vertex.xyz));
     normal = normalize(normal * rot_matrix);
     normal = normalize(gl_NormalMatrix * normal);
-
     /*
         we may need to morph with our parent for smooth
         transitions. our topology (for texcoord purposes) is

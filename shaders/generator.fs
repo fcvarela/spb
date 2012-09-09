@@ -236,7 +236,6 @@ float ridgedmf(vec4 p/*, float H, float lacunarity, int octaves, float offset, i
 uniform sampler2D positionTexture;
 
 void main() {
-
   vec2 tc = vec2(gl_TexCoord[0].s, gl_TexCoord[0].t);
   /*float offset = 1.0/29.0;
   tc = tc * (1.0 - offset*2.0);
