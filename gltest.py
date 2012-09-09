@@ -199,7 +199,7 @@ def determineFrustum(camera, planet):
     altitude = distance - planet.radius
 
     if distance > planet.radius * planet.atmosphere_radius:
-        near = max(1.0, (distance - planet.radius)/2.0)
+        near = 1.0#max(1.0, (distance - planet.radius)/2.0)
         far = distance+planet.radius*3.0
     else:
         near = 1.0

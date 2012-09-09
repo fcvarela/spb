@@ -307,7 +307,7 @@ class TerrainQuadtree:
         # copy vertex data to position texture
         self.positionTexture = Texture(self.textureSize, False)
         self.positionTexture.bind()
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, self.gridSizep1, self.gridSizep1, 0, GL_RGB, GL_FLOAT, self.vertices)
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, self.gridSizep1, self.gridSizep1, 0, GL_RGB, GL_FLOAT, self.vertices)
         self.positionTexture.unbind()
 
         self.positionBufferObject = glGenBuffers(1)
