@@ -3,7 +3,7 @@ import numpy as np
 import threading
 import subprocess
 
-from Queue import LifoQueue
+from Queue import Queue
 
 from OpenGL import *
 from OpenGL.GL import *
@@ -19,7 +19,7 @@ lib.sphereInFrustum.restype = c_int
 lib.veclen.restype = c_double
 vecptr = c_double*3
 
-generatorQueue = LifoQueue()
+generatorQueue = Queue()
 drawnNodes = 0
 trackFrustum = True
 

@@ -1,3 +1,4 @@
+profile
 *.dylib
 *.so
 *.o
@@ -6,3 +7,5 @@ gen
 venv
 *.pyc
 .DS_Store
+*.pyo
+

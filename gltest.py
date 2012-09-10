@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python2.7 -OO
 
 import OpenGL
 from OpenGL.GL import *
@@ -210,18 +210,38 @@ def determineFrustum(camera, planet):
 
     return (near, far)
 
+def processQueue():
+    instance = None
+    done = False
+    threadcount = 0
+    while done == False:
+        try:
+            (instance, ) = factory.generatorQueue.get_nowait()
+            if instance.ready == True:
+                continue
+
+            function = instance.nextStep['function']
+            if instance.nextStep['threaded'] is True:
+                threading.Thread(target=function, args=()).start()
+                # do not return. threaded items run in bg, do ONE task in fg
+                # do not spawn more than 4 threads at a time
+                threadcount += 1
+                if threadcount == 1:
+                    done = True
+            else:
+                function()
+                factory.generatorQueue.task_done()
+                factory.generatorQueue.put((instance, ))
+                done = True
+        except:
+            done = True
+
 def display():
     global framenumber
     
     factory.drawnNodes = 0
-    instance = None
-    try:
-        (instance, ) = factory.generatorQueue.get_nowait()
-    except:
-        pass
-
-    if instance is not None:
-        instance.generateTextures()
+    if framenumber % 10 == 0:
+        processQueue()
 
     # reset the projection matrix
     ratio = float(factory.width)/float(factory.height)
