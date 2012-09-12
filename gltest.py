@@ -240,8 +240,8 @@ def display():
     global framenumber
     
     factory.drawnNodes = 0
-    if framenumber % 2 == 0:
-        processQueue()
+    #if framenumber % 0 == 0:
+    processQueue()
 
     # reset the projection matrix
     ratio = float(factory.width)/float(factory.height)

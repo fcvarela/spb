@@ -3,7 +3,7 @@ import numpy as np
 import threading
 import subprocess
 
-from Queue import Queue
+from Queue import LifoQueue
 
 from OpenGL import *
 from OpenGL.GL import *
@@ -13,13 +13,13 @@ from node import *
 
 from ctypes import *
 
-lib = cdll.LoadLibrary('./frustumtools.dylib')
+lib = cdll.LoadLibrary('./ctools.dylib')
 lib.boxInFrustum.restype = c_int
 lib.sphereInFrustum.restype = c_int
 lib.veclen.restype = c_double
 vecptr = c_double*3
 
-generatorQueue = Queue()
+generatorQueue = LifoQueue()
 drawnNodes = 0
 trackFrustum = True
 

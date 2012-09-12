@@ -90,6 +90,7 @@ class TerrainQuadtree:
         # spawn init
         factory.generatorQueue.put((self, ))
 
+    @threadDebug
     def generateTextures(self):
         if self.framebuffer is None:
             self.framebuffer = Framebuffer()
@@ -164,79 +165,82 @@ class TerrainQuadtree:
 
         self.ready = True
 
+    @threadDebug
     def generateVertices(self):
+        vecptr = factory.vecptr
+
         # vertices
-        self.vertices = np.arange(self.gridSizep1*self.gridSizep1*3 + 3, dtype='float32')
-        self.positionTextureContent = np.arange((self.gridSizep1+2)*(self.gridSizep1+2)*3, dtype='float32')
+        coord_count = self.gridSizep1*self.gridSizep1*3+3
+        vmeshptr = c_double*coord_count
+        vmesh = vmeshptr()
+        factory.lib.build_quadtree_element(vmesh, self.gridSize, 0, 0, vecptr(*self.center), vecptr(*self.dx), vecptr(*self.dy))
+        self.vertices = array(list(vmesh), dtype='float32')
+
+        # generate the position buffer for position texture
+        coord_count = (self.gridSizep1+2)*(self.gridSizep1+2)*3
+        pmeshptr = c_double*coord_count
+        pmesh = pmeshptr()
+        factory.lib.build_quadtree_element(pmesh, self.gridSize, 1, 1, vecptr(*self.center), vecptr(*self.dx), vecptr(*self.dy))
+        self.positionTextureContent = array(list(pmesh), dtype='float32')
+
+        # extract bounding box and bounding sphere
 
         # bounding box blues
         bmin = [0.0, 0.0, 0.0]
         bmax = [0.0, 0.0, 0.0]
 
-        # generate the position buffer for position texture
-        gsize = self.gridSizep1+2
-        dxovergridsize = self.dx/self.gridSize
-        dyovergridsize = self.dy/self.gridSize
-        gridsizeover2 = self.gridSize/2.
+        #for u in range(0, self.gridSizep1):
+        #    for v in range(0, self.gridSizep1):
+        #        coord = array([\
+        #            self.vertices[u*self.gridSizep1*3+v*3+0],\
+        #            self.vertices[u*self.gridSizep1*3+v*3+1],\
+        #            self.vertices[u*self.gridSizep1*3+v*3+2]])
+#
+        #        coordLow = coord*(1738140.0-32768.0)
+        #        coordHigh = coord*(1738140.0+32768.0)
+#
+        #        # box
+        #        for i in range(0, 3):
+        #            if coord[i] < bmin[i]:
+        #                bmin[i] = coord[i]
+        #            if coord[i] > bmax[i]:
+        #                bmax[i] = coord[i]
+#
+        #            if coordLow[i] < bmin[i]:
+        #                bmin[i] = coordLow[i]
+        #            if coordLow[i] > bmax[i]:
+        #                bmax[i] = coordLow[i]
+#
+        #            if coordHigh[i] < bmin[i]:
+        #                bmin[i] = coordHigh[i]
+        #            if coordHigh[i] > bmax[i]:
+        #                bmax[i] = coordHigh[i]
+
+        u = 0
+        v = 0
+        self.topleft = array([\
+            self.vertices[u*self.gridSizep1*3+v*3+0],\
+            self.vertices[u*self.gridSizep1*3+v*3+1],\
+            self.vertices[u*self.gridSizep1*3+v*3+2]])
+
+        v = self.gridSize
+        self.topright = array([\
+            self.vertices[u*self.gridSizep1*3+v*3+0],\
+            self.vertices[u*self.gridSizep1*3+v*3+1],\
+            self.vertices[u*self.gridSizep1*3+v*3+2]])
+
+        u = self.gridSize
+        v = 0
+        self.botleft = array([\
+            self.vertices[u*self.gridSizep1*3+v*3+0],\
+            self.vertices[u*self.gridSizep1*3+v*3+1],\
+            self.vertices[u*self.gridSizep1*3+v*3+2]])
         
-        start = time.clock()
-        for u in range(0, gsize):
-            for v in range(0, gsize):
-                coord = array(self.center +\
-                    dxovergridsize * ((v-1)-gridsizeover2) +\
-                    dyovergridsize * (gridsizeover2 - (u-1)))
-                
-                coord = coord/factory.veclen(coord)
-                upos = (gsize-1-u)*(gsize)*3
-                vpos = v*3
-
-                self.positionTextureContent[upos + vpos + 0] = coord[0]
-                self.positionTextureContent[upos + vpos + 1] = coord[1]
-                self.positionTextureContent[upos + vpos + 2] = coord[2]
-        
-        for u in range(0, self.gridSizep1):
-            for v in range(0, self.gridSizep1):
-                coord = array(self.center +\
-                    dxovergridsize * (v-gridsizeover2) +\
-                    dyovergridsize * (gridsizeover2 - u))
-
-                coord = coord/factory.veclen(coord)
-
-                coordLow = coord*(1738140.0-32768.0)
-                coordHigh = coord*(1738140.0+32768.0)
-
-                # box
-                for i in range(0, 3):
-                    if coord[i] < bmin[i]:
-                        bmin[i] = coord[i]
-                    if coord[i] > bmax[i]:
-                        bmax[i] = coord[i]
-
-                    if coordLow[i] < bmin[i]:
-                        bmin[i] = coordLow[i]
-                    if coordLow[i] > bmax[i]:
-                        bmax[i] = coordLow[i]
-
-                    if coordHigh[i] < bmin[i]:
-                        bmin[i] = coordHigh[i]
-                    if coordHigh[i] > bmax[i]:
-                        bmax[i] = coordHigh[i]
-
-
-                upos = self.gridSizep1*u*3
-                vpos = v*3
-                self.vertices[upos + vpos + 0] = coord[0]
-                self.vertices[upos + vpos + 1] = coord[1]
-                self.vertices[upos + vpos + 2] = coord[2]
-
-                if u == 0 and v == 0:
-                    self.topleft = coord
-                if u == 0 and v == self.gridSize:
-                    self.topright = coord
-                if u == self.gridSize and v == 0:
-                    self.botleft = coord
-                if u == self.gridSize and v == self.gridSize:
-                    self.botright = coord
+        v = self.gridSize
+        self.botright = array([\
+            self.vertices[u*self.gridSizep1*3+v*3+0],\
+            self.vertices[u*self.gridSizep1*3+v*3+1],\
+            self.vertices[u*self.gridSizep1*3+v*3+2]])    
     
         # finish bounding box
         self.box.extend([bmin[0], bmax[1], bmin[2]]);
@@ -256,14 +260,8 @@ class TerrainQuadtree:
         self.vertices[self.gridSizep1*self.gridSizep1*3 + 1] = self.center[1] * 0.1
         self.vertices[self.gridSizep1*self.gridSizep1*3 + 2] = self.center[2] * 0.1
 
-        self.sidelength = math.sqrt(\
-            (self.topleft[0] - self.botleft[0])**2+\
-            (self.topleft[1] - self.botleft[1])**2+\
-            (self.topleft[2] - self.botleft[2])**2)
-        self.diagonal = math.sqrt(\
-            (self.topleft[0] - self.botright[0])**2+\
-            (self.topleft[1] - self.botright[1])**2+\
-            (self.topleft[2] - self.botright[2])**2)
+        self.sidelength = factory.veclen(self.topleft - self.botleft)
+        self.diagonal = factory.veclen(self.topleft - self.botright)
 
         box_p = c_double*24
         self.box = box_p(*array(self.box).flatten())
@@ -274,16 +272,11 @@ class TerrainQuadtree:
         sphere_p = c_double*4
         self.sphere = sphere_p(*array(sphere).flatten())
 
-        # normal
-        self.normal = array(factory.cross(self.topleft, self.botleft))
-        self.normal = self.normal / factory.veclen(self.normal)
-
         # init
         self.nextStep = {'function': self.finishVertices, 'threaded': False}
         factory.generatorQueue.put((self, ))
 
-        print "ELAPSED: %f" % (time.clock() - start)
-
+    @threadDebug
     def finishVertices(self):
         # copy vertex data to position texture
         self.positionTexture = Texture(self.textureSize, False)
@@ -382,7 +375,8 @@ class TerrainQuadtree:
             self.generatorShaderN = ShaderProgram('generatornormals')
             self.generatorShaderC = ShaderProgram('generatorcolor')
 
-        self.nextStep = {'function': self.generateTextures, 'threaded': False}
+        #self.nextStep = {'function': self.generateTextures, 'threaded': False}
+        self.generateTextures()
 
     def analyse(self, weight = 0.0):
         if not self.ready:

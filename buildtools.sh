@@ -1,4 +1,7 @@
 #!/bin/bash
 
-gcc -dynamiclib -flat_namespace -o frustumtools.dylib frustumtools.c -framework OpenGL
+gcc -c frustumtools.c -o frustumtools.o
+gcc -c meshtools.c -o meshtools.o
+
+gcc -dynamiclib -flat_namespace -o ctools.dylib frustumtools.o meshtools.o -framework OpenGL
 
