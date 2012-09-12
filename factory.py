@@ -56,15 +56,9 @@ def cross(a, b):
     return output
 
 def normalize(a):
-    output = []
-    output.extend(a)
-
-    nlen = math.sqrt(a[0]**2 + a[1]**2 + a[2]**2)
-    output[0] /= nlen
-    output[1] /= nlen
-    output[2] /= nlen
-
-    return output
+    b = vecptr(*a)
+    lib.normalize(b)
+    return array(list(b))
 
 def dot(a, b):
     output = a[0]*b[0] + a[1] * b[1] + a[2] * b[2]

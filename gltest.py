@@ -240,7 +240,7 @@ def display():
     global framenumber
     
     factory.drawnNodes = 0
-    if framenumber % 10 == 0:
+    if framenumber % 2 == 0:
         processQueue()
 
     # reset the projection matrix

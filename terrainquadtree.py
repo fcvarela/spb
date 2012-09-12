@@ -30,7 +30,6 @@ def threadDebug(fn):
 
 class TerrainQuadtree:
     def __init__(self, parent, maxlod, face, index, center, dx, dy):
-        self.startInit = time.clock()
         self.parent = parent
         self.maxlod = maxlod
         self.face = face
@@ -91,7 +90,6 @@ class TerrainQuadtree:
         # spawn init
         factory.generatorQueue.put((self, ))
 
-    @threadDebug
     def generateTextures(self):
         if self.framebuffer is None:
             self.framebuffer = Framebuffer()
@@ -165,10 +163,7 @@ class TerrainQuadtree:
         glEnable(GL_DEPTH_TEST)
 
         self.ready = True
-        self.finishInit = time.clock()
-        print "Took %f seconds to initialize" % (self.finishInit - self.startInit)
 
-    @threadDebug
     def generateVertices(self):
         # vertices
         self.vertices = np.arange(self.gridSizep1*self.gridSizep1*3 + 3, dtype='float32')
@@ -184,14 +179,14 @@ class TerrainQuadtree:
         dyovergridsize = self.dy/self.gridSize
         gridsizeover2 = self.gridSize/2.
         
+        start = time.clock()
         for u in range(0, gsize):
             for v in range(0, gsize):
                 coord = array(self.center +\
                     dxovergridsize * ((v-1)-gridsizeover2) +\
                     dyovergridsize * (gridsizeover2 - (u-1)))
-
-                coord = factory.normalize(coord)
                 
+                coord = coord/factory.veclen(coord)
                 upos = (gsize-1-u)*(gsize)*3
                 vpos = v*3
 
@@ -205,7 +200,7 @@ class TerrainQuadtree:
                     dxovergridsize * (v-gridsizeover2) +\
                     dyovergridsize * (gridsizeover2 - u))
 
-                coord = array(factory.normalize(coord))
+                coord = coord/factory.veclen(coord)
 
                 coordLow = coord*(1738140.0-32768.0)
                 coordHigh = coord*(1738140.0+32768.0)
@@ -242,7 +237,7 @@ class TerrainQuadtree:
                     self.botleft = coord
                 if u == self.gridSize and v == self.gridSize:
                     self.botright = coord
-            
+    
         # finish bounding box
         self.box.extend([bmin[0], bmax[1], bmin[2]]);
         self.box.extend([bmin[0], bmax[1], bmax[2]]);
@@ -280,13 +275,15 @@ class TerrainQuadtree:
         self.sphere = sphere_p(*array(sphere).flatten())
 
         # normal
-        self.normal = factory.normalize(factory.cross(self.topleft, self.botleft))
+        self.normal = array(factory.cross(self.topleft, self.botleft))
+        self.normal = self.normal / factory.veclen(self.normal)
 
         # init
         self.nextStep = {'function': self.finishVertices, 'threaded': False}
         factory.generatorQueue.put((self, ))
 
-    @threadDebug
+        print "ELAPSED: %f" % (time.clock() - start)
+
     def finishVertices(self):
         # copy vertex data to position texture
         self.positionTexture = Texture(self.textureSize, False)
@@ -391,8 +388,8 @@ class TerrainQuadtree:
         if not self.ready:
             return
 
-        if not factory.sphereInFrustum(self.sphere):
-           return
+        #if not factory.sphereInFrustum(self.sphere):
+        #   return
 
         # do we need to draw our children
         d1 = factory.veclen(factory.camera.position - self.center*1738140.0)
