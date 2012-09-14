@@ -15,14 +15,17 @@ from texture import *
 from shaderprogram import *
 from framebuffer import *
 
+#debug
+import ubigraph
+
 def threadDebug(fn):
     from functools import wraps
     @wraps(fn)
     def wrapper(*args, **kw):
-        #print "%r - %r started" % (fn, threading.currentThread())
+        print "%r - %r started" % (fn, threading.currentThread())
         start = time.clock()
         fn(*args, **kw)
-        #print "%s - %r ended" % (fn, threading.currentThread())
+        print "%s - %r ended" % (fn, threading.currentThread())
         end = time.clock()
         print "%r took %f seconds" % (fn, (end-start))
         return None
@@ -34,6 +37,19 @@ class TerrainQuadtree:
         self.maxlod = maxlod
         self.face = face
         self.index = index
+
+        if parent is not None:
+            self.fulladdress = "%d" % (parent.index * 10 + self.index)
+            self.gRoot = factory.G.newVertex(style=factory.gQuadtreeNodeStyle)
+            parentNode = parent.gRoot
+        else:
+            self.fulladdress = "%d" % self.index
+            self.gRoot = factory.G.newVertex(style=factory.gQuadtreeStyle)
+            parentNode = factory.gRoot
+        
+        self.gRoot.set(label=self.fulladdress)
+        factory.G.newEdge(parentNode, self.gRoot, oriented=True, showstrain=True, strength="1.0")
+
         self.center = center
         self.dx = dx
         self.dy = dy
@@ -281,6 +297,7 @@ class TerrainQuadtree:
         # copy vertex data to position texture
         self.positionTexture = Texture(self.textureSize, False)
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, self.gridSizep1+2, self.gridSizep1+2, 0, GL_RGB, GL_FLOAT, self.positionTextureContent)
+        self.positionTextureContent = None
 
         self.positionBufferObject = glGenBuffers(1)
         glBindBuffer(GL_ARRAY_BUFFER, self.positionBufferObject)
@@ -397,7 +414,7 @@ class TerrainQuadtree:
         far = self.sphere[3]*2.0*1.15
         near = self.sphere[3]*2.0*1.01
 
-        if self.maxlod > 0 and mindistance <= far:
+        if self.maxlod > 0 and self.distance <= far:
             # are they ready?
             if len(self.children) > 0:
                 readycount = 0
@@ -462,6 +479,7 @@ class TerrainQuadtree:
             glDrawElements(GL_TRIANGLE_FAN, skirtcount, GL_UNSIGNED_SHORT, c_void_p(0))
 
         factory.drawnNodes += 1
+        self.lastDrawn = time.clock()
         
         # draw bounding sphere
         return
@@ -496,3 +514,9 @@ class TerrainQuadtree:
         qt4 = TerrainQuadtree(self, self.maxlod-1, self.face, 4, center, dx, dy)
         
         self.children = [qt1, qt2, qt3, qt4]
+
+    def __del__(self):
+        # delete positiontexture, topotexture, normaltexture, colortexture
+        print "Deallocating"
+        self.children = []
+        # delete framebuffer
