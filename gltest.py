@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.7 -OO
+#!/usr/bin/env python -OO
 
 import OpenGL
 from OpenGL.GL import *

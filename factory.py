@@ -15,12 +15,15 @@ from ctypes import *
 
 #debug
 import ubigraph
-G = ubigraph.Ubigraph()
-G.clear()
-# debug
-gRoot = factory.G.newVertex(shape="sphere", size="1.0", label="Planet")
-gQuadtreeStyle = G.newVertexStyle(shape="sphere", color="#0000FF", size="1.0")
-gQuadtreeNodeStyle = G.newVertexStyle(shape="sphere", color="#FF0000", size="1.0")
+try:
+    G = ubigraph.Ubigraph()
+    G.clear()
+    # debug
+    gRoot = factory.G.newVertex(shape="sphere", size="1.0", label="Planet")
+    gQuadtreeStyle = G.newVertexStyle(shape="sphere", color="#0000FF", size="1.0")
+    gQuadtreeNodeStyle = G.newVertexStyle(shape="sphere", color="#FF0000", size="1.0")
+except:
+    pass
 
 lib = cdll.LoadLibrary('./ctools.dylib')
 lib.boxInFrustum.restype = c_int

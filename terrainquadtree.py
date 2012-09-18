@@ -1,3 +1,4 @@
+import weakref
 import os
 from numpy import array
 import numpy as np
@@ -33,22 +34,25 @@ def threadDebug(fn):
 
 class TerrainQuadtree:
     def __init__(self, parent, maxlod, face, index, center, dx, dy):
-        self.parent = parent
         self.maxlod = maxlod
         self.face = face
         self.index = index
 
-        if parent is not None:
-            self.fulladdress = "%d" % (parent.index * 10 + self.index)
-            self.gRoot = factory.G.newVertex(style=factory.gQuadtreeNodeStyle)
-            parentNode = parent.gRoot
-        else:
-            self.fulladdress = "%d" % self.index
-            self.gRoot = factory.G.newVertex(style=factory.gQuadtreeStyle)
-            parentNode = factory.gRoot
-        
-        self.gRoot.set(label=self.fulladdress)
-        factory.G.newEdge(parentNode, self.gRoot, oriented=True, showstrain=True, strength="1.0")
+        try:
+            if parent is not None:
+                self.parent = weakref.ref(parent)
+                self.fulladdress = "%d" % (int(parent.fulladdress) * 10 + self.index)
+                self.gRoot = factory.G.newVertex(style=factory.gQuadtreeNodeStyle)
+                parentNode = parent.gRoot
+            else:
+                self.parent = None
+                self.fulladdress = "%d" % self.index
+                self.gRoot = factory.G.newVertex(style=factory.gQuadtreeStyle)
+                parentNode = factory.gRoot
+            
+            factory.G.newEdge(parentNode, self.gRoot, oriented=True, showstrain=True, strength="1.0")
+        except:
+            pass
 
         self.center = center
         self.dx = dx
@@ -70,6 +74,9 @@ class TerrainQuadtree:
         # sorting
         self.distance = 0.0
         self.weight = 1.0
+
+        # life cycle
+        self.lastDrawn = time.clock()
 
         # vbo
         self.positionBufferObject = None
@@ -106,7 +113,6 @@ class TerrainQuadtree:
         # spawn init
         factory.generatorQueue.put((self, ))
 
-    @threadDebug
     def generateTextures(self):
         if self.framebuffer is None:
             self.framebuffer = Framebuffer()
@@ -181,7 +187,6 @@ class TerrainQuadtree:
 
         self.ready = True
 
-    @threadDebug
     def generateVertices(self):
         vecptr = factory.vecptr
 
@@ -292,7 +297,6 @@ class TerrainQuadtree:
         self.nextStep = {'function': self.finishVertices, 'threaded': False}
         factory.generatorQueue.put((self, ))
 
-    @threadDebug
     def finishVertices(self):
         # copy vertex data to position texture
         self.positionTexture = Texture(self.textureSize, False)
@@ -392,15 +396,23 @@ class TerrainQuadtree:
             self.generatorShaderN = ShaderProgram('generatornormals')
             self.generatorShaderC = ShaderProgram('generatorcolor')
 
-        #self.nextStep = {'function': self.generateTextures, 'threaded': False}
         self.generateTextures()
+
+    def recursiveDealloc(self):
+        self.parent = None
+        [x.recursiveDealloc() for x in self.children]
+        self.children = []
 
     def analyse(self, weight = 0.0):
         if not self.ready:
             return
 
-        #if not factory.sphereInFrustum(self.sphere):
-        #   return
+        if not factory.sphereInFrustum(self.sphere):
+            if time.clock() - self.lastDrawn > 2.0:
+                self.parent = None
+                [x.recursiveDealloc() for x in self.children]
+                self.children = []
+            return
 
         # do we need to draw our children
         d1 = factory.veclen(factory.camera.position - self.center*1738140.0)
