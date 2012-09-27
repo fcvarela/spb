@@ -1,6 +1,5 @@
 #include <GL/glfw.h>
-#include <stdlib.h>
-#include <stdio.h>
+#include <Factory.h>
 
 int main(void) {
 	int running = GL_TRUE;
@@ -25,7 +24,7 @@ int main(void) {
 	}
 
 	// initialize the scene manager
-	TWS::SceneManager *sm = new TWS::SceneManager();
+	SPB::SceneManager *sm = SPB::getSceneManager();
 	if (!sm->init()) {
 		glfwTerminate();
 		delete sm;
