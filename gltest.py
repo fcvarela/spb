@@ -32,7 +32,7 @@ def main():
     factory.width = info.current_w
     factory.height = info.current_h
     
-    fullscreen = False
+    fullscreen = True
     
     if fullscreen is False:
         factory.width /= 2
