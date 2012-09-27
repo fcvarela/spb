@@ -4,6 +4,7 @@ namespace SPB {
 	frustum_t _globalFrustum;
 	double _dt;
 	double _lastframetime;
+	double _far;
 
 	// return singletons
 	SceneManager *getSceneManager() {

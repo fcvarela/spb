@@ -11,8 +11,6 @@ namespace SPB {
 		double vfov;
 		double hsize;
 		double vsize;
-		double neardist;
-		double fardist;
 
 		void draw();
 		void processKeys();

@@ -24,6 +24,7 @@ namespace SPB {
 	extern frustum_t _globalFrustum;
 	extern double _dt;
 	extern double _lastframetime;
+	extern double _far;
 	
 	void extractPlane(plane_t &plane, GLfloat *mat, int row);
     void calculateFrustum();

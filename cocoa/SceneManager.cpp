@@ -7,8 +7,6 @@ namespace SPB {
 		this->vfov = 0.0;
 		this->hsize = 0.0;
 		this->vsize = 0.0;
-		this->neardist = 0.0;
-		this->fardist = 0.0;
 	}
 
 	// dtor
