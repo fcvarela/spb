@@ -1,8 +1,10 @@
+import weakref
 import os
 from numpy import array
 import numpy as np
 import math
 import threading
+import time
 from ctypes import *
 
 from OpenGL import *
@@ -14,16 +16,49 @@ from texture import *
 from shaderprogram import *
 from framebuffer import *
 
-class TerrainQuadtree:
-    def __init__(self, parent, maxlod, index, baselat, baselon, span):
-        self.parent = parent
-        self.maxlod = maxlod
-        self.baselat = baselat
-        self.baselon = baselon
-        self.index = index
-        self.span = span
+#debug
+import ubigraph
 
-        self.gridSize = 16
+def threadDebug(fn):
+    from functools import wraps
+    @wraps(fn)
+    def wrapper(*args, **kw):
+        print "%r - %r started" % (fn, threading.currentThread())
+        start = time.clock()
+        fn(*args, **kw)
+        print "%s - %r ended" % (fn, threading.currentThread())
+        end = time.clock()
+        print "%r took %f seconds" % (fn, (end-start))
+        return None
+    return wrapper
+
+class TerrainQuadtree:
+    def __init__(self, parent, maxlod, face, index, center, dx, dy):
+        self.maxlod = maxlod
+        self.face = face
+        self.index = index
+
+        try:
+            if parent is not None:
+                self.parent = weakref.ref(parent)
+                self.fulladdress = "%d" % (int(parent.fulladdress) * 10 + self.index)
+                self.gRoot = factory.G.newVertex(style=factory.gQuadtreeNodeStyle)
+                parentNode = parent.gRoot
+            else:
+                self.parent = None
+                self.fulladdress = "%d" % self.index
+                self.gRoot = factory.G.newVertex(style=factory.gQuadtreeStyle)
+                parentNode = factory.gRoot
+            
+            factory.G.newEdge(parentNode, self.gRoot, oriented=True, showstrain=True, strength="1.0")
+        except:
+            pass
+
+        self.center = center
+        self.dx = dx
+        self.dy = dy
+
+        self.gridSize = 32
         self.gridSizep1 = self.gridSize + 1
 
         self.textureBorder = 2
@@ -40,18 +75,19 @@ class TerrainQuadtree:
         self.distance = 0.0
         self.weight = 1.0
 
+        # life cycle
+        self.lastDrawn = time.clock()
+
         # vbo
         self.positionBufferObject = None
         self.texcoordBufferObject = None
         self.indexBufferObject = None
         self.skirtIndexBufferObject = None
+
         if parent is not None:
             self.texcoordBufferObject = parent.texcoordBufferObject
             self.indexBufferObject = parent.indexBufferObject
             self.skirtIndexBufferObject = parent.skirtIndexBufferObject
-
-        # vertices
-        self.vertices = np.arange(self.gridSizep1*self.gridSizep1*3 + 3, dtype='float32')
 
         # generation programs
         self.generatorShader = None
@@ -72,52 +108,18 @@ class TerrainQuadtree:
 
         # start init pipeline
         self.ready = False
-        self.busy = False
-        self.initStep = 0
+        self.nextStep = {'function': self.generateVertices, 'threaded': True}
 
         # spawn init
-        self.processInit()
-
-    def processInit(self):
-        if self.busy:
-            return
-
-        if self.initStep == 0:
-            self.busy = True
-            # spawn thread for first step of vertex init (non opengl, so threaded)
-            t1 = threading.Thread(target=self.generateVertices(), args=(self, ))
-            t1.start()
-
-        if self.initStep == 1:
-            self.busy = True
-            # finish initializing vertexes. needs gl so can't be threaded
-            self.finishVertices()
-            self.initStep += 1
-            self.busy = False
-            
-        if self.initStep == 2:
-            self.busy = True
-            factory.generatorQueue.put((self, ))
-
-        if self.initStep == 3:
-            self.busy = False
-            self.ready = True
+        factory.generatorQueue.put((self, ))
 
     def generateTextures(self):
-        # we'll fetch an extra pixel on both directions
-        degreesPerPixel = self.span/float(self.textureSize-self.textureBorder*2)
-        
-        baselat = self.baselat - degreesPerPixel*float(self.textureBorder)
-        latspan = self.span + degreesPerPixel*float(self.textureBorder*2.0)
-        baselon = self.baselon - degreesPerPixel*float(self.textureBorder)
-        lonspan = self.span + degreesPerPixel*float(self.textureBorder*2.0)
-
         if self.framebuffer is None:
             self.framebuffer = Framebuffer()
 
         # bind framebuffer to our texture
         self.framebuffer.bind(self.topoTexture.id)
-
+        self.positionTexture.bind(GL_TEXTURE0)
         glDisable(GL_DEPTH_TEST)
         glViewport(0, 0, self.textureSize, self.textureSize)
         glMatrixMode(GL_PROJECTION)
@@ -130,11 +132,7 @@ class TerrainQuadtree:
 
         # use the generator shader
         self.generatorShader.attach()
-        d2r = math.pi/180.0
-        glUniform1f(glGetUniformLocation(self.generatorShader.shader, 'baselat'), baselat*d2r)
-        glUniform1f(glGetUniformLocation(self.generatorShader.shader, 'baselon'), baselon*d2r)
-        glUniform1f(glGetUniformLocation(self.generatorShader.shader, 'latspan'), latspan*d2r)
-        glUniform1f(glGetUniformLocation(self.generatorShader.shader, 'lonspan'), lonspan*d2r)
+        glUniform1i(glGetUniformLocation(self.generatorShader.shader, 'positionTexture'), 0)
         glBegin(GL_QUADS)
         glTexCoord2f(0., 0.)
         glVertex3f(0., 0., 0.)
@@ -146,21 +144,15 @@ class TerrainQuadtree:
         glVertex3f(0., self.textureSize, 0.)
         glEnd()
         self.generatorShader.dettach()
-
-        # unbind framebuffer
-        # load data into localfile and get min and max altitude
-        offset = self.textureSize*(self.textureSize/2)+self.textureSize/2
-        offset *= 4
-
         self.framebuffer.unbind()
 
         # bind the normals framebuffer
         self.framebuffer.bind(self.normalTexture.id)
-        self.topoTexture.bind(GL_TEXTURE0)
+        self.topoTexture.bind(GL_TEXTURE1)
         self.generatorShaderN.attach()
-        glUniform1f(glGetUniformLocation(self.generatorShaderN.shader, 'lonspan'), lonspan)
         glUniform1f(glGetUniformLocation(self.generatorShaderN.shader, 'size'), self.textureSize)
-        glUniform1i(glGetUniformLocation(self.generatorShaderN.shader, 'topoTexture'), 0)
+        glUniform1i(glGetUniformLocation(self.generatorShaderN.shader, 'topoTexture'), 1)
+        glUniform1i(glGetUniformLocation(self.generatorShaderN.shader, 'positionTexture'), 0)
         glBegin(GL_QUADS)
         glTexCoord2f(0., 0.)
         glVertex3f(0., 0., 0.)
@@ -172,16 +164,12 @@ class TerrainQuadtree:
         glVertex3f(0., self.textureSize, 0.)
         glEnd()
         self.generatorShaderN.dettach()
-
         self.framebuffer.unbind()
 
         # bind the color framebuffer
         self.framebuffer.bind(self.colorTexture.id)
-        self.topoTexture.bind(GL_TEXTURE0)
         self.generatorShaderC.attach()
-        glUniform1f(glGetUniformLocation(self.generatorShaderC.shader, 'lonspan'), lonspan)
-        glUniform1f(glGetUniformLocation(self.generatorShaderC.shader, 'size'), self.textureSize)
-        glUniform1i(glGetUniformLocation(self.generatorShaderC.shader, 'topoTexture'), 0)
+        glUniform1i(glGetUniformLocation(self.generatorShaderC.shader, 'topoTexture'), 1)
         glBegin(GL_QUADS)
         glTexCoord2f(0., 0.)
         glVertex3f(0., 0., 0.)
@@ -197,59 +185,84 @@ class TerrainQuadtree:
         self.framebuffer.unbind()
         glEnable(GL_DEPTH_TEST)
 
-        self.busy = False
-        self.initStep += 1
-        self.processInit()
+        self.ready = True
 
     def generateVertices(self):
-        step = self.span / self.gridSize
+        vecptr = factory.vecptr
+
+        # vertices
+        coord_count = self.gridSizep1*self.gridSizep1*3+3
+        vmeshptr = c_double*coord_count
+        vmesh = vmeshptr()
+        factory.lib.build_quadtree_element(vmesh, self.gridSize, 0, 0, vecptr(*self.center), vecptr(*self.dx), vecptr(*self.dy))
+        self.vertices = array(list(vmesh), dtype='float32')
+
+        # generate the position buffer for position texture
+        coord_count = (self.gridSizep1+2)*(self.gridSizep1+2)*3
+        pmeshptr = c_double*coord_count
+        pmesh = pmeshptr()
+        factory.lib.build_quadtree_element(pmesh, self.gridSize, 1, 1, vecptr(*self.center), vecptr(*self.dx), vecptr(*self.dy))
+        self.positionTextureContent = array(list(pmesh), dtype='float32')
+
+        # extract bounding box and bounding sphere
 
         # bounding box blues
         bmin = [0.0, 0.0, 0.0]
         bmax = [0.0, 0.0, 0.0]
 
-        for y in range(0, self.gridSizep1):
-            lat = self.baselat + (self.gridSize-y)*step
-            for x in range(0, self.gridSizep1):
-                lon = self.baselon + x*step
+        #for u in range(0, self.gridSizep1):
+        #    for v in range(0, self.gridSizep1):
+        #        coord = array([\
+        #            self.vertices[u*self.gridSizep1*3+v*3+0],\
+        #            self.vertices[u*self.gridSizep1*3+v*3+1],\
+        #            self.vertices[u*self.gridSizep1*3+v*3+2]])
+#
+        #        coordLow = coord*(1738140.0-32768.0)
+        #        coordHigh = coord*(1738140.0+32768.0)
+#
+        #        # box
+        #        for i in range(0, 3):
+        #            if coord[i] < bmin[i]:
+        #                bmin[i] = coord[i]
+        #            if coord[i] > bmax[i]:
+        #                bmax[i] = coord[i]
+#
+        #            if coordLow[i] < bmin[i]:
+        #                bmin[i] = coordLow[i]
+        #            if coordLow[i] > bmax[i]:
+        #                bmax[i] = coordLow[i]
+#
+        #            if coordHigh[i] < bmin[i]:
+        #                bmin[i] = coordHigh[i]
+        #            if coordHigh[i] > bmax[i]:
+        #                bmax[i] = coordHigh[i]
 
-                coord = array(factory.geocentricToCarthesian(lat, lon, 1.0))
+        u = 0
+        v = 0
+        self.topleft = array([\
+            self.vertices[u*self.gridSizep1*3+v*3+0],\
+            self.vertices[u*self.gridSizep1*3+v*3+1],\
+            self.vertices[u*self.gridSizep1*3+v*3+2]])
 
-                coordLow = coord*(1738140.0-32768.0)
-                coordHigh = coord*(1738140.0+32768.0)
+        v = self.gridSize
+        self.topright = array([\
+            self.vertices[u*self.gridSizep1*3+v*3+0],\
+            self.vertices[u*self.gridSizep1*3+v*3+1],\
+            self.vertices[u*self.gridSizep1*3+v*3+2]])
 
-                # box
-                for i in range(0, 3):
-                    if coord[i] < bmin[i]:
-                        bmin[i] = coord[i]
-                    if coord[i] > bmax[i]:
-                        bmax[i] = coord[i]
-
-                    if coordLow[i] < bmin[i]:
-                        bmin[i] = coordLow[i]
-                    if coordLow[i] > bmax[i]:
-                        bmax[i] = coordLow[i]
-
-                    if coordHigh[i] < bmin[i]:
-                        bmin[i] = coordHigh[i]
-                    if coordHigh[i] > bmax[i]:
-                        bmax[i] = coordHigh[i]
-
-                self.vertices[self.gridSizep1*y*3 + x*3 + 0] = coord[0]
-                self.vertices[self.gridSizep1*y*3 + x*3 + 1] = coord[1]
-                self.vertices[self.gridSizep1*y*3 + x*3 + 2] = coord[2]
-
-                if y == x and x == self.gridSize/2:
-                    self.center = coord
-                if y == 0 and x == 0:
-                    self.topleft = coord
-                if y == 0 and x == self.gridSize:
-                    self.topright = coord
-                if y == self.gridSize and x == 0:
-                    self.botleft = coord
-                if y == self.gridSize and x == self.gridSize:
-                    self.botright = coord
-
+        u = self.gridSize
+        v = 0
+        self.botleft = array([\
+            self.vertices[u*self.gridSizep1*3+v*3+0],\
+            self.vertices[u*self.gridSizep1*3+v*3+1],\
+            self.vertices[u*self.gridSizep1*3+v*3+2]])
+        
+        v = self.gridSize
+        self.botright = array([\
+            self.vertices[u*self.gridSizep1*3+v*3+0],\
+            self.vertices[u*self.gridSizep1*3+v*3+1],\
+            self.vertices[u*self.gridSizep1*3+v*3+2]])    
+    
         # finish bounding box
         self.box.extend([bmin[0], bmax[1], bmin[2]]);
         self.box.extend([bmin[0], bmax[1], bmax[2]]);
@@ -268,34 +281,28 @@ class TerrainQuadtree:
         self.vertices[self.gridSizep1*self.gridSizep1*3 + 1] = self.center[1] * 0.1
         self.vertices[self.gridSizep1*self.gridSizep1*3 + 2] = self.center[2] * 0.1
 
-        self.sidelength = math.sqrt(\
-            (self.topleft[0] - self.botleft[0])**2+\
-            (self.topleft[1] - self.botleft[1])**2+\
-            (self.topleft[2] - self.botleft[2])**2)
-        self.diagonal = math.sqrt(\
-            (self.topleft[0] - self.botright[0])**2+\
-            (self.topleft[1] - self.botright[1])**2+\
-            (self.topleft[2] - self.botright[2])**2)
-
-        self.vertices = array(self.vertices, dtype='float32')
+        self.sidelength = factory.veclen(self.topleft - self.botleft)
+        self.diagonal = factory.veclen(self.topleft - self.botright)
 
         box_p = c_double*24
         self.box = box_p(*array(self.box).flatten())
 
         sphere = list(self.center*1738140.0)
-        sphere.append((self.diagonal*1738140.0)/2.0)
+        sphere.append((self.diagonal*1738140.0/2.0))
 
         sphere_p = c_double*4
         self.sphere = sphere_p(*array(sphere).flatten())
 
-        # normal
-        self.normal = factory.normalize(factory.cross(self.topleft, self.botleft))
-
-        self.initStep += 1
-        self.busy = False
-        self.processInit()
+        # init
+        self.nextStep = {'function': self.finishVertices, 'threaded': False}
+        factory.generatorQueue.put((self, ))
 
     def finishVertices(self):
+        # copy vertex data to position texture
+        self.positionTexture = Texture(self.textureSize, False)
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, self.gridSizep1+2, self.gridSizep1+2, 0, GL_RGB, GL_FLOAT, self.positionTextureContent)
+        self.positionTextureContent = None
+
         self.positionBufferObject = glGenBuffers(1)
         glBindBuffer(GL_ARRAY_BUFFER, self.positionBufferObject)
         glBufferData(GL_ARRAY_BUFFER, self.vertices, GL_STATIC_DRAW)
@@ -364,11 +371,11 @@ class TerrainQuadtree:
                     cy = float(self.gridSize-y) / float(self.gridSize)
 
                     # coords are 0,1. map to texelstep,1-texelstep
-                    texelstep = 1.0/self.textureSize
-                    steprange = 1.0 - texelstep*float(self.textureBorder)*2.0
+                    texelstep = 1.0/23.0
+                    steprange = 1.0 - texelstep*2.0
 
-                    cx = texelstep*self.textureBorder+cx*steprange
-                    cy = texelstep*self.textureBorder+cy*steprange
+                    cx = texelstep + cx*steprange
+                    cy = texelstep + cy*steprange
 
                     texcoords.append([cx, cy])
 
@@ -389,19 +396,23 @@ class TerrainQuadtree:
             self.generatorShaderN = ShaderProgram('generatornormals')
             self.generatorShaderC = ShaderProgram('generatorcolor')
 
-        self.processInit()
+        self.generateTextures()
+
+    def recursiveDealloc(self):
+        self.parent = None
+        [x.recursiveDealloc() for x in self.children]
+        self.children = []
 
     def analyse(self, weight = 0.0):
         if not self.ready:
             return
 
         if not factory.sphereInFrustum(self.sphere):
-           return
-
-        #normalized_cam = factory.normalize(factory.camera.position)
-        #dot = factory.dot(list(normalized_cam), self.normal)
-        #if dot < -0.8:
-        #    return
+            if time.clock() - self.lastDrawn > 2.0:
+                self.parent = None
+                [x.recursiveDealloc() for x in self.children]
+                self.children = []
+            return
 
         # do we need to draw our children
         d1 = factory.veclen(factory.camera.position - self.center*1738140.0)
@@ -409,14 +420,13 @@ class TerrainQuadtree:
         d3 = factory.veclen(factory.camera.position - self.topright*1738140.0)
         d4 = factory.veclen(factory.camera.position - self.botleft*1738140.0)
         d5 = factory.veclen(factory.camera.position - self.botright*1738140.0)
-
-        self.distance = d1
         mindistance = min(d1, min(d2, min(d3, min(d4, d5))))
+        self.distance = mindistance
 
-        far = self.sidelength*1.2*1738140.0
-        near = self.sidelength*1.01*1738140.0
+        far = self.sphere[3]*2.0*1.15
+        near = self.sphere[3]*2.0*1.01
 
-        if self.maxlod > 0 and mindistance <= far:
+        if self.maxlod > 0 and self.distance <= far:
             # are they ready?
             if len(self.children) > 0:
                 readycount = 0
@@ -481,23 +491,44 @@ class TerrainQuadtree:
             glDrawElements(GL_TRIANGLE_FAN, skirtcount, GL_UNSIGNED_SHORT, c_void_p(0))
 
         factory.drawnNodes += 1
+        self.lastDrawn = time.clock()
         
         # draw bounding sphere
         return
         glPushMatrix()
         factory.planet.shader.dettach()
         #glTranslatef(factory.camera.position[0], factory.camera.position[1], factory.camera.position[2])
-        glTranslatef(-self.sphere[0], -self.sphere[1], -self.sphere[2])
-        glutSolidSphere(self.sidelength*1738140.0/2.0, 20, 20);
+        glTranslatef(self.sphere[0], self.sphere[1], self.sphere[2])
+        glutSolidSphere(self.sphere[3], 20, 20);
         factory.planet.shader.attach()
         glPopMatrix()
 
         factory.drawnNodes += 1
 
     def initChildren(self):
-        qt1 = TerrainQuadtree(self, self.maxlod-1, 1, self.baselat, self.baselon, self.span/2.)
-        qt2 = TerrainQuadtree(self, self.maxlod-1, 2, self.baselat, self.baselon+self.span/2., self.span/2.)
-        qt3 = TerrainQuadtree(self, self.maxlod-1, 3, self.baselat+self.span/2., self.baselon, self.span/2.)
-        qt4 = TerrainQuadtree(self, self.maxlod-1, 4, self.baselat+self.span/2., self.baselon+self.span/2., self.span/2.)
+        dx = self.dx / 2.0
+        dy = self.dy / 2.0
 
+        # index 1
+        center = self.center - self.dx/4.0 + self.dy/4.0
+        qt1 = TerrainQuadtree(self, self.maxlod-1, self.face, 1, center, dx, dy)
+
+        # index 2
+        center = self.center + self.dx/4.0 + self.dy/4.0
+        qt2 = TerrainQuadtree(self, self.maxlod-1, self.face, 2, center, dx, dy)
+
+        # index 3
+        center = self.center - self.dx/4.0 - self.dy/4.0
+        qt3 = TerrainQuadtree(self, self.maxlod-1, self.face, 3, center, dx, dy)
+        
+        # index 4
+        center = self.center + self.dx/4.0 - self.dy/4.0
+        qt4 = TerrainQuadtree(self, self.maxlod-1, self.face, 4, center, dx, dy)
+        
         self.children = [qt1, qt2, qt3, qt4]
+
+    def __del__(self):
+        # delete positiontexture, topotexture, normaltexture, colortexture
+        print "Deallocating"
+        self.children = []
+        # delete framebuffer

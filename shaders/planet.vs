@@ -51,27 +51,27 @@ void main() {
     gl_TexCoord[0] = gl_MultiTexCoord0;
     
     float radius = 1738140.0;
-    
     vec4 heightmap = texture2D(topoTexture, gl_TexCoord[0].st);
     float height = heightmap.a*65536.0 + heightmap.r*256.0 - 32768.0;
-
+    /*
     if (weight > 0.0) {
+        vec2 oldtcoord = gl_TexCoord[0].st;
+        oldtcoord.t = oldtcoord.t;
         vec2 parentCoords;
         if (index == 1)
-            parentCoords = 1.0/texturesize+vec2(gl_TexCoord[0].s/2.0, gl_TexCoord[0].t/2.0);
+            parentCoords = 1.0/texturesize+vec2(oldtcoord.s/2.0, oldtcoord.t/2.0);
         if (index == 2)
-            parentCoords = vec2(0.5-1.0/texturesize+gl_TexCoord[0].s/2.0, 1.0/texturesize+gl_TexCoord[0].t/2.0);
+            parentCoords = vec2(0.5-1.0/texturesize+oldtcoord.s/2.0, 1.0/texturesize+oldtcoord.t/2.0);
         if (index == 3)
-            parentCoords = vec2(1.0/texturesize+gl_TexCoord[0].s/2.0, 0.5-1.0/texturesize+gl_TexCoord[0].t/2.0);
+            parentCoords = vec2(1.0/texturesize+oldtcoord.s/2.0, 0.5-1.0/texturesize+oldtcoord.t/2.0);
         if (index == 4)
-            parentCoords = 0.5-1.0/texturesize+vec2(gl_TexCoord[0].s/2.0, gl_TexCoord[0].t/2.0);
+            parentCoords = 0.5-1.0/texturesize+vec2(oldtcoord.s/2.0, oldtcoord.t/2.0);
         vec4 pheightmap = texture2D(ptopoTexture, parentCoords);
         float pheight = pheightmap.a*65536.0 + pheightmap.r*256.0 - 32768.0;
         height = mix(height, pheight, weight);
     }
-    
+    */
     vertex = vec4(normalize(gl_Vertex.xyz) * (height + radius), 1.0);
-
     vvertex = gl_ModelViewMatrix * vertex;
     gl_Position = gl_ModelViewProjectionMatrix * vertex;
 

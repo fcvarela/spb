@@ -233,27 +233,15 @@ float ridgedmf(vec4 p/*, float H, float lacunarity, int octaves, float offset, i
       return result;
   }
 
-  uniform float baselat;
-  uniform float baselon;
-  uniform float latspan;
-  uniform float lonspan;
-
-  vec4 coords() {
-      float lat = baselat + gl_TexCoord[0].t * latspan;
-      float lon = baselon + gl_TexCoord[0].s * lonspan;
-
-  // map to spherical coords
-  vec3 coords;
-  coords[2] = cos(lon) * cos(lat);
-  coords[0] = sin(lon) * cos(lat);
-  coords[1] = sin(lat);
-
-  return vec4(coords, 1.0);
-}
-
+uniform sampler2D positionTexture;
 
 void main() {
-  float height = ridgedmf(coords())*65536.0;
+  vec2 tc = vec2(gl_TexCoord[0].s, gl_TexCoord[0].t);
+  /*float offset = 1.0/29.0;
+  tc = tc * (1.0 - offset*2.0);
+  tc = tc + offset;*/
+  vec4 coords = vec4(texture2D(positionTexture, tc).rgb, 1.0);
+  float height = ridgedmf(coords*2.0)*65536.0;
   int heighti = int(height);
   height = fract(height);
   gl_FragColor.a = float(heighti/256) / 256.0;

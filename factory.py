@@ -13,7 +13,19 @@ from node import *
 
 from ctypes import *
 
-lib = cdll.LoadLibrary('./frustumtools.dylib')
+#debug
+import ubigraph
+try:
+    G = ubigraph.Ubigraph()
+    G.clear()
+    # debug
+    gRoot = factory.G.newVertex(shape="sphere", size="1.0", label="Planet")
+    gQuadtreeStyle = G.newVertexStyle(shape="sphere", color="#0000FF", size="1.0")
+    gQuadtreeNodeStyle = G.newVertexStyle(shape="sphere", color="#FF0000", size="1.0")
+except:
+    pass
+
+lib = cdll.LoadLibrary('./ctools.dylib')
 lib.boxInFrustum.restype = c_int
 lib.sphereInFrustum.restype = c_int
 lib.veclen.restype = c_double
@@ -27,6 +39,11 @@ def geocentricToCarthesian(lat, lon, alt):
     position1 = vecptr()
     lib.geocentricToCarthesian(position1, c_float(lat), c_float(lon))
     return array(list(position1))*alt
+
+def carthesianToGeocentric(position):
+    latlon = vecptr()
+    lib.carthesianToGeocentric(latlon, vecptr(*position))
+    return array(list(latlon))
 
 def calculateFrustum():
     if trackFrustum:
@@ -51,15 +68,9 @@ def cross(a, b):
     return output
 
 def normalize(a):
-    output = []
-    output.extend(a)
-
-    nlen = math.sqrt(a[0]**2 + a[1]**2 + a[2]**2)
-    output[0] /= nlen
-    output[1] /= nlen
-    output[2] /= nlen
-
-    return output
+    b = vecptr(*a)
+    lib.normalize(b)
+    return array(list(b))
 
 def dot(a, b):
     output = a[0]*b[0] + a[1] * b[1] + a[2] * b[2]
