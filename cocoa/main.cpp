@@ -1,5 +1,7 @@
 #include <GL/glfw.h>
+
 #include <Common.h>
+#include <GameSceneManager.h>
 
 int main(void) {
 	int running = GL_TRUE;
@@ -35,8 +37,10 @@ int main(void) {
 	while (running) {
 		running = !glfwGetKey(GLFW_KEY_ESC) && glfwGetWindowParam(GLFW_OPENED);
 
-		// global step advance
+		// process time delta
 		globalStep();
+
+		// ask the game manager to update content
 		getGameSceneManager()->step();
 	}
 
