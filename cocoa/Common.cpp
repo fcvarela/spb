@@ -6,13 +6,29 @@
 
 double __lasttime__ = glfwGetTime();
 double __dt__ = 0.0;
+double __hfov__ = 0.0;
+double __vfov__ = 0.0;
+double __aratio__ = 0.0;
 uint16_t __width__ = 0;
 uint16_t __height__ = 0;
+uint8_t __keys__[512];
+double __camdelta__ = 0.0;
 
 void globalStep() {
 	double now = glfwGetTime();
 	__dt__ = now - __lasttime__;
 	__lasttime__ = now;
+}
+
+void calcFOV() {
+	__aratio__ = (double)__width__/(double)__height__;
+	/*
+	__hfov__ = 60.0;
+	__vfov__ = 2.0 * atan(tan(__hfov__/2.0*M_PI/180.0)/__aratio__)*180.0/M_PI;
+	*/
+
+	std::cerr << "VFOV: " << __vfov__ << std::endl;
+	std::cerr << "HFOV: " << __hfov__ << std::endl;
 }
 
 // frustum tools
@@ -57,4 +73,12 @@ void calculateFrustum(frustum_t &frustum) {
 	extractPlane(frustum.t, modelview, -2);
 	extractPlane(frustum.n, modelview, 3);
 	extractPlane(frustum.f, modelview, -3);
+}
+
+void GLFWCALL My_Key_Callback(int key, int action) {
+	uint8_t val = 0;
+	if (action == GLFW_PRESS)
+		val = 1;
+
+	__keys__[key] = val;
 }

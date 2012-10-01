@@ -5,6 +5,9 @@
 
 class Planet : public Node {
 public:
+	double radius;
+	double atmosphere_radius;
+
 	Planet();
 	~Planet();
 

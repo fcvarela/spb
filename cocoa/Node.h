@@ -6,18 +6,12 @@
 
 class Node {
 public:
-	Vector3d	position, velocity, acceleration;
+	Vector3d	position, velocity, acceleration, angrate, angaccel;
 	Quatd		rotation;
 
 	Node();
-	void step();
-	void rotatex(double angle);
-	void rotatey(double angle);
-	void rotatez(double angle);
-	void moveforward(double distance);
-	void moveupward(double distance);
-	void straferight(double distance);
-	void stop();
+	virtual void step();
+	void stop(bool full);
 };
 
 #endif

@@ -12,7 +12,7 @@ private:
 	GLfloat _specularLightColor[4];
 
 public:
-	double _radius;
+	double radius;
 
 	Star();
 	~Star();

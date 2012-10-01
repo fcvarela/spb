@@ -14,9 +14,8 @@ public:
 	Star *star;
 	std::list<Planet *> planets;
 
-	void step();
-
 	void draw();
+	void step();
 };
 
 #endif

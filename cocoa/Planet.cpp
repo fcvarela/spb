@@ -1,6 +1,9 @@
 #include <Planet.h>
 
-Planet::Planet() {}
+Planet::Planet() {
+	this->radius = 173814000.0;
+}
+
 Planet::~Planet() {}
 
 void Planet::draw() {
