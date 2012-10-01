@@ -4,13 +4,15 @@
 #include <GameSceneManager.h>
 #include <Common.h>
 
-double lasttime = glfwGetTime();
-double dt = 0.0;
+double __lasttime__ = glfwGetTime();
+double __dt__ = 0.0;
+uint16_t __width__ = 0;
+uint16_t __height__ = 0;
 
 void globalStep() {
 	double now = glfwGetTime();
-	dt = now - lasttime;
-	lasttime = now;
+	__dt__ = now - __lasttime__;
+	__lasttime__ = now;
 }
 
 // frustum tools

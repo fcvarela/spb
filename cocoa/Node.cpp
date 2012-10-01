@@ -9,8 +9,8 @@ Node::Node() {
 }
 
 void Node::step() {
-	position += velocity * dt;
-	velocity += acceleration * dt;
+	position += velocity * __dt__;
+	velocity += acceleration * __dt__;
 }
 
 void Node::rotatex(double angle) {
@@ -29,19 +29,19 @@ void Node::rotatez(double angle) {
 }
 
 void Node::moveforward(double distance) {
-	Vector3d delta = -Vector3d(0.0, 0.0, -1.0) * distance * dt;
+	Vector3d delta = -Vector3d(0.0, 0.0, -1.0) * distance * __dt__;
 	rotation.rotate(delta);
 	velocity += delta;
 }
 
 void Node::moveupward(double distance) {
-	Vector3d delta = Vector3d(0.0, 1.0, 0.0) * distance * dt;
+	Vector3d delta = Vector3d(0.0, 1.0, 0.0) * distance * __dt__;
 	rotation.rotate(delta);
 	velocity += delta;
 }
 
 void Node::straferight(double distance) {
-	Vector3d delta = Vector3d(1.0, 0.0, 0.0) * distance * dt;
+	Vector3d delta = Vector3d(1.0, 0.0, 0.0) * distance * __dt__;
 	rotation.rotate(delta);
 	velocity += delta;
 }

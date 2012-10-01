@@ -18,6 +18,7 @@ public:
 	~GameSceneManager();
 
 	bool init();
+	void reshape();
 	void step();
 };
 

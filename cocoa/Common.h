@@ -1,10 +1,13 @@
 #ifndef __COMMON
 #define __COMMON
 
+#include <stdint.h>
 #include <GL/glfw.h>
 
-extern double dt;
-extern double lasttime;
+extern double __dt__;
+extern double __lasttime__;
+extern uint16_t __width__;
+extern uint16_t __height__;
 
 struct plane_t {GLfloat A, B, C, D;};
 union frustum_t {
