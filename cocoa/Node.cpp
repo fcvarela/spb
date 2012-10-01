@@ -9,8 +9,10 @@ Node::Node() {
 }
 
 void Node::step() {
+	/*
 	position += velocity * __dt__;
 	velocity += acceleration * __dt__;
+	*/
 }
 
 void Node::stop(bool full) {

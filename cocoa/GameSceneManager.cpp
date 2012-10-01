@@ -32,10 +32,6 @@ bool GameSceneManager::init() {
 
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
-	// lighting
-	//glEnable(GL_LIGHTING);
-	//glEnable(GL_LIGHT0);
-
 	// read config and set initial camera position
 	this->camera = new Camera();
 
@@ -46,8 +42,9 @@ bool GameSceneManager::init() {
 	// set camera position to middle ground between star and planet
 	Star *star = firstStarSystem->star;
 	std::list<Planet *>::iterator planet = firstStarSystem->planets.begin();
-	Vector3d cameraPos = star->position;
-	camera->position = cameraPos;
+
+	camera->position = Vector3d(0.0, 0.0, (*planet)->radius * 2.0);
+	star->position = Vector3d(0.0, 0.0, (*planet)->radius * 8.0);
 
 	// prepare our viewport
 	this->reshape();
@@ -62,7 +59,7 @@ void GameSceneManager::reshape() {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glViewport(0, 0, __width__, __height__);
-	glFrustum(.5, -.5, .5 * __aratio__, .5 * __aratio__, near, far);
+	gluPerspective(__vfov__, __aratio__, near, far);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }
@@ -71,20 +68,48 @@ void GameSceneManager::step() {
 	// set camera position to middle ground between star and planet
 	std::list<StarSystem *>::iterator ss = this->starSystems.begin();
 	std::list<Planet *>::iterator planet = (*ss)->planets.begin();
-	__camdelta__ = ((camera->position-(*planet)->position).length() - (*planet)->radius) / 5.0;
 
-	double near = 1.0;
-	double far = 100000000000000000.0;
+	double distance = (camera->position - (*planet)->position).length();
+	double altitude = distance - (*planet)->radius;
+	__camdelta__ = altitude / 2.0;
+
+	std::cerr << "Distance is: " << distance << std::endl;
+
+	double near = 1.0, far;
+	if (distance > (*planet)->atmosphere_radius)
+		far = distance + (*planet)->radius * 3.0;
+	else
+		far = sqrtf(altitude * (2.0 * (*planet)->radius + altitude))*1000.0;
+
+	std::cerr << "Far is: " << far << std::endl;	
+
+	std::cerr << "Quaternion: " << camera->rotation << std::endl;
+	std::cerr << "Camera position: " << camera->position << std::endl;
+
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glViewport(0, 0, __width__, __height__);
-	glFrustum(.5, -.5, .5 * __aratio__, .5 * __aratio__, near, far);
+	gluPerspective(__vfov__, __aratio__, near, far);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
 	// reposition camera
 	this->camera->step();
 	this->camera->setPerspective();
+
+	glBegin(GL_LINES);
+	glColor3f(1.0, 0.0, 0.0);
+	glVertex3f(0.0, 0.0, 0.0);
+	glVertex3f((*planet)->radius*2.0, 0.0, 0.0);
+
+	glColor3f(0.0, 1.0, 0.0);
+	glVertex3f(0.0, 1.0, 0.0);
+	glVertex3f(0.0, (*planet)->radius*2.0, 0.0);
+
+	glColor3f(0.0, 0.0, 1.0);
+	glVertex3f(0.0, 0.0, 0.0);
+	glVertex3f(0.0, 0.0, (*planet)->radius*2.0);
+	glEnd();
 
 	// update the view frustum
 	calculateFrustum(this->frustum);

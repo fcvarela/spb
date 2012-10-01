@@ -8,7 +8,7 @@ StarSystem::StarSystem() {
 	this->star = new Star();
 	Planet *planet = new Planet();
 
-	planet->position.z() = 149600000000.0;
+	this->star->position.z() = -149600000000.0;
 	this->planets.push_front(planet);
 
 	std::cerr << "Planet position is: " << planet->position << std::endl;
@@ -17,7 +17,7 @@ StarSystem::StarSystem() {
 StarSystem::~StarSystem() {
 	std::cerr << "StarSystem cleanup" << std::endl;
 
-	//delete star;
+	delete star;
 	//delete planets;
 }
 
@@ -33,18 +33,6 @@ void StarSystem::step() {
 }
 
 void StarSystem::draw() {
-	// draw star, planets
-	glPushMatrix();
-	glTranslated(position.x(), position.y(), position.z());
-
-	// debug
-	std::list<Planet *>::iterator p = planets.begin();
-	glColor4f(1.0, 0.0, 0.0, 1.0);
-	glBegin(GL_LINES);
-	glVertex3d(star->position.x(), star->position.y(), star->position.z());
-	glVertex3d((*p)->position.x(), (*p)->position.y(), (*p)->position.z());
-	glEnd();
-
 	// now draw the sun
 	star->draw();
 
@@ -53,6 +41,4 @@ void StarSystem::draw() {
 		Planet *p = *i;
 		p->draw();
 	}
-
-	glPopMatrix();
 }

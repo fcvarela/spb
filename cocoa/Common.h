@@ -8,6 +8,8 @@ extern double __dt__;
 extern double __lasttime__;
 extern uint16_t __width__;
 extern uint16_t __height__;
+extern double __hfov__;
+extern double __vfov__;
 extern double __aratio__;
 extern uint8_t __keys__[512];
 extern double __camdelta__;

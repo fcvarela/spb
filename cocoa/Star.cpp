@@ -26,15 +26,16 @@ Star::Star() {
 Star::~Star() {}
 
 void Star::draw() {
-	//glDisable(GL_LIGHTING);
+	return;
 	glPushMatrix();
 	glTranslated(position.x(), position.y(), position.z());
 	glColor4fv(_diffuseLightColor);
 	glCallList(_sphereDisplayList);
 	glPopMatrix();
-	//glEnable(GL_LIGHTING);
 	
+	/*
 	glLightfv(GL_LIGHT0, GL_AMBIENT, _ambientLightColor);
 	glLightfv(GL_LIGHT0, GL_AMBIENT, _diffuseLightColor);
 	glLightfv(GL_LIGHT0, GL_AMBIENT, _specularLightColor);
+	*/
 }

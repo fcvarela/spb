@@ -6,9 +6,9 @@
 
 double __lasttime__ = glfwGetTime();
 double __dt__ = 0.0;
+double __aratio__ = 0.0;
 double __hfov__ = 0.0;
 double __vfov__ = 0.0;
-double __aratio__ = 0.0;
 uint16_t __width__ = 0;
 uint16_t __height__ = 0;
 uint8_t __keys__[512];
@@ -22,33 +22,28 @@ void globalStep() {
 
 void calcFOV() {
 	__aratio__ = (double)__width__/(double)__height__;
-	/*
 	__hfov__ = 60.0;
-	__vfov__ = 2.0 * atan(tan(__hfov__/2.0*M_PI/180.0)/__aratio__)*180.0/M_PI;
-	*/
-
-	std::cerr << "VFOV: " << __vfov__ << std::endl;
-	std::cerr << "HFOV: " << __hfov__ << std::endl;
+    __vfov__ = 2.0 * atan(tan(__hfov__/2.0 * M_PI/180.0) / __aratio__)*180.0/M_PI;
 }
 
 // frustum tools
 void extractPlane(plane_t &plane, GLfloat *mat, int row) {
-		int scale = (row < 0) ? -1 : 1;
-		row = abs(row) - 1;
+	int scale = (row < 0) ? -1 : 1;
+	row = abs(row) - 1;
 
-		// calculate plane coefficients from the matrix
-		plane.A = mat[3] + scale * mat[row];
-		plane.B = mat[7] + scale * mat[row + 4];
-		plane.C = mat[11] + scale * mat[row + 8];
-		plane.D = mat[15] + scale * mat[row + 12];
+	// calculate plane coefficients from the matrix
+	plane.A = mat[3] + scale * mat[row];
+	plane.B = mat[7] + scale * mat[row + 4];
+	plane.C = mat[11] + scale * mat[row + 8];
+	plane.D = mat[15] + scale * mat[row + 12];
 
-		// normalize the plane
-		double length = sqrtf(plane.A * plane.A + plane.B * plane.B + plane.C * plane.C);
-		plane.A /= length;
-		plane.B /= length;
-		plane.C /= length;
-		plane.D /= length;
-	}
+	// normalize the plane
+	double length = sqrtf(plane.A * plane.A + plane.B * plane.B + plane.C * plane.C);
+	plane.A /= length;
+	plane.B /= length;
+	plane.C /= length;
+	plane.D /= length;
+}
 
 // determines the current view frustum
 void calculateFrustum(frustum_t &frustum) {

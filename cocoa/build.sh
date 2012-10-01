@@ -9,4 +9,5 @@ clang++ -O2 \
 -framework OpenGL \
 -framework IOKit \
 -framework OpenAL \
+-framework GLUT \
 -o SPB.app/Contents/MacOS/spb

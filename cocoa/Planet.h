@@ -8,6 +8,8 @@ public:
 	double radius;
 	double atmosphere_radius;
 
+	GLuint _sphereDisplayList;
+
 	Planet();
 	~Planet();
 
