@@ -6,12 +6,12 @@
 
 class Node {
 public:
-	Vector3d	position, velocity, acceleration, angrate, angaccel;
+	Vector3d	position, velocity, acceleration;
 	Quatd		rotation;
+	Vector3d	angrate, angaccel;
 
 	Node();
 	virtual void step();
-	void stop(bool full);
 };
 
 #endif

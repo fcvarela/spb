@@ -73,18 +73,11 @@ void GameSceneManager::step() {
 	double altitude = distance - (*planet)->radius;
 	__camdelta__ = altitude / 2.0;
 
-	std::cerr << "Distance is: " << distance << std::endl;
-
 	double near = 1.0, far;
 	if (distance > (*planet)->atmosphere_radius)
 		far = distance + (*planet)->radius * 3.0;
 	else
 		far = sqrtf(altitude * (2.0 * (*planet)->radius + altitude))*1000.0;
-
-	std::cerr << "Far is: " << far << std::endl;	
-
-	std::cerr << "Quaternion: " << camera->rotation << std::endl;
-	std::cerr << "Camera position: " << camera->position << std::endl;
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
