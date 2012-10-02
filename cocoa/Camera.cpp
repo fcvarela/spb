@@ -4,6 +4,7 @@
 Camera::Camera() {
 	std::cerr << "Camera alloc" << std::endl;
 	this->max_angrate = 90.0;
+	label = "CAMERA";
 }
 
 void Camera::step() {
@@ -73,6 +74,16 @@ void Camera::step() {
 		Quatd nrot(angdelta, angdeltalen);
 		rotation = rotation * nrot;
 	}
+
+	// make sure we lock when sufficiently close to zero
+	if (velocity.length() < 10E-3)
+		velocity = Vector3d(0.0, 0.0, 0.0);
+	if (acceleration.length() < 10E-3)
+		velocity = Vector3d(0.0, 0.0, 0.0);
+	if (angrate.length() < 10E-3)
+		angrate = Vector3d(0.0, 0.0, 0.0);
+	if (angaccel.length() < 10E-3)
+		angaccel = Vector3d(0.0, 0.0, 0.0);
 }
 
 void Camera::setPerspective() {

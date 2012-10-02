@@ -11,7 +11,7 @@ Star::Star() {
 	memcpy(_specularLightColor, spe,  sizeof(GLfloat) * 4);
 
 	// create the display list for this sphere
-	this->radius = 6995.9E5;
+	this->radius = 6955E8;
 	GLUquadric *star  = gluNewQuadric();
 	gluQuadricNormals(star, GL_SMOOTH);
 	_sphereDisplayList = glGenLists(1);
@@ -19,14 +19,11 @@ Star::Star() {
 	gluSphere(star, this->radius, 50, 50);
 	glEndList();
 	gluDeleteQuadric(star);
-
-	std::cerr << "Star initialized at position " << position << " relative to star system center" << std::endl;
 }
 
 Star::~Star() {}
 
 void Star::draw() {
-	return;
 	glPushMatrix();
 	glTranslated(position.x(), position.y(), position.z());
 	glColor4fv(_diffuseLightColor);

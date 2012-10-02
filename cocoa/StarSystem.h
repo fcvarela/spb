@@ -16,6 +16,8 @@ public:
 
 	void draw();
 	void step();
+	Node *nearestNode(Node *node);
+	void recalculatePositions(Vector3d &subtract);
 };
 
 #endif

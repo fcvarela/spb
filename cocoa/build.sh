@@ -2,6 +2,7 @@
 
 clang++ -O2 \
 *.cpp \
+-g \
 -I. \
 -I./glfw/include \
 ./glfw/lib/cocoa/libglfw.a \

@@ -17,6 +17,7 @@ Planet::~Planet() {}
 
 void Planet::draw() {
 	glPushMatrix();
+	glTranslated(position.x(), position.y(), position.z());
 	glColor4f(1.0, 0.0, 0.0, 1.0);
 	glCallList(_sphereDisplayList);
 	glPopMatrix();

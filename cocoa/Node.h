@@ -9,6 +9,7 @@ public:
 	Vector3d	position, velocity, acceleration;
 	Quatd		rotation;
 	Vector3d	angrate, angaccel;
+	std::string	label;
 
 	Node();
 	virtual void step();

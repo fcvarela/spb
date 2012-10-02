@@ -20,6 +20,8 @@ public:
 	bool init();
 	void reshape();
 	void step();
+	Node *nearestNode();
+	void recalculatePositions(Vector3d &subtract);
 };
 
 GameSceneManager *getGameSceneManager();
