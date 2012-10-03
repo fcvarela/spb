@@ -2,13 +2,15 @@
 #define __STARSYSTEM
 
 #include <list>
+#include <libconfig.h++>
+
 #include <Node.h>
 #include <Star.h>
 #include <Planet.h>
 
 class StarSystem : public Node {
 public:
-	StarSystem();
+	StarSystem(const libconfig::Setting &system);
 	~StarSystem();
 
 	Star *star;

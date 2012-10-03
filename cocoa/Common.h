@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <GL/glfw.h>
+#include <FTGL/ftgl.h>
 
 extern double __dt__;
 extern double __lasttime__;
@@ -13,6 +14,7 @@ extern double __vfov__;
 extern double __aratio__;
 extern uint8_t __keys__[512];
 extern double __camdelta__;
+extern FTFont *__font__;
 
 struct plane_t {GLfloat A, B, C, D;};
 union frustum_t {
@@ -26,6 +28,7 @@ void extractPlane(plane_t &plane, GLfloat *mat, int row);
 void globalStep();
 void calcFOV();
 
+// input callbacks
 void GLFWCALL My_Key_Callback(int key, int action);
 
 #endif

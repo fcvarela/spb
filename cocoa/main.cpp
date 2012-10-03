@@ -16,16 +16,16 @@ int main(void) {
 	/*
 	glfwOpenWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_FALSE);
     glfwOpenWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
+    */
     glfwOpenWindowHint(GLFW_WINDOW_NO_RESIZE, GL_TRUE);
-   	*/
    	
     GLFWvidmode return_struct;
 	glfwGetDesktopMode(&return_struct);
 
-	__width__ = 800; //return_struct.Width
-	__height__ = 500;
+	__width__ = return_struct.Width;
+	__height__ = return_struct.Height;
 
-	if (!glfwOpenWindow(__width__, __height__, 8, 8, 8, 8, 24, 0, GLFW_WINDOW)) {
+	if (!glfwOpenWindow(__width__, __height__, 8, 8, 8, 8, 24, 0, GLFW_FULLSCREEN)) {
 		glfwTerminate();
 		exit(EXIT_FAILURE);
 	}
@@ -37,6 +37,10 @@ int main(void) {
 
 	// calculate opengl drawing parameters (window fov)
 	calcFOV();
+
+	// init font
+	__font__ = new FTGLBitmapFont("data/fonts/Arial.ttf");
+	__font__->FaceSize(12.0);
 
 	// initialize the scene manager
 	GameSceneManager *gsm = getGameSceneManager();

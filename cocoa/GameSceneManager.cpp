@@ -1,4 +1,6 @@
+#include <libconfig.h++>
 #include <iostream>
+
 #include <Common.h>
 #include <GameSceneManager.h>
 
@@ -12,16 +14,13 @@ GameSceneManager *getGameSceneManager() {
 }
 
 GameSceneManager::GameSceneManager() {
-	std::cerr << "GameSceneManager alloc" << std::endl;
 }
 
 GameSceneManager::~GameSceneManager() {
-	std::cerr << "GameSceneManager cleanup" << std::endl;
 }
 
 // and the rest
 bool GameSceneManager::init() {
-	std::cerr << "GameSceneManager init" << std::endl;
 
 	// gl initialization
 	glDepthFunc(GL_LEQUAL);
@@ -35,25 +34,29 @@ bool GameSceneManager::init() {
 	// read config and set initial camera position
 	this->camera = new Camera();
 
-	// initialize the first star system. should come from config later
-	StarSystem *firstStarSystem = new StarSystem();
-	firstStarSystem->label = std::string("SOLAR SYSTEM");
-
-	StarSystem *secondStarSystem = new StarSystem();
-	secondStarSystem->label = std::string("CENTAURI SYSTEM");
-	secondStarSystem->position = Vector3d(0.0, 0.0, -1.0) * 4.366 * 9.4607E15;
-
-	this->starSystems.push_front(firstStarSystem);
-	this->starSystems.push_front(secondStarSystem);
+	// iterate systems in config and add them to list
+	libconfig::Config cfg;
+	try {
+		cfg.readFile("conf/universe.cfg");
+		const libconfig::Setting& root = cfg.getRoot();
+		const libconfig::Setting &systems = root["systems"];
+		for (int i=0; i<systems.getLength(); i++) {
+			const libconfig::Setting &system = systems[i];
+			StarSystem *newSystem = new StarSystem(system);
+			starSystems.push_back(newSystem);
+		}
+	} catch(const libconfig::FileIOException &fioex) {
+		std::cerr << "I/O error while reading file." << std::endl;
+		return(EXIT_FAILURE);
+	} catch(const libconfig::ParseException &pex) {
+		std::cerr << "Parse error at " << pex.getFile() << ":" << pex.getLine() << " - " << pex.getError() << std::endl;
+		return(EXIT_FAILURE);
+	}
 
 	// set camera position to middle ground between star and planet
-	Star *sun = firstStarSystem->star;
-	sun->label = std::string("SUN");
-
-	Star *centauri = secondStarSystem->star;
-	centauri->label = std::string("ALPHA CENTAURI");
-
-	camera->position = Vector3d(0.0, 0.0, sun->radius * 2.0);
+	std::list<StarSystem *>::iterator i = starSystems.begin();
+	StarSystem *nearestSystem = *i;
+	camera->position = Vector3d(0.0, 0.0, nearestSystem->star->radius * 2.0);
 
 	// prepare our viewport
 	this->reshape();

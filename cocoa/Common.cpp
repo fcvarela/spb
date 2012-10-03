@@ -13,6 +13,7 @@ uint16_t __width__ = 0;
 uint16_t __height__ = 0;
 uint8_t __keys__[512];
 double __camdelta__ = 0.0;
+FTFont *__font__;
 
 void globalStep() {
 	double now = glfwGetTime();

@@ -1,6 +1,7 @@
 #ifndef __STAR
 #define __STAR
 
+#include <libconfig.h++>
 #include <Node.h>
 
 class Star : public Node {
@@ -14,7 +15,9 @@ private:
 public:
 	double radius;
 
-	Star();
+	Node *system;
+
+	Star(const libconfig::Setting &star, Node *system);
 	~Star();
 
 	void draw();
