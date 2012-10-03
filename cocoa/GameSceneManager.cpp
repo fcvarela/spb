@@ -3,6 +3,7 @@
 
 #include <Common.h>
 #include <GameSceneManager.h>
+#include <Star.h>
 
 // provision a singleton
 static GameSceneManager *gGameSceneManager;
@@ -56,7 +57,8 @@ bool GameSceneManager::init() {
 	// set camera position to middle ground between star and planet
 	std::list<StarSystem *>::iterator i = starSystems.begin();
 	StarSystem *nearestSystem = *i;
-	camera->position = Vector3d(0.0, 0.0, nearestSystem->star->radius * 2.0);
+	Star *nearestStar = (Star *)nearestSystem->star;
+	camera->position = Vector3d(0.0, 0.0, nearestStar->radius * 2.0);
 
 	// prepare our viewport
 	this->reshape();

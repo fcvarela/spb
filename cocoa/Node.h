@@ -3,6 +3,7 @@
 
 #include <Quaternion.h>
 #include <Vector.h>
+#include <Shader.h>
 
 class Node {
 public:
@@ -11,8 +12,11 @@ public:
 	Vector3d	angrate, angaccel;
 	std::string	label;
 
+	Shader		*shader;
+
 	Node();
 	virtual void step();
+	virtual void draw();
 };
 
 #endif

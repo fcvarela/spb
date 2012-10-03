@@ -5,8 +5,9 @@
 #include <libconfig.h++>
 
 #include <Node.h>
-#include <Star.h>
-#include <Planet.h>
+
+class Star;
+class Planet;
 
 class StarSystem : public Node {
 public:

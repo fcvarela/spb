@@ -4,6 +4,8 @@
 #include <libconfig.h++>
 #include <Node.h>
 
+class StarSystem;
+
 class Planet : public Node {
 public:
 	double radius;
@@ -14,11 +16,14 @@ public:
 
 	double time_scale;
 
-	Node *system;
+	StarSystem *system;
+	Shader *atmosphereShader;
+	Shader *surfaceShader;
 
-	GLuint _sphereDisplayList;
+	GLuint _surfaceDisplayList;
+	GLuint _atmosphereDisplayList;
 
-	Planet(const libconfig::Setting &planet, Node *system);
+	Planet(const libconfig::Setting &planet, StarSystem *system);
 	~Planet();
 
 	void draw();

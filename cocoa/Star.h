@@ -4,6 +4,8 @@
 #include <libconfig.h++>
 #include <Node.h>
 
+class StarSystem;
+
 class Star : public Node {
 private:
 	GLuint _sphereDisplayList;
@@ -15,9 +17,9 @@ private:
 public:
 	double radius;
 
-	Node *system;
+	StarSystem *system;
 
-	Star(const libconfig::Setting &star, Node *system);
+	Star(const libconfig::Setting &star, StarSystem *system);
 	~Star();
 
 	void draw();

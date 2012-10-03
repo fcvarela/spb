@@ -59,7 +59,7 @@ void Camera::step() {
 	if (__keys__['X'] == 1)
 		angle += Vector3d(0.0, 0.0, 1.0);
 
-	target_angrate = angle * 90.0;
+	target_angrate = angle * 40.0;
 	if (target_angrate != angrate)
 		angaccel = (target_angrate - angrate) * 30.0;
 	else

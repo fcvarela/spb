@@ -1,8 +1,10 @@
 #include <sys/time.h>
+#include <GameSceneManager.h>
 #include <Common.h>
 #include <Planet.h>
+#include <Star.h>
 
-Planet::Planet(const libconfig::Setting &planet, Node *system) {
+Planet::Planet(const libconfig::Setting &planet, StarSystem *system) {
 	this->system = system;
 
 	// orbital stuff
@@ -18,12 +20,27 @@ Planet::Planet(const libconfig::Setting &planet, Node *system) {
 	planet.lookupValue("name", this->label);
 
 	GLUquadric *surface  = gluNewQuadric();
+	GLUquadric *atmosphere = gluNewQuadric();
+
 	gluQuadricNormals(surface, GL_SMOOTH);
-	_sphereDisplayList = glGenLists(1);
-	glNewList(_sphereDisplayList, GL_COMPILE);
+	gluQuadricNormals(atmosphere, GL_SMOOTH);
+
+	_surfaceDisplayList = glGenLists(1);
+	_atmosphereDisplayList = glGenLists(1);
+
+	glNewList(_surfaceDisplayList, GL_COMPILE);
 	gluSphere(surface, this->radius, 50, 50);
 	glEndList();
+
+	glNewList(_atmosphereDisplayList, GL_COMPILE);
+	gluSphere(atmosphere, this->atmosphere_radius, 50, 50);
+	glEndList();
+	
 	gluDeleteQuadric(surface);
+	gluDeleteQuadric(atmosphere);
+
+	atmosphereShader = new Shader("planet-atmosphere.glsl");
+	surfaceShader = new Shader("planet-surface.glsl");
 
 	time_scale = 0.0;
 }
@@ -61,14 +78,35 @@ Planet::~Planet() {}
 
 void Planet::draw() {
 	glPushMatrix();
+
 	glTranslated(position.x(), position.y(), position.z());
-	glColor4f(1.0, 0.0, 0.0, 1.0);
-	glCallList(_sphereDisplayList);
+	
+	// draw atmosphere
+	glDepthMask(GL_FALSE);
+	glFrontFace(GL_CW);
+	this->atmosphereShader->bind();
+
+	// set uniforms
+	GameSceneManager *gsm = getGameSceneManager();
+
+	glUniform3f(
+		glGetUniformLocation(this->atmosphereShader->program, "v3CameraPos"),
+		gsm->camera->position.x(), gsm->camera->position.y(), gsm->camera->position.z());
+
+	glUniform3f(
+		glGetUniformLocation(this->atmosphereShader->program, "v3LightPos"),
+		system->star->position.x(), system->star->position.y(), system->star->position.z());
+
+	glCallList(_atmosphereDisplayList);
+	glFrontFace(GL_CCW);
+	glDepthMask(GL_TRUE);
+
+	/*
+	this->surfaceShader->bind();
+	glCallList(_surfaceDisplayList);
+	this->surfaceShader->unbind();
+	*/
 	glPopMatrix();
 
-	glDisable(GL_DEPTH_TEST);
-	glColor3f(1.0, 0.0, 0.0);
-	glRasterPos3f(position.x(), position.y(), position.z());
-	__font__->Render(this->label.c_str());
-	glEnable(GL_DEPTH_TEST);
+	Node::draw();
 }

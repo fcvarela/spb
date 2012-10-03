@@ -1,6 +1,9 @@
 #include <Common.h>
 #include <StarSystem.h>
 
+#include <Star.h>
+#include <Planet.h>
+
 StarSystem::StarSystem(const libconfig::Setting &system) {
 	system.lookupValue("name", this->label);
 
@@ -73,18 +76,7 @@ void StarSystem::draw() {
 	for (std::list<Planet *>::iterator i = planets.begin(); i != planets.end(); ++i) {
 		p = *i;
 		p->draw();
-
-		/*
-		glBegin(GL_LINES);
-		glVertex3f(star->position.x(), star->position.y(), star->position.z());
-		glVertex3f(p->position.x(), p->position.y(), p->position.z());
-		glEnd();
-		*/
 	}
 
-	glDisable(GL_DEPTH_TEST);
-	glColor3f(1.0, 0.0, 0.0);
-	glRasterPos3f(position.x(), position.y(), position.z());
-	__font__->Render(this->label.c_str());
-	glEnable(GL_DEPTH_TEST);
+	Node::draw();
 }
