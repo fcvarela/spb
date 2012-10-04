@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <GL/glfw.h>
 #include <FTGL/ftgl.h>
+#include <tinythread.h>
 
 extern double __dt__;
 extern double __lasttime__;
@@ -12,9 +13,12 @@ extern uint16_t __height__;
 extern double __hfov__;
 extern double __vfov__;
 extern double __aratio__;
+extern double __near__;
+extern double __far__;
 extern uint8_t __keys__[512];
 extern double __camdelta__;
 extern FTFont *__font__;
+extern int __running__;
 
 struct plane_t {GLfloat A, B, C, D;};
 union frustum_t {
@@ -25,7 +29,7 @@ union frustum_t {
 // frustum tools
 void calculateFrustum(frustum_t &frustum);
 void extractPlane(plane_t &plane, GLfloat *mat, int row);
-void globalStep();
+void globalStep(void *arg);
 void calcFOV();
 
 // input callbacks

@@ -2,8 +2,10 @@
 varying vec4 point;
 
 vec4 coords() {  
-	float baselat = -1.570796327; float latspan = 3.141592654;  
-	float baselon = -3.141592654; float lonspan = 6.283185307;  
+	const float baselat = -1.570796327;
+	const float latspan = 3.141592654;  
+	const float baselon = -3.141592654;
+	const float lonspan = 6.283185307;  
 	float lat = baselat + gl_TexCoord[0].t * latspan;  
 	float lon = baselon + gl_TexCoord[0].s * lonspan;  
 	float sinlon = sin(lon);

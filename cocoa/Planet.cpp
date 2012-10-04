@@ -4,8 +4,13 @@
 #include <Planet.h>
 #include <Star.h>
 
-Planet::Planet(const libconfig::Setting &planet, StarSystem *system) {
+Planet::Planet(const libconfig::Setting &planet, StarSystem *system, Node *parent) {
 	this->system = system;
+	this->parent = parent;
+	
+	if (parent == NULL)
+		this->parent = system;
+
 
 	// orbital stuff
 	planet.lookupValue("semimajor_axis", this->semimajor_axis);
@@ -71,7 +76,13 @@ void Planet::step() {
 	double s = sin(eccentric_anomaly);
 
 	this->position = Vector3d(radius * sqrt(1.0-eccentricity*eccentricity)*s, 0.0, radius * c-eccentricity);
-	this->position = this->system->position + this->position;
+	this->position = this->parent->position + this->position;
+
+	// step our moons
+	for (std::list<Planet *>::iterator i = moons.begin(); i != moons.end(); ++i) {
+		Planet *moon = *i;
+		moon->step();
+	}
 }
 
 Planet::~Planet() {}
@@ -109,4 +120,10 @@ void Planet::draw() {
 	glPopMatrix();
 
 	Node::draw();
+
+	// draw our moons
+	for (std::list<Planet *>::iterator i = moons.begin(); i != moons.end(); ++i) {
+		Planet *moon = *i;
+		moon->draw();
+	}
 }

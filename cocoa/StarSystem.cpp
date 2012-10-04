@@ -14,8 +14,18 @@ StarSystem::StarSystem(const libconfig::Setting &system) {
 
 	libconfig::Setting &planets = system["planets"];
 	for (int i=0; i<planets.getLength(); i++) {
-		Planet *newPlanet = new Planet(system["planets"][i], this);
+		Planet *newPlanet = new Planet(planets[i], this, NULL);
 		this->planets.push_back(newPlanet);
+
+		// does it have moons?
+		bool got_moons = planets[i].exists("moons");
+		if (got_moons) {
+			libconfig::Setting &moons = planets[i]["moons"];
+			for (int i=0; i<moons.getLength(); i++) {
+				Planet *newMoon = new Planet(moons[i], this, newPlanet);
+				newPlanet->moons.push_back(newMoon);
+			}
+		}
 	}
 }
 

@@ -20,6 +20,7 @@ public:
 	bool init();
 	void reshape();
 	void step();
+	void draw();
 	Node *nearestNode();
 	void recalculatePositions(Vector3d &subtract);
 };

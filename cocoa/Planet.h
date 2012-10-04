@@ -2,6 +2,7 @@
 #define __PLANET
 
 #include <libconfig.h++>
+#include <list>
 #include <Node.h>
 
 class StarSystem;
@@ -17,13 +18,16 @@ public:
 	double time_scale;
 
 	StarSystem *system;
+	Node *parent;
+
+	std::list<Planet *> moons;
 	Shader *atmosphereShader;
 	Shader *surfaceShader;
 
 	GLuint _surfaceDisplayList;
 	GLuint _atmosphereDisplayList;
 
-	Planet(const libconfig::Setting &planet, StarSystem *system);
+	Planet(const libconfig::Setting &planet, StarSystem *system, Node *parent);
 	~Planet();
 
 	void draw();

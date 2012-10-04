@@ -2,10 +2,9 @@
 
 #include <Common.h>
 #include <GameSceneManager.h>
+#include <tinythread.h>
 
 int main(void) {
-	int running = GL_TRUE;
-
 	// init glfw
 	if (!glfwInit())
 		exit(EXIT_FAILURE);
@@ -25,11 +24,12 @@ int main(void) {
 	__width__ = return_struct.Width;
 	__height__ = return_struct.Height;
 
-	if (!glfwOpenWindow(__width__, __height__, 8, 8, 8, 8, 24, 0, GLFW_FULLSCREEN)) {
+	if (!glfwOpenWindow(__width__, __height__, 8, 8, 8, 8, 32, 0, GLFW_FULLSCREEN)) {
 		glfwTerminate();
 		exit(EXIT_FAILURE);
 	}
 
+	// set window title
 	glfwSetWindowTitle("SPB");
 
 	// setup key handler
@@ -50,21 +50,23 @@ int main(void) {
 		exit(EXIT_FAILURE);
 	}
 
-	// main loop
-	while (running) {
+	// main loop: we process everything in a separate thread
+	// and draw in the main thread
+	tthread::thread gameloopThread(globalStep, 0);
+	while (__running__) {
 		// are we still running?
-		running = glfwGetWindowParam(GLFW_OPENED);
-
-		// process time delta
-		globalStep();
+		__running__ = glfwGetWindowParam(GLFW_OPENED);
 
 		// ask the game manager to update content
 		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-		getGameSceneManager()->step();
+		getGameSceneManager()->draw();
 
 		// swap buffers
 		glfwSwapBuffers();
 	}
+
+	// join threads
+	gameloopThread.join();
 
 	// close window
 	glfwTerminate();

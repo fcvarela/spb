@@ -22,7 +22,6 @@ GameSceneManager::~GameSceneManager() {
 
 // and the rest
 bool GameSceneManager::init() {
-
 	// gl initialization
 	glDepthFunc(GL_LEQUAL);
 	glEnable(GL_DEPTH_TEST);
@@ -110,32 +109,41 @@ void GameSceneManager::step() {
 	Vector3d nearest_position = nearest->position;
 	double distance = (camera->position - nearest_position).length();
 
-	double near = 1.0, far;
-	far = distance * 3.0;
-
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glViewport(0, 0, __width__, __height__);
-	gluPerspective(__vfov__, __aratio__, near, far);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
+	__near__ = 1.0;
+	__far__ = distance * 3.0;
 
 	// reposition camera
 	this->camera->step();
-	this->camera->setPerspective();
 
-	// update the view frustum
-	calculateFrustum(this->frustum);
-
-	// draw!
+	// step
 	for (std::list<StarSystem *>::iterator i = starSystems.begin(); i != starSystems.end(); ++i) {
 		StarSystem *ss = *i;
 		ss->step();
-		ss->draw();
 	}
 
 	// set camera delta according to nearest node
 	camera->position -= nearest_position;
 	recalculatePositions(nearest_position);
 	__camdelta__ = (nearest_position - camera->position).length()/3.0;
+}
+
+void GameSceneManager::draw() {
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glViewport(0, 0, __width__, __height__);
+	gluPerspective(__vfov__, __aratio__, __near__, __far__);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	// set camera perspective
+	this->camera->setPerspective();
+
+	// update the view frustum
+	calculateFrustum(this->frustum);
+
+	// step
+	for (std::list<StarSystem *>::iterator i = starSystems.begin(); i != starSystems.end(); ++i) {
+		StarSystem *ss = *i;
+		ss->draw();
+	}
 }

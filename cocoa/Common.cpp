@@ -3,22 +3,30 @@
 #include <GL/glfw.h>
 #include <GameSceneManager.h>
 #include <Common.h>
+#include <tinythread.h>
 
 double __lasttime__ = glfwGetTime();
 double __dt__ = 0.0;
 double __aratio__ = 0.0;
 double __hfov__ = 0.0;
 double __vfov__ = 0.0;
+double __near__ = 0.0;
+double __far__ = 0.0;
 uint16_t __width__ = 0;
 uint16_t __height__ = 0;
 uint8_t __keys__[512];
 double __camdelta__ = 0.0;
+int __running__ = GL_TRUE;
 FTFont *__font__;
 
-void globalStep() {
-	double now = glfwGetTime();
-	__dt__ = now - __lasttime__;
-	__lasttime__ = now;
+void globalStep(void *arg) {
+	while (__running__) {
+		double now = glfwGetTime();
+		__dt__ = now - __lasttime__;
+		__lasttime__ = now;
+
+		getGameSceneManager()->step();
+	}
 }
 
 void calcFOV() {
