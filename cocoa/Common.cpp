@@ -7,6 +7,9 @@
 
 double __lasttime__ = glfwGetTime();
 double __dt__ = 0.0;
+double __lastframe__ = 0.0;
+double __camvelocity__ = 0.0;
+double __fps__ = 0.0;
 double __aratio__ = 0.0;
 double __hfov__ = 0.0;
 double __vfov__ = 0.0;

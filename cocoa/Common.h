@@ -8,6 +8,9 @@
 
 extern double __dt__;
 extern double __lasttime__;
+extern double __lastframe__;
+extern double __camvelocity__;
+extern double __fps__;
 extern uint16_t __width__;
 extern uint16_t __height__;
 extern double __hfov__;

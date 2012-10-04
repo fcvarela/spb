@@ -26,6 +26,8 @@ StarSystem::StarSystem(const libconfig::Setting &system) {
 				newPlanet->moons.push_back(newMoon);
 			}
 		}
+
+		// does it have rings?
 	}
 }
 

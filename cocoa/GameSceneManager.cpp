@@ -113,7 +113,9 @@ void GameSceneManager::step() {
 	__far__ = distance * 3.0;
 
 	// reposition camera
-	this->camera->step();
+	Vector3d curpos = camera->position;
+	camera->step();
+	__camvelocity__ = (camera->position - curpos).length()/__dt__;
 
 	// step
 	for (std::list<StarSystem *>::iterator i = starSystems.begin(); i != starSystems.end(); ++i) {
@@ -146,4 +148,51 @@ void GameSceneManager::draw() {
 		StarSystem *ss = *i;
 		ss->draw();
 	}
+
+	// debug
+	// set up an orthogonal 2d projection matrix
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+	// assume width > height
+	GLdouble size = __width__/2.0f;
+	glOrtho(-size*__aratio__, size*__aratio__, -size, size, -1.0, 1.0);
+
+	// set 1 scren unit = 1 pixel
+	glScaled(__aratio__, __aratio__, 1.0);
+
+	// reset to modelview
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	GLfloat botleft[2] = {-__width__/2.0f+8.0, -__height__/2.0f+08.0};
+	GLfloat topleft[2] = {-__width__/2.0f+8.0, -__height__/2.0f+26.0};
+	GLfloat topright[2] = {__width__/2.0f-8.0, -__height__/2.0f+26.0};
+	GLfloat botright[2] = {__width__/2.0f-8.0, -__height__/2.0f+08.0};
+
+	// draw background
+	glColor4f(0.2, 0.2, 0.2, 0.001);
+	glBegin(GL_QUADS);
+	glVertex2fv(topright);
+	glVertex2fv(topleft);
+	glVertex2fv(botleft);
+	glVertex2fv(botright);
+	glEnd();
+
+	glColor3f(1.0, 1.0, 1.0);
+	glRasterPos2f(-__width__/2.0f+12.0, -__height__/2.0f+13.0);
+	char debug[1024];
+	sprintf(debug, "SPS: %.2f FPS: %.2f Camera velocity: (%.2f km/h, %.2f UA/s, %.2f c)", 
+		1.0/__dt__,
+		__fps__,
+		__camvelocity__/3.6,
+		__camvelocity__*6.68458712E-12,
+		__camvelocity__/299792458.0);
+
+	__font__->Render(debug);
+	glEnable(GL_DEPTH_TEST);
+
+	double curtime = glfwGetTime();
+	__fps__ = 1.0/(curtime - __lastframe__);
+	__lastframe__ = glfwGetTime();
 }
