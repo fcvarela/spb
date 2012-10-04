@@ -11,7 +11,6 @@ Planet::Planet(const libconfig::Setting &planet, StarSystem *system, Node *paren
 	if (parent == NULL)
 		this->parent = system;
 
-
 	// orbital stuff
 	planet.lookupValue("semimajor_axis", this->semimajor_axis);
 	planet.lookupValue("eccentricity", this->eccentricity);
