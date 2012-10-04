@@ -1,11 +1,12 @@
 #ifdef _VERTEX_
 
 varying vec3 v3Pos;
+uniform vec3 v3PlanetCenter;
+uniform float fInnerRadius;
 
 void main(void) {
-    vec4 vertex = vec4(gl_Vertex.xyz * 1738140.0, 1.0);
-	gl_Position = gl_ModelViewProjectionMatrix * vertex;
-    v3Pos = gl_Vertex.xyz;
+	v3Pos = gl_Vertex.xyz;
+    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
 }
 
 #endif
@@ -15,22 +16,22 @@ void main(void) {
 varying vec3 v3Pos;
 uniform vec3 v3CameraPos;
 uniform vec3 v3LightPos;
+uniform float fInnerRadius;
 
-const float fInnerRadius = 1.0;
-const float fOuterRadius = fInnerRadius * 1.025;
-const float fOuterRadius2 = fOuterRadius * fOuterRadius;
-const float fInnerRadius2 = fInnerRadius * fInnerRadius;
-const float fKrESun = 0.0025 * 15.0;
-const float fKmESun = 0.0015 * 15.0;
-const float fKr4PI = 0.0025 * 4.0 * 3.14159;
-const float fKm4PI = 0.0015 * 4.0 * 3.14159;
-const float fScale = 1.0 / (fOuterRadius - fInnerRadius);
-const float fScaleDepth = 0.25;
-const float fScaleOverScaleDepth = (1.0 / (fOuterRadius - fInnerRadius)) / fScaleDepth;
-const int nSamples = 2;
-const float fSamples = 2.0;
-const float g = -0.90;
-const float g2 = 0.81;
+float fOuterRadius = fInnerRadius * 1.025;
+float fOuterRadius2 = fOuterRadius * fOuterRadius;
+float fInnerRadius2 = fInnerRadius * fInnerRadius;
+float fKrESun = 0.0025 * 15.0;
+float fKmESun = 0.0015 * 15.0;
+float fKr4PI = 0.0025 * 4.0 * 3.14159;
+float fKm4PI = 0.0015 * 4.0 * 3.14159;
+float fScale = 1.0 / (fOuterRadius - fInnerRadius);
+float fScaleDepth = 0.25;
+float fScaleOverScaleDepth = (1.0 / (fOuterRadius - fInnerRadius)) / fScaleDepth;
+int nSamples = 2;
+float fSamples = 2.0;
+float g = -0.90;
+float g2 = 0.81;
 
 float scale(float fCos) {
     float x = 1.0 - fCos;

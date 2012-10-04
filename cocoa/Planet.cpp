@@ -43,7 +43,7 @@ Planet::Planet(const libconfig::Setting &planet, StarSystem *system, Node *paren
 	gluDeleteQuadric(surface);
 	gluDeleteQuadric(atmosphere);
 
-	atmosphereShader = new Shader("planet-atmosphere.glsl");
+	atmosphereShader = new Shader("data/shaders/planet-atmosphere.glsl");
 	surfaceShader = new Shader("planet-surface.glsl");
 
 	time_scale = 0.0;
@@ -54,7 +54,8 @@ void Planet::step() {
 	struct timeval tv;
 	gettimeofday(&tv, NULL);
 
-	double localtime = tv.tv_sec + (tv.tv_usec/1000000.0);
+	double localtime = tv.tv_sec + (tv.tv_usec/1000000.0) + time_scale;
+	time_scale += 0.0;
 
 	// compute mean anomaly
 	double mean_anomaly = (2.0*M_PI*localtime) / (this->orbital_period*24.0*60.0*60.0);
@@ -74,6 +75,7 @@ void Planet::step() {
 	double c = cos(eccentric_anomaly);
 	double s = sin(eccentric_anomaly);
 
+	// update position
 	this->position = Vector3d(radius * sqrt(1.0-eccentricity*eccentricity)*s, 0.0, radius * c-eccentricity);
 	this->position = this->parent->position + this->position;
 
@@ -99,23 +101,35 @@ void Planet::draw() {
 	// set uniforms
 	GameSceneManager *gsm = getGameSceneManager();
 
+	// all positions relative to our center
+	Vector3d v3CameraPos = gsm->camera->position - position;
+	Vector3d v3LightPos = system->star->position - position;
+	v3LightPos.normalize();
+
 	glUniform3f(
 		glGetUniformLocation(this->atmosphereShader->program, "v3CameraPos"),
-		gsm->camera->position.x(), gsm->camera->position.y(), gsm->camera->position.z());
+		v3CameraPos.x(), v3CameraPos.y(), v3CameraPos.z());
 
 	glUniform3f(
 		glGetUniformLocation(this->atmosphereShader->program, "v3LightPos"),
-		system->star->position.x(), system->star->position.y(), system->star->position.z());
+		v3LightPos.x(), v3LightPos.y(), v3LightPos.z());
+
+	glUniform3f(
+		glGetUniformLocation(this->atmosphereShader->program, "v3PlanetCenter"),
+		position.x(), position.y(), position.z());
+
+	glUniform1f(glGetUniformLocation(this->atmosphereShader->program, "fInnerRadius"), radius);
 
 	glCallList(_atmosphereDisplayList);
+	this->atmosphereShader->unbind();
+
 	glFrontFace(GL_CCW);
 	glDepthMask(GL_TRUE);
 
-	/*
-	this->surfaceShader->bind();
+	//this->surfaceShader->bind();
+	glColor3f(1.0, 0.0, 0.0);
 	glCallList(_surfaceDisplayList);
-	this->surfaceShader->unbind();
-	*/
+	//this->surfaceShader->unbind();
 	glPopMatrix();
 
 	Node::draw();

@@ -63,6 +63,10 @@ void StarSystem::recalculatePositions(Vector3d &subtract) {
 	for (std::list<Planet *>::iterator i = planets.begin(); i != planets.end(); ++i) {
 		Planet *p = *i;
 		p->position = p->position - subtract;
+		for (std::list<Planet *>::iterator j = p->moons.begin(); j != p->moons.end(); j++) {
+			Planet *m = *j;
+			m->position = m->position - subtract;
+		}
 	}
 }
 

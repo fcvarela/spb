@@ -57,7 +57,7 @@ bool GameSceneManager::init() {
 	std::list<StarSystem *>::iterator i = starSystems.begin();
 	StarSystem *nearestSystem = *i;
 	Star *nearestStar = (Star *)nearestSystem->star;
-	camera->position = Vector3d(0.0, 0.0, nearestStar->radius * 2.0);
+	camera->position = Vector3d(0.0, 0.0, nearestStar->radius * 10.0);
 
 	// prepare our viewport
 	this->reshape();
