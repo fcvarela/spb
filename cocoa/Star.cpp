@@ -22,7 +22,7 @@ Star::Star(const libconfig::Setting &star, StarSystem *system) {
 	gluQuadricTexture(starq, GL_TRUE);
 	_sphereDisplayList = glGenLists(1);
 	glNewList(_sphereDisplayList, GL_COMPILE);
-	gluSphere(starq, this->radius, 50, 50);
+	gluSphere(starq, this->radius, 30, 30);
 	glEndList();
 	gluDeleteQuadric(starq);
 

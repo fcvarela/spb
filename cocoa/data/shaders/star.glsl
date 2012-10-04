@@ -2,17 +2,16 @@
 varying vec4 point;
 
 vec4 coords() {  
-	float baselat = -90.0; float latspan = 180.0;  
-	float baselon = -180.0; float lonspan = 360.0;  
-	float d2r = 3.1428/180.0;  
-	float lat = baselat*d2r + gl_TexCoord[0].t * latspan*d2r;  
-	float lon = baselon*d2r + gl_TexCoord[0].s * lonspan*d2r;  
-	vec4 coords = vec4(
-		sin(lon) * cos(lat),
-		sin(lat),
-		cos(lon) * cos(lat),
-		1.0);
-	return coords;
+	float baselat = -1.570796327; float latspan = 3.141592654;  
+	float baselon = -3.141592654; float lonspan = 6.283185307;  
+	float lat = baselat + gl_TexCoord[0].t * latspan;  
+	float lon = baselon + gl_TexCoord[0].s * lonspan;  
+	float sinlon = sin(lon);
+	float sinlat = sin(lat);
+	float coslon = cos(lon);
+	float coslat = cos(lat);
+
+	return vec4(sinlon * coslat, sinlat, coslon * coslat, 1.0);
 }  
 
 void main(void) {
@@ -141,8 +140,6 @@ return 49.0 * ( dot(m0*m0, vec3( dot( p0, x0 ), dot( p1, x1 ), dot( p2, x2 )))
 
 }
 
-// Ridged multifractal
-// See "Texturing & Modeling, A Procedural Approach", Chapter 12
 float ridge(float h, float offset) {
 	h = abs(h);
 	h = offset - h;
@@ -152,9 +149,10 @@ float ridge(float h, float offset) {
 
 float ridgedmf(vec4 p, float lacunarity, float gain, float offset, int octaves) {
 	float sum = 0.0;
-	float freq = 1.0, amp = 0.3;
+	float freq = 1.0;
+	float amp = 0.3;
 	float prev = 4.0;
-	for(int i=0; i<3; i++) {
+	for(int i=0; i<octaves; i++) {
 		float noise = snoise(p*freq);
 		float n = ridge(noise, offset);
 		sum = (1.0/freq)*noise;
@@ -167,8 +165,7 @@ float ridgedmf(vec4 p, float lacunarity, float gain, float offset, int octaves) 
 }
 
 float ridgedmfDefault(vec4 p, int octaves) {
-	float val = ridgedmf(p*2.0, 2.0, 1.5, 1.0, octaves);
-	val += ridgedmf(p*3.0, 2.0, 1.5, 1.0, octaves);
+	float val = ridgedmf(p*2.0, 0.8, 2.5, 1.0, octaves);
 	return val/2.0;
 }
 
@@ -176,8 +173,12 @@ uniform float time;
 varying vec4 point;
 
 void main(void) {
-	float green = ridgedmfDefault(vec4(point.xyz, time/100.0), 1);
-	vec4 color = vec4(  2.0, green*2.5, green*0.5, 1.0);
+	float green = 0.0;
+	green += 1.2*ridgedmfDefault(vec4(point.xyz*3.0, time/10.0), 1);
+	green += snoise(point*10.0);
+	green += snoise(point*100.0);
+	green += snoise(point*800.0);
+	vec4 color = vec4(2.0, green*2.5, green*0.5, 1.0);
 
 	color *= 1.4 - abs(point.y);
 	color *= 1.4 - abs(point.x);
@@ -185,4 +186,5 @@ void main(void) {
 	color.a = 1.0;
 	gl_FragColor = color;
 }
+
 #endif
