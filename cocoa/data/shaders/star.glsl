@@ -167,7 +167,7 @@ float ridgedmf(vec4 p, float lacunarity, float gain, float offset, int octaves) 
 }
 
 float ridgedmfDefault(vec4 p, int octaves) {
-	float val = ridgedmf(p*2.0, 0.8, 2.5, 1.0, octaves);
+	float val = ridgedmf(p*2.0, 0.7, 2.5, 1.0, octaves);
 	return val/2.0;
 }
 
@@ -176,17 +176,13 @@ varying vec4 point;
 
 void main(void) {
 	float green = 0.0;
-	green += 1.2*ridgedmfDefault(vec4(point.xyz*3.0, time/10.0), 1);
-	green += snoise(point*10.0);
-	green += snoise(point*100.0);
-	green += snoise(point*800.0);
-	vec4 color = vec4(2.0, green*2.5, green*0.5, 1.0);
-
-	color *= 1.4 - abs(point.y);
-	color *= 1.4 - abs(point.x);
-	color *= 1.4 - abs(point.z);
-	color.a = 1.0;
-	gl_FragColor = color;
+	green += ridgedmfDefault(vec4(point.xyz*4.0, time/30.0), 2);
+	green += ridgedmfDefault(vec4(point.xyz*2.0, time/20.0), 2);
+	green += snoise(point) + 0.6;
+	green /= 3.0;
+	
+	vec3 color = vec3(green*5.0, green*2.5, green*0.5);
+	gl_FragColor = vec4(color, 1.0);
 }
 
 #endif
