@@ -23,6 +23,8 @@ GameSceneManager::~GameSceneManager() {
 // and the rest
 bool GameSceneManager::init() {
 	// gl initialization
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDepthFunc(GL_LEQUAL);
 	glEnable(GL_DEPTH_TEST);
 	glClearDepth(1.0);
@@ -110,7 +112,7 @@ void GameSceneManager::step() {
 	double distance = (camera->position - nearest_position).length();
 
 	__near__ = 1.0;
-	__far__ = distance * 1.0;
+	__far__ = distance * 100000000000.0;
 
 	// reposition camera
 	Vector3d curpos = camera->position;
@@ -171,7 +173,7 @@ void GameSceneManager::draw() {
 	GLfloat botright[2] = {__width__/2.0f-8.0, -__height__/2.0f+08.0};
 
 	// draw background
-	glColor4f(0.2, 0.2, 0.2, 0.001);
+	glColor4f(0.2, 0.2, 0.2, 0.4);
 	glBegin(GL_QUADS);
 	glVertex2fv(topright);
 	glVertex2fv(topleft);

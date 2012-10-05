@@ -15,6 +15,7 @@ Planet::Planet(const libconfig::Setting &planet, StarSystem *system, Node *paren
 	planet.lookupValue("semimajor_axis", this->semimajor_axis);
 	planet.lookupValue("eccentricity", this->eccentricity);
 	planet.lookupValue("orbital_period", this->orbital_period);
+	planet.lookupValue("orbital_inclination", this->orbital_inclination);
 
 	// physical dimension
 	planet.lookupValue("radius", this->radius);
@@ -31,15 +32,54 @@ Planet::Planet(const libconfig::Setting &planet, StarSystem *system, Node *paren
 
 	_surfaceDisplayList = glGenLists(1);
 	_atmosphereDisplayList = glGenLists(1);
+	_orbitDisplayList = glGenLists(1);
 
+	// surface
 	glNewList(_surfaceDisplayList, GL_COMPILE);
 	gluSphere(surface, this->radius, 50, 50);
 	glEndList();
 
+	// atmosphere
 	glNewList(_atmosphereDisplayList, GL_COMPILE);
 	gluSphere(atmosphere, this->atmosphere_radius, 50, 50);
 	glEndList();
 	
+	// orbit
+	glNewList(_orbitDisplayList, GL_COMPILE);
+	glBegin(GL_LINE_LOOP);
+
+	Quatd nrot = Quatd(Vector3d(1.0, 0.0, 0.0), this->orbital_inclination);
+	for (int i=0; i<360; i++) {
+		// compute mean anomaly
+		double mean_anomaly = i * 0.01745;
+	
+		// compute eccentric anomaly (five iterations unrolled)
+		double eccentric_anomaly;
+		eccentric_anomaly = mean_anomaly - eccentricity * sin(mean_anomaly);
+		eccentric_anomaly = mean_anomaly - eccentricity * sin(eccentric_anomaly);
+		eccentric_anomaly = mean_anomaly - eccentricity * sin(eccentric_anomaly);
+		eccentric_anomaly = mean_anomaly - eccentricity * sin(eccentric_anomaly);
+		eccentric_anomaly = mean_anomaly - eccentricity * sin(eccentric_anomaly);
+	
+		// compute true anomaly
+		double tan_half_ta = sqrt((1.0+eccentricity)/(1.0-eccentricity)) * tan(eccentric_anomaly/2.0);
+		double true_anomaly = 2.0 * atan(tan_half_ta);
+
+		// compute heliocentric distance
+		double radius = semimajor_axis * (1.0 + eccentricity * cos(true_anomaly));
+	
+		// map to carthesian
+		double c = cos(eccentric_anomaly);
+		double s = sin(eccentric_anomaly);
+	
+		// update position
+		Vector3d curpos = Vector3d(radius * sqrt(1.0-eccentricity*eccentricity)*s, 0.0, radius * c-eccentricity);
+		nrot.rotate(curpos);
+		glVertex3dv(curpos);
+	}
+	glEnd();
+	glEndList();
+
 	gluDeleteQuadric(surface);
 	gluDeleteQuadric(atmosphere);
 
@@ -62,14 +102,18 @@ void Planet::step() {
 
 	// compute eccentric anomaly (five iterations unrolled)
 	double eccentric_anomaly;
-	eccentric_anomaly = mean_anomaly + eccentricity * sin(mean_anomaly);
-	eccentric_anomaly = mean_anomaly + eccentricity * sin(eccentric_anomaly);
-	eccentric_anomaly = mean_anomaly + eccentricity * sin(eccentric_anomaly);
-	eccentric_anomaly = mean_anomaly + eccentricity * sin(eccentric_anomaly);
-	eccentric_anomaly = mean_anomaly + eccentricity * sin(eccentric_anomaly);
+	eccentric_anomaly = mean_anomaly - eccentricity * sin(mean_anomaly);
+	eccentric_anomaly = mean_anomaly - eccentricity * sin(eccentric_anomaly);
+	eccentric_anomaly = mean_anomaly - eccentricity * sin(eccentric_anomaly);
+	eccentric_anomaly = mean_anomaly - eccentricity * sin(eccentric_anomaly);
+	eccentric_anomaly = mean_anomaly - eccentricity * sin(eccentric_anomaly);
+
+	// compute true anomaly
+	double tan_half_ta = sqrt((1.0+eccentricity)/(1.0-eccentricity)) * tan(eccentric_anomaly/2.0);
+	double true_anomaly = 2.0 * atan(tan_half_ta);
 
 	// compute heliocentric distance
-	double radius = semimajor_axis * (1.0 - eccentricity * cos(eccentric_anomaly));
+	double radius = semimajor_axis * (1.0 + eccentricity * cos(true_anomaly));
 
 	// map to carthesian
 	double c = cos(eccentric_anomaly);
@@ -77,6 +121,9 @@ void Planet::step() {
 
 	// update position
 	this->position = Vector3d(radius * sqrt(1.0-eccentricity*eccentricity)*s, 0.0, radius * c-eccentricity);
+	Quatd nrot = Quatd(Vector3d(1.0, 0.0, 0.0), this->orbital_inclination);
+	nrot.rotate(this->position);
+
 	this->position = this->parent->position + this->position;
 
 	// step our moons
@@ -89,8 +136,30 @@ void Planet::step() {
 Planet::~Planet() {}
 
 void Planet::draw() {
-	glPushMatrix();
+	// debug first
+	glDepthMask(GL_FALSE);
+	Node::draw();
 
+	// draw our orbit
+	glPushMatrix();
+	glTranslated(parent->position.x(), parent->position.y(), parent->position.z());
+	
+	glColor4f(0.0, 1.0, 0.0, 0.4);
+	glCallList(_orbitDisplayList);
+	glPopMatrix();
+
+	// debug orientation
+	glPushMatrix();
+	glColor3f(0.0, 0.0, 1.0);
+	glBegin(GL_LINES);
+	glVertex3d(position.x(), position.y()+radius*2.0, position.z());
+	glVertex3d(position.x(), position.y()-radius*2.0, position.z());
+	glEnd();
+	glPopMatrix();
+	glDepthMask(GL_TRUE);
+
+	// finished debug
+	glPushMatrix();
 	glTranslated(position.x(), position.y(), position.z());
 	
 	// draw atmosphere
@@ -135,8 +204,6 @@ void Planet::draw() {
 	glCallList(_surfaceDisplayList);
 	//this->surfaceShader->unbind();
 	glPopMatrix();
-
-	Node::draw();
 
 	// draw our moons
 	for (std::list<Planet *>::iterator i = moons.begin(); i != moons.end(); ++i) {

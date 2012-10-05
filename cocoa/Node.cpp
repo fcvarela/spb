@@ -9,9 +9,8 @@ Node::Node() {
 void Node::step() {}
 
 void Node::draw() {
-	glDisable(GL_DEPTH_TEST);
+	// debug label
 	glColor3f(1.0, 1.0, 1.0);
 	glRasterPos3f(position.x(), position.y(), position.z());
 	__font__->Render(this->label.c_str());
-	glEnable(GL_DEPTH_TEST);
 }
