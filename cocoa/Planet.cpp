@@ -50,7 +50,7 @@ Planet::Planet(const libconfig::Setting &planet, StarSystem *system, Node *paren
 }
 
 void Planet::step() {
-	// polar coordinates: angle, radius
+	// polar coordinates: angle, radius (Kepler method)
 	struct timeval tv;
 	gettimeofday(&tv, NULL);
 
