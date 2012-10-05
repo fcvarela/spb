@@ -24,6 +24,8 @@ FTFont *__font__;
 
 void globalStep(void *arg) {
 	while (__running__) {
+		// 200hz = 5ms
+		//usleep(4500);
 		double now = glfwGetTime();
 		__dt__ = now - __lasttime__;
 		__lasttime__ = now;

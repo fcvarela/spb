@@ -120,6 +120,10 @@ void Planet::draw() {
 
 	glUniform1f(glGetUniformLocation(this->atmosphereShader->program, "fInnerRadius"), radius);
 
+	// frustum
+	glUniform1f(glGetUniformLocation(this->atmosphereShader->program, "near"), __near__);
+	glUniform1f(glGetUniformLocation(this->atmosphereShader->program, "far"), __far__);
+
 	glCallList(_atmosphereDisplayList);
 	this->atmosphereShader->unbind();
 

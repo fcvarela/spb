@@ -35,6 +35,8 @@ Star::~Star() {}
 void Star::draw() {
 	this->shader->bind();
 	glUniform1f(glGetUniformLocation(this->shader->program, "time"), __lasttime__);
+	glUniform1f(glGetUniformLocation(this->shader->program, "near"), __near__);
+	glUniform1f(glGetUniformLocation(this->shader->program, "far"), __far__);
 	glPushMatrix();
 	glTranslated(position.x(), position.y(), position.z());
 	glCallList(_sphereDisplayList);

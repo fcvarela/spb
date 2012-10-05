@@ -7,6 +7,7 @@ uniform float fInnerRadius;
 void main(void) {
 	v3Pos = gl_Vertex.xyz;
     gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+    gl_TexCoord[6] = gl_Position;
 }
 
 #endif
@@ -17,6 +18,8 @@ varying vec3 v3Pos;
 uniform vec3 v3CameraPos;
 uniform vec3 v3LightPos;
 uniform float fInnerRadius;
+uniform float near;
+uniform float far;
 
 float fOuterRadius = fInnerRadius * 1.025;
 float fOuterRadius2 = fOuterRadius * fOuterRadius;
@@ -46,6 +49,7 @@ float getNearIntersection(vec3 pos, vec3 ray, float distance2, float radius2) {
 }
 
 void main (void) {
+    gl_FragDepth = (log(near * gl_TexCoord[6].z) / log(near * far));
     // prepare
     const vec3 Wavelength = vec3(0.650, 0.570, 0.475);
     const vec3 v3InvWavelength = 1.0 / vec3(

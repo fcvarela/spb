@@ -53,6 +53,15 @@ Node *StarSystem::nearestNode(Node *node) {
 			shortest_distance = dist;
 			nearest = p;
 		}
+
+		for (std::list<Planet *>::iterator j = p->moons.begin(); j != p->moons.end(); ++j) {
+			Planet *m = *j;
+			dist = (m->position - node->position).length();
+			if (dist < shortest_distance) {
+				shortest_distance = dist;
+				nearest = m;
+			}
+		}
 	}
 
 	return nearest;

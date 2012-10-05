@@ -110,7 +110,7 @@ void GameSceneManager::step() {
 	double distance = (camera->position - nearest_position).length();
 
 	__near__ = 1.0;
-	__far__ = distance * 3.0;
+	__far__ = distance * 1.0;
 
 	// reposition camera
 	Vector3d curpos = camera->position;
@@ -182,12 +182,13 @@ void GameSceneManager::draw() {
 	glColor3f(1.0, 1.0, 1.0);
 	glRasterPos2f(-__width__/2.0f+12.0, -__height__/2.0f+13.0);
 	char debug[1024];
-	sprintf(debug, "SPS: %.2f FPS: %.2f Camera velocity: (%.2f km/h, %.2f UA/s, %.2f c)", 
+	sprintf(debug, "SPS: %.2f FPS: %.2f Camera velocity: (%.2f km/h, %.2f UA/s, %.2f c) Nearest node: %s", 
 		1.0/__dt__,
 		__fps__,
 		__camvelocity__/3.6,
 		__camvelocity__*6.68458712E-12,
-		__camvelocity__/299792458.0);
+		__camvelocity__/299792458.0,
+		nearestNode()->label.c_str());
 
 	__font__->Render(debug);
 	glEnable(GL_DEPTH_TEST);

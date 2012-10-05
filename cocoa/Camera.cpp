@@ -76,13 +76,13 @@ void Camera::step() {
 	}
 
 	// make sure we lock when sufficiently close to zero
-	if (velocity.length() < 10E-3)
+	if (velocity.length() < 10E-12)
 		velocity = Vector3d(0.0, 0.0, 0.0);
-	if (acceleration.length() < 10E-3)
+	if (acceleration.length() < 10E-12)
 		velocity = Vector3d(0.0, 0.0, 0.0);
-	if (angrate.length() < 10E-3)
+	if (angrate.length() < 10E-12)
 		angrate = Vector3d(0.0, 0.0, 0.0);
-	if (angaccel.length() < 10E-3)
+	if (angaccel.length() < 10E-12)
 		angaccel = Vector3d(0.0, 0.0, 0.0);
 }
 

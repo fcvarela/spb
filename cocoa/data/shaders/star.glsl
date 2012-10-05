@@ -19,6 +19,7 @@ vec4 coords() {
 void main(void) {
 	gl_Position = ftransform();
 	gl_TexCoord[0] = gl_MultiTexCoord0;
+	gl_TexCoord[6] = gl_Position;
 	point = coords();
 }
 
@@ -173,8 +174,11 @@ float ridgedmfDefault(vec4 p, int octaves) {
 
 uniform float time;
 varying vec4 point;
+uniform float near;
+uniform float far;
 
 void main(void) {
+	gl_FragDepth = (log(near * gl_TexCoord[6].z) / log(near * far));
 	float green = 0.0;
 	green += ridgedmfDefault(vec4(point.xyz*4.0, time/30.0), 2);
 	green += ridgedmfDefault(vec4(point.xyz*2.0, time/20.0), 2);
