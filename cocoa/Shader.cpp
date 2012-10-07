@@ -30,6 +30,8 @@ char *Shader::loadShader(const char *program_file) {
 	char *program_source;
 
 	if (!(fd = fopen(program_file, "r"))) {
+		std::cerr << "Needed file not found: " << program_file << std::endl;
+		exit(EXIT_FAILURE);
 		return NULL;
 	}
 

@@ -49,7 +49,6 @@ void proceduralGenLoop(void *arg) {
 		glEnable(GL_LIGHTING);
 		glDisable(GL_LIGHTING);
 		usleep(10000);
-		std::cerr << "executed" << std::endl;
 		__procedural_gen_mutex__.unlock();
 	}
 }

@@ -70,8 +70,6 @@ TerrainQuadtree::TerrainQuadtree(TerrainQuadtree *parent, Planet *planet, uint16
 	// init our FB
 	glGenFramebuffers(1, &this->framebuffer);
 
-	std::cerr << "ST" << std::endl;
-
 	// mark us as not ready
 	this->ready = false;
 }
