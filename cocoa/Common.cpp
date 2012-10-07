@@ -21,6 +21,8 @@ uint8_t __keys__[512];
 double __camdelta__ = 0.0;
 int __running__ = GL_TRUE;
 FTFont *__font__;
+CGLContextObj __procedural_gen_ctx__;
+tthread::mutex __procedural_gen_mutex__;
 
 void globalStep(void *arg) {
 	while (__running__) {
@@ -31,6 +33,24 @@ void globalStep(void *arg) {
 		__lasttime__ = now;
 
 		getGameSceneManager()->step();
+	}
+}
+
+void proceduralGenLoop(void *arg) {
+	// set our context appropriately
+	CGLSetCurrentContext(__procedural_gen_ctx__);
+
+	// we don't need vsync here...
+	GLint sync = 0;
+	CGLSetParameter(__procedural_gen_ctx__, kCGLCPSwapInterval, &sync);
+
+	while (__running__) {
+		__procedural_gen_mutex__.lock();
+		glEnable(GL_LIGHTING);
+		glDisable(GL_LIGHTING);
+		usleep(10000);
+		std::cerr << "executed" << std::endl;
+		__procedural_gen_mutex__.unlock();
 	}
 }
 

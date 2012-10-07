@@ -1,6 +1,7 @@
 #ifndef __COMMON
 #define __COMMON
 
+#include <OpenGL/OpenGL.h>
 #include <stdint.h>
 #include <GL/glfw.h>
 #include <FTGL/ftgl.h>
@@ -23,6 +24,9 @@ extern double __camdelta__;
 extern FTFont *__font__;
 extern int __running__;
 
+extern CGLContextObj __procedural_gen_ctx__;
+extern tthread::mutex __procedural_gen_mutex__;
+
 struct plane_t {GLfloat A, B, C, D;};
 union frustum_t {
 	struct {plane_t t, b, l, r, n, f;};
@@ -33,6 +37,7 @@ union frustum_t {
 void calculateFrustum(frustum_t &frustum);
 void extractPlane(plane_t &plane, GLfloat *mat, int row);
 void globalStep(void *arg);
+void proceduralGenLoop(void *arg);
 void calcFOV();
 
 // input callbacks

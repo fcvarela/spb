@@ -52,7 +52,29 @@ int main(void) {
 
 	// main loop: we process everything in a separate thread
 	// and draw in the main thread
+	// procedural generation will occur in a third thread
+	// so we need opengl multithreading support
+	CGLError err;
+	CGLContextObj ctx = CGLGetCurrentContext();
+	err =  CGLEnable(ctx, kCGLCEMPEngine);
+	if (err != kCGLNoError ) {
+		std::cerr << "CANNOT MULTITHREAD" << std::endl;
+		exit(EXIT_FAILURE);
+	}
+
+	// got here? initialize a second context (procedural gen)
+	// that shares resources with the current
+	// current context pixel format
+	CGLPixelFormatObj current_pf = CGLGetPixelFormat(ctx);
+	err = CGLCreateContext(current_pf, ctx, &__procedural_gen_ctx__);
+	if (err != kCGLNoError) {
+		std::cerr << "ERROR CREATING NEW CONTEXT" << std::endl;
+		exit(EXIT_FAILURE);
+	}
+
 	tthread::thread gameloopThread(globalStep, 0);
+	tthread::thread proceduralGenThread(proceduralGenLoop, 0);
+
 	while (__running__) {
 		// are we still running?
 		__running__ = glfwGetWindowParam(GLFW_OPENED);
