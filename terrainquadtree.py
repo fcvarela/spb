@@ -436,7 +436,7 @@ class TerrainQuadtree:
                 if readycount == len(self.children):
                     # we can and need to draw our children
                     # two choices. either exclusively or ourself morphed
-
+                    factor = 0.0
                     if mindistance >= near:
                         factor = (mindistance - near) / (far-near)
                         if factor > 1.0:
@@ -444,9 +444,8 @@ class TerrainQuadtree:
                         if factor < 0.0:
                             factor = 0.0
                         factor = factor * factor * (3.0 - 2.0 * factor)
-                        [x.analyse(weight=factor) for x in self.children]
-                    else:
-                        [x.analyse() for x in self.children]
+                    
+                    [x.analyse(weight=factor) for x in self.children]
                     return
             else:
                 self.initChildren()

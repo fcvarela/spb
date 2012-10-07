@@ -6,6 +6,7 @@
 #include <Node.h>
 
 class StarSystem;
+class TerrainQuadtree;
 
 class Planet : public Node {
 public:
@@ -18,6 +19,9 @@ public:
 
 	double time_scale;
 
+	// detail
+	int maxlod;
+
 	StarSystem *system;
 	Node *parent;
 
@@ -25,7 +29,8 @@ public:
 	Shader *atmosphereShader;
 	Shader *surfaceShader;
 
-	GLuint _surfaceDisplayList;
+	TerrainQuadtree *quadtrees[6];
+
 	GLuint _atmosphereDisplayList;
 	GLuint _orbitDisplayList;
 

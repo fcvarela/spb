@@ -1,5 +1,5 @@
+#include <GL/glew.h>
 #include <GL/glfw.h>
-
 #include <Common.h>
 #include <GameSceneManager.h>
 #include <tinythread.h>
@@ -28,6 +28,8 @@ int main(void) {
 		glfwTerminate();
 		exit(EXIT_FAILURE);
 	}
+
+	glewInit();
 
 	// set window title
 	glfwSetWindowTitle("SPB");

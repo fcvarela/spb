@@ -3,6 +3,7 @@
 #include <Common.h>
 #include <Planet.h>
 #include <Star.h>
+#include <TerrainQuadtree.h>
 
 Planet::Planet(const libconfig::Setting &planet, StarSystem *system, Node *parent) {
 	this->system = system;
@@ -24,20 +25,14 @@ Planet::Planet(const libconfig::Setting &planet, StarSystem *system, Node *paren
 	// name
 	planet.lookupValue("name", this->label);
 
-	GLUquadric *surface  = gluNewQuadric();
-	GLUquadric *atmosphere = gluNewQuadric();
+	// lod
+	planet.lookupValue("maxlod", this->maxlod);
 
-	gluQuadricNormals(surface, GL_SMOOTH);
+	GLUquadric *atmosphere = gluNewQuadric();
 	gluQuadricNormals(atmosphere, GL_SMOOTH);
 
-	_surfaceDisplayList = glGenLists(1);
 	_atmosphereDisplayList = glGenLists(1);
 	_orbitDisplayList = glGenLists(1);
-
-	// surface
-	glNewList(_surfaceDisplayList, GL_COMPILE);
-	gluSphere(surface, this->radius, 50, 50);
-	glEndList();
 
 	// atmosphere
 	glNewList(_atmosphereDisplayList, GL_COMPILE);
@@ -80,13 +75,24 @@ Planet::Planet(const libconfig::Setting &planet, StarSystem *system, Node *paren
 	glEnd();
 	glEndList();
 
-	gluDeleteQuadric(surface);
 	gluDeleteQuadric(atmosphere);
 
 	atmosphereShader = new Shader("data/shaders/planet-atmosphere.glsl");
 	surfaceShader = new Shader("planet-surface.glsl");
 
 	time_scale = 0.0;
+
+	// initialize our quadtrees
+	Vector3d center = Vector3d(0.0, 0.5, 0.0);
+	Vector3d dx = Vector3d(1.0, 0.0, 0.0);
+	Vector3d dy = Vector3d(0.0, 0.0, -1.0);
+	this->quadtrees[0] = new TerrainQuadtree(NULL, this, this->maxlod, 0, 1, center, dx, dy);
+	this->quadtrees[1] = new TerrainQuadtree(NULL, this, this->maxlod, 0, 1, center, dx, dy);
+	this->quadtrees[2] = new TerrainQuadtree(NULL, this, this->maxlod, 0, 1, center, dx, dy);
+	this->quadtrees[3] = new TerrainQuadtree(NULL, this, this->maxlod, 0, 1, center, dx, dy);
+	this->quadtrees[4] = new TerrainQuadtree(NULL, this, this->maxlod, 0, 1, center, dx, dy);
+	this->quadtrees[5] = new TerrainQuadtree(NULL, this, this->maxlod, 0, 1, center, dx, dy);
+
 }
 
 void Planet::step() {
@@ -175,23 +181,21 @@ void Planet::draw() {
 	Vector3d v3LightPos = system->star->position - position;
 	v3LightPos.normalize();
 
-	glUniform3f(
-		glGetUniformLocation(this->atmosphereShader->program, "v3CameraPos"),
+	GLuint shader = this->atmosphereShader->program;
+	glUniform3f(glGetUniformLocation(shader, "v3CameraPos"),
 		v3CameraPos.x(), v3CameraPos.y(), v3CameraPos.z());
 
-	glUniform3f(
-		glGetUniformLocation(this->atmosphereShader->program, "v3LightPos"),
+	glUniform3f(glGetUniformLocation(shader, "v3LightPos"),
 		v3LightPos.x(), v3LightPos.y(), v3LightPos.z());
 
-	glUniform3f(
-		glGetUniformLocation(this->atmosphereShader->program, "v3PlanetCenter"),
+	glUniform3f(glGetUniformLocation(shader, "v3PlanetCenter"),
 		position.x(), position.y(), position.z());
 
-	glUniform1f(glGetUniformLocation(this->atmosphereShader->program, "fInnerRadius"), radius);
+	glUniform1f(glGetUniformLocation(shader, "fInnerRadius"), radius);
 
 	// frustum
-	glUniform1f(glGetUniformLocation(this->atmosphereShader->program, "near"), __near__);
-	glUniform1f(glGetUniformLocation(this->atmosphereShader->program, "far"), __far__);
+	glUniform1f(glGetUniformLocation(shader, "near"), __near__);
+	glUniform1f(glGetUniformLocation(shader, "far"), __far__);
 
 	glCallList(_atmosphereDisplayList);
 	this->atmosphereShader->unbind();
@@ -199,11 +203,34 @@ void Planet::draw() {
 	glFrontFace(GL_CCW);
 	glDepthMask(GL_TRUE);
 
-	//this->surfaceShader->bind();
-	glColor3f(1.0, 0.0, 0.0);
-	glCallList(_surfaceDisplayList);
-	//this->surfaceShader->unbind();
+	// draw surface
+	shader = this->surfaceShader->program;
+
+	// tile textures
+	glUniform1i(glGetUniformLocation(shader, "normalTexture"), 0);
+	glUniform1i(glGetUniformLocation(shader, "colorTexture"), 1);
+	glUniform1i(glGetUniformLocation(shader, "topoTexture"), 2);
+        
+    // tile parent textures
+	glUniform1i(glGetUniformLocation(shader, "pnormalTexture"), 3);
+	glUniform1i(glGetUniformLocation(shader, "pcolorTexture"), 4);
+	glUniform1i(glGetUniformLocation(shader, "ptopoTexture"), 5);
+
+    // near far
+	glUniform1f(glGetUniformLocation(shader, "far"), __far__);
+
+	// camera and light positions
+	glUniform3f(glGetUniformLocation(shader, "v3CameraPos"),
+		v3CameraPos.x(), v3CameraPos.y(), v3CameraPos.z());
+
+	glUniform3f(glGetUniformLocation(shader, "v3LightPos"),
+		v3LightPos.x(), v3LightPos.y(), v3LightPos.z());
+
+	for (uint8_t q=0; q<6; q++)
+		this->quadtrees[q]->analyse(0.0);
+
 	glPopMatrix();
+	this->surfaceShader->unbind();
 
 	// draw our moons
 	for (std::list<Planet *>::iterator i = moons.begin(); i != moons.end(); ++i) {

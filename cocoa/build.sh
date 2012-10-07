@@ -17,6 +17,7 @@ tinythread/*.cpp \
 -framework GLUT \
 /usr/local/lib/libconfig++.a \
 -lftgl \
+-lglew \
 ./glfw/lib/cocoa/libglfw.a \
 -o SPB.app/Contents/MacOS/spb
 
