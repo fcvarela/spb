@@ -68,9 +68,6 @@ TerrainQuadtree::TerrainQuadtree(TerrainQuadtree *parent, Planet *planet, uint16
 	this->normalTexture = NULL;
 	this->colorTexture = NULL;
 
-	// init our FB
-	glGenFramebuffers(1, &this->framebuffer);
-
 	// mark us as not ready
 	this->ready = false;
 
@@ -85,6 +82,8 @@ TerrainQuadtree::~TerrainQuadtree() {
 }
 
 void TerrainQuadtree::generateTextures() {
+	// init our FB
+	glGenFramebuffers(1, &this->framebuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, this->framebuffer);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->topoTexture->id, 0);
 	this->positionTexture->bind(GL_TEXTURE0);
