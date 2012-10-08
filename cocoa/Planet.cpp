@@ -77,22 +77,48 @@ Planet::Planet(const libconfig::Setting &planet, StarSystem *system, Node *paren
 
 	gluDeleteQuadric(atmosphere);
 
-	atmosphereShader = new Shader("data/shaders/planet-atmosphere.glsl");
-	surfaceShader = new Shader("planet-surface.glsl");
-
-	time_scale = 0.0;
+	this->atmosphereShader = new Shader("data/shaders/planet-atmosphere.glsl");
+	this->surfaceShader = new Shader("data/shaders/planet-surface.glsl");
+	this->time_scale = 0.0;
 
 	// initialize our quadtrees
-	Vector3d center = Vector3d(0.0, 0.5, 0.0);
-	Vector3d dx = Vector3d(1.0, 0.0, 0.0);
-	Vector3d dy = Vector3d(0.0, 0.0, -1.0);
-	this->quadtrees[0] = new TerrainQuadtree(NULL, this, this->maxlod, 0, 1, center, dx, dy);
-	this->quadtrees[1] = new TerrainQuadtree(NULL, this, this->maxlod, 0, 1, center, dx, dy);
-	this->quadtrees[2] = new TerrainQuadtree(NULL, this, this->maxlod, 0, 1, center, dx, dy);
-	this->quadtrees[3] = new TerrainQuadtree(NULL, this, this->maxlod, 0, 1, center, dx, dy);
-	this->quadtrees[4] = new TerrainQuadtree(NULL, this, this->maxlod, 0, 1, center, dx, dy);
-	this->quadtrees[5] = new TerrainQuadtree(NULL, this, this->maxlod, 0, 1, center, dx, dy);
+	Vector3d center, dx, dy;
 
+	// top
+	center = Vector3d(0.0, 0.5, 0.0);
+	dx = Vector3d(1.0, 0.0, 0.0);
+	dy = Vector3d(0.0, 0.0, -1.0);
+	this->quadtrees[0] = new TerrainQuadtree(NULL, this, this->maxlod, 1, center, dx, dy);
+
+	// left
+	center = Vector3d(-0.5, 0.0, 0.0);
+	dx = Vector3d(0.0, 0.0, 1.0);
+	dy = Vector3d(0.0, 1.0, 0.0);
+	this->quadtrees[1] = new TerrainQuadtree(NULL, this, this->maxlod, 2, center, dx, dy);
+
+	// front
+	center = Vector3d(0.0, 0.0, 0.5);
+	dx = Vector3d(1.0, 0.0, 0.0);
+	dy = Vector3d(0.0, 1.0, 0.0);
+	this->quadtrees[2] = new TerrainQuadtree(NULL, this, this->maxlod, 3, center, dx, dy);
+
+	// right
+	center = Vector3d(0.5, 0.0, 0.0);
+	dx = Vector3d(0.0, 0.0, -1.0);
+	dy = Vector3d(0.0, 1.0, 0.0);
+	this->quadtrees[3] = new TerrainQuadtree(NULL, this, this->maxlod, 4, center, dx, dy);
+
+	// back
+	center = Vector3d(0.0, 0.0, -0.5);
+	dx = Vector3d(-1.0, 0.0, 0.0);
+	dy = Vector3d(0.0, 1.0, 0.0);
+	this->quadtrees[4] = new TerrainQuadtree(NULL, this, this->maxlod, 5, center, dx, dy);
+
+	// bottom
+	center = Vector3d(0.0, -0.5, 0.0);
+	dx = Vector3d(1.0, 0.0, 0.0);
+	dy = Vector3d(0.0, 0.0, 1.0);
+	this->quadtrees[5] = new TerrainQuadtree(NULL, this, this->maxlod, 6, center, dx, dy);
 }
 
 void Planet::step() {
@@ -146,6 +172,7 @@ void Planet::draw() {
 	glDepthMask(GL_FALSE);
 	Node::draw();
 
+	/*
 	// draw our orbit
 	glPushMatrix();
 	glTranslated(parent->position.x(), parent->position.y(), parent->position.z());
@@ -167,7 +194,7 @@ void Planet::draw() {
 	// finished debug
 	glPushMatrix();
 	glTranslated(position.x(), position.y(), position.z());
-	
+	*/
 	// draw atmosphere
 	glDepthMask(GL_FALSE);
 	glFrontFace(GL_CW);
@@ -188,9 +215,6 @@ void Planet::draw() {
 	glUniform3f(glGetUniformLocation(shader, "v3LightPos"),
 		v3LightPos.x(), v3LightPos.y(), v3LightPos.z());
 
-	glUniform3f(glGetUniformLocation(shader, "v3PlanetCenter"),
-		position.x(), position.y(), position.z());
-
 	glUniform1f(glGetUniformLocation(shader, "fInnerRadius"), radius);
 
 	// frustum
@@ -204,6 +228,7 @@ void Planet::draw() {
 	glDepthMask(GL_TRUE);
 
 	// draw surface
+	this->surfaceShader->bind();
 	shader = this->surfaceShader->program;
 
 	// tile textures
@@ -225,6 +250,12 @@ void Planet::draw() {
 
 	glUniform3f(glGetUniformLocation(shader, "v3LightPos"),
 		v3LightPos.x(), v3LightPos.y(), v3LightPos.z());
+
+	glUniform1f(glGetUniformLocation(shader, "fInnerRadius"), radius);
+
+	// frustum
+	glUniform1f(glGetUniformLocation(shader, "near"), __near__);
+	glUniform1f(glGetUniformLocation(shader, "far"), __far__);
 
 	for (uint8_t q=0; q<6; q++)
 		this->quadtrees[q]->analyse(0.0);

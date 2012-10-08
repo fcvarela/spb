@@ -6,17 +6,18 @@
 
 #include <list>
 
-TerrainQuadtree::TerrainQuadtree(TerrainQuadtree *parent, Planet *planet, uint16_t maxlod, uint8_t face, uint8_t index, Vector3d center, Vector3d dx, Vector3d dy) {
+TerrainQuadtree::TerrainQuadtree(TerrainQuadtree *parent, Planet *planet, uint16_t maxlod, uint8_t index, Vector3d &center, Vector3d &dx, Vector3d &dy) {
 	this->maxlod = maxlod;
-	this->face = face;
 	this->index = index;
 
+	this->parent = NULL;
 	if (parent != NULL) {
 		this->parent = parent;
 		this->fullAddress = parent->fullAddress * 10 + this->index;
 	} else
 		this->fullAddress = this->index;
 
+	this->planet = planet;
 	this->position = center;
 	this->dx = dx;
 	this->dy = dy;
@@ -72,6 +73,11 @@ TerrainQuadtree::TerrainQuadtree(TerrainQuadtree *parent, Planet *planet, uint16
 
 	// mark us as not ready
 	this->ready = false;
+
+	// init
+	this->generateVertices();
+	this->finishVertices();
+	this->generateTextures();
 }
 
 TerrainQuadtree::~TerrainQuadtree() {
@@ -88,10 +94,10 @@ void TerrainQuadtree::generateTextures() {
 	glMatrixMode(GL_PROJECTION);
 	glPolygonMode(GL_FRONT, GL_FILL);
 	glLoadIdentity();
-	glOrtho(0, this->textureSize, 0, this->textureSize, 0, 1);
+	glOrtho(0.0, (double)this->textureSize, 0.0, (double)this->textureSize, 0.0, 1.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glTranslated(0, 0, -1);
+	glTranslated(0.0, 0.0, -1.0);
 
 	// use generator shader
 	this->generatorShader->bind();
@@ -135,7 +141,7 @@ void TerrainQuadtree::generateTextures() {
 	glBindFramebuffer(GL_FRAMEBUFFER, this->framebuffer);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->colorTexture->id, 0);
 	this->generatorShaderC->bind();
-	glUniform1i(glGetUniformLocation(this->generatorShaderN->program, "topoTexture"), 1);
+	glUniform1i(glGetUniformLocation(this->generatorShaderC->program, "topoTexture"), 1);
 	glBegin(GL_QUADS);
 	glTexCoord2f(0.0, 0.0);
 	glVertex3f(0.0, 0.0, 0.0);
@@ -157,12 +163,12 @@ void TerrainQuadtree::generateVertices() {
 	// vertices
 	uint64_t coord_count = this->gridSizep1*this->gridSizep1*3 + 3;
 	this->vertices = (double *)malloc(sizeof(double) * coord_count);
-	this->buildQuadtreeElement(this->vertices, this->gridSize, 0, 0);
+	this->buildQuadtreeElementd(this->vertices, this->gridSize, 0, 0);
 
 	// positions
 	coord_count = (this->gridSizep1+2)*(this->gridSizep1+2)*3;
-	this->positionTextureContent = (double *)malloc(sizeof(double) * coord_count);
-	this->buildQuadtreeElement(this->positionTextureContent, this->gridSize, 1, 1);
+	this->positionTextureContent = (float *)malloc(sizeof(float) * coord_count);
+	this->buildQuadtreeElementf(this->positionTextureContent, this->gridSize, 1, 1);
 
 	uint32_t u = 0;
 	uint32_t v = 0;
@@ -198,48 +204,15 @@ void TerrainQuadtree::generateVertices() {
 	this->diagonalLength = (topleft - botright).length();
 }
 
-void TerrainQuadtree::buildQuadtreeElement(double *mesh, uint8_t size, uint8_t reverse, uint8_t border) {
-	double u, v, gridsizeover2, gsize, upos, vpos;
-	Vector3d coord, dxovergridsize, dyovergridsize;
-
-	// temp stuff
-	gsize = size + 1 + (border * 2);
-	dxovergridsize = dx/(double)size;
-	dyovergridsize = dy/(double)size;
-	
-	gridsizeover2 = size/2;
-
-	double length = 0.0;
-
-	for (u=0; u<gsize; u++) {
-		for (v=0; v<gsize; v++) {
-			// build
-			coord = position + dxovergridsize * ((v-border)-gridsizeover2) + dyovergridsize * (gridsizeover2 - (u-border));
-
-			// normalize
-			coord.normalize();
-			
-			if (reverse == 1)
-				upos = (gsize-1-u)*(gsize)*3.0;
-			else
-				upos = gsize * u * 3.0;
-			vpos = v*3.0;
-
-			mesh[(int16_t)upos + (int16_t)vpos + 0] = coord.x();
-			mesh[(int16_t)upos + (int16_t)vpos + 1] = coord.y();
-			mesh[(int16_t)upos + (int16_t)vpos + 2] = coord.z();
-		}
-	}
-}
-
 void TerrainQuadtree::finishVertices() {
 	this->positionTexture = new Texture(this->textureSize, false);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, this->gridSizep1+2, this->gridSizep1+2, 0, GL_RGB, GL_FLOAT, this->positionTextureContent);
 	free(this->positionTextureContent);
 
+	uint16_t coord_count = this->gridSizep1*this->gridSizep1*3 + 3;
 	glGenBuffers(1, &this->positionBufferObject);
 	glBindBuffer(GL_ARRAY_BUFFER, this->positionBufferObject);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(double)*this->gridSizep1*this->gridSizep1*3 + 3, this->vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(double)*coord_count, this->vertices, GL_STATIC_DRAW);
 	free(this->vertices);
 
 	// build our indexes
@@ -247,22 +220,22 @@ void TerrainQuadtree::finishVertices() {
 		uint16_t added_indexes = 0;
 		std::list<uint16_t> v_indexes;
 	
-		for (uint32_t y=0; y<this->gridSize; y++) {
-			for (uint32_t x=0; x<this->gridSizep1; x++) {
+		for (uint8_t y=0; y<this->gridSize; y++) {
+			for (uint8_t x=0; x<this->gridSizep1; x++) {
 				v_indexes.push_back(y * this->gridSizep1 + x);
 				v_indexes.push_back((y+1) * this->gridSizep1 + x);
 
 				added_indexes += 2;
 				// degerate this srip?
 				if (added_indexes % this->gridSizep1*2 == 0) {
-					// last triangle
+					// last vertex
 					v_indexes.push_back((y+1) * this->gridSizep1 + x);
 
-					// next triangle twice
+					// next vertex twice
 					v_indexes.push_back((y+1) * this->gridSizep1);
 					v_indexes.push_back((y+1) * this->gridSizep1);
 
-					// add next triangle
+					// add next vertex
 					v_indexes.push_back((y+2) * this->gridSizep1);
 				}
 			}
@@ -278,7 +251,7 @@ void TerrainQuadtree::finishVertices() {
 		// store in VBO
 		glGenBuffers(1, &this->indexBufferObject);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->indexBufferObject);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, v_indexes.size(), this->indexes, GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint16_t)*v_indexes.size(), this->indexes, GL_STATIC_DRAW);
 		free(this->indexes);
 	}
 
@@ -316,7 +289,7 @@ void TerrainQuadtree::finishVertices() {
 		// store in VBO
 		glGenBuffers(1, &this->texturecoordBufferObject);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->texturecoordBufferObject);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, v_texcoords.size(), this->texcoords, GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(double)*v_texcoords.size(), this->texcoords, GL_STATIC_DRAW);
 		free(this->texcoords);
 
 	}
@@ -327,9 +300,9 @@ void TerrainQuadtree::finishVertices() {
 	this->normalTexture = new Texture(this->textureSize, true);
 
 	if (this->generatorShader == NULL) {
-		this->generatorShader = new Shader("data/shaders/generator.glsl");
-		this->generatorShaderN = new Shader("data/shaders/generatornormals.glsl");
-		this->generatorShaderC = new Shader("data/shaders/generatorcolor.glsl");
+		this->generatorShader = new Shader("data/shaders/planet-generator.glsl");
+		this->generatorShaderN = new Shader("data/shaders/planet-generator-normals.glsl");
+		this->generatorShaderC = new Shader("data/shaders/planet-generator-colors.glsl");
 	}
 
 	this->generateTextures();
@@ -338,6 +311,9 @@ void TerrainQuadtree::finishVertices() {
 void TerrainQuadtree::analyse(double weight = 0.0) {
 	if (this->ready == false)
 		return;
+
+	this->draw();
+	return;
 
 	// do we need to draw our children?
 	Camera *camera = getGameSceneManager()->camera;
@@ -422,3 +398,70 @@ void TerrainQuadtree::draw() {
 
 void TerrainQuadtree::initChildren() {}
 
+void TerrainQuadtree::buildQuadtreeElementd(double *mesh, uint8_t size, uint8_t reverse, uint8_t border) {
+	double u, v, gridsizeover2, gsize, upos, vpos;
+	Vector3d coord, dxovergridsize, dyovergridsize;
+
+	// temp stuff
+	gsize = size + 1.0 + (border * 2.0);
+	dxovergridsize = dx/(double)size;
+	dyovergridsize = dy/(double)size;
+	
+	gridsizeover2 = size/2.0;
+
+	double length = 0.0;
+
+	for (u=0; u<gsize; u++) {
+		for (v=0; v<gsize; v++) {
+			// build
+			coord = position + dxovergridsize * ((v-border)-gridsizeover2) + dyovergridsize * (gridsizeover2 - (u-border));
+
+			// normalize
+			coord.normalize();
+			
+			if (reverse == 1)
+				upos = (gsize-1.0-u)*(gsize)*3.0;
+			else
+				upos = gsize * u * 3.0;
+			vpos = v*3.0;
+
+			mesh[(int16_t)upos + (int16_t)vpos + 0] = coord.x();
+			mesh[(int16_t)upos + (int16_t)vpos + 1] = coord.y();
+			mesh[(int16_t)upos + (int16_t)vpos + 2] = coord.z();
+		}
+	}
+}
+
+void TerrainQuadtree::buildQuadtreeElementf(float *mesh, uint8_t size, uint8_t reverse, uint8_t border) {
+	double u, v, gridsizeover2, gsize, upos, vpos;
+	Vector3d coord, dxovergridsize, dyovergridsize;
+
+	// temp stuff
+	gsize = size + 1.0 + (border * 2.0);
+	dxovergridsize = dx/(double)size;
+	dyovergridsize = dy/(double)size;
+	
+	gridsizeover2 = size/2.0;
+
+	double length = 0.0;
+
+	for (u=0; u<gsize; u++) {
+		for (v=0; v<gsize; v++) {
+			// build
+			coord = position + dxovergridsize * ((v-border)-gridsizeover2) + dyovergridsize * (gridsizeover2 - (u-border));
+
+			// normalize
+			coord.normalize();
+			
+			if (reverse == 1)
+				upos = (gsize-1.0-u)*(gsize)*3.0;
+			else
+				upos = gsize * u * 3.0;
+			vpos = v*3.0;
+
+			mesh[(int16_t)upos + (int16_t)vpos + 0] = coord.x();
+			mesh[(int16_t)upos + (int16_t)vpos + 1] = coord.y();
+			mesh[(int16_t)upos + (int16_t)vpos + 2] = coord.z();
+		}
+	}
+}

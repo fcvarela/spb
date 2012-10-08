@@ -22,6 +22,7 @@ double __camdelta__ = 0.0;
 int __running__ = GL_TRUE;
 FTFont *__font__;
 CGLContextObj __procedural_gen_ctx__;
+CGLContextObj __render_ctx__;
 tthread::mutex __procedural_gen_mutex__;
 
 void globalStep(void *arg) {

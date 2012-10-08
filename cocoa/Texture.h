@@ -6,7 +6,7 @@
 
 class Texture {
 public:
-	Texture(uint16_t size, bool init);
+	Texture(uint16_t size, bool init=true);
 	~Texture();
 
 	uint16_t size;

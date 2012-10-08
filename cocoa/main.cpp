@@ -21,10 +21,10 @@ int main(void) {
     GLFWvidmode return_struct;
 	glfwGetDesktopMode(&return_struct);
 
-	__width__ = return_struct.Width;
-	__height__ = return_struct.Height;
+	__width__ = 800;//return_struct.Width;
+	__height__ = 500;//return_struct.Height;
 
-	if (!glfwOpenWindow(__width__, __height__, 8, 8, 8, 8, 32, 0, GLFW_FULLSCREEN)) {
+	if (!glfwOpenWindow(__width__, __height__, 8, 8, 8, 8, 32, 0, GLFW_WINDOW)) {
 		glfwTerminate();
 		exit(EXIT_FAILURE);
 	}
@@ -57,8 +57,8 @@ int main(void) {
 	// procedural generation will occur in a third thread
 	// so we need opengl multithreading support
 	CGLError err;
-	CGLContextObj ctx = CGLGetCurrentContext();
-	err =  CGLEnable(ctx, kCGLCEMPEngine);
+	__render_ctx__ = CGLGetCurrentContext();
+	err =  CGLEnable(__render_ctx__, kCGLCEMPEngine);
 	if (err != kCGLNoError ) {
 		std::cerr << "CANNOT MULTITHREAD" << std::endl;
 		exit(EXIT_FAILURE);
@@ -67,8 +67,8 @@ int main(void) {
 	// got here? initialize a second context (procedural gen)
 	// that shares resources with the current
 	// current context pixel format
-	CGLPixelFormatObj current_pf = CGLGetPixelFormat(ctx);
-	err = CGLCreateContext(current_pf, ctx, &__procedural_gen_ctx__);
+	CGLPixelFormatObj current_pf = CGLGetPixelFormat(__render_ctx__);
+	err = CGLCreateContext(current_pf, __render_ctx__, &__procedural_gen_ctx__);
 	if (err != kCGLNoError) {
 		std::cerr << "ERROR CREATING NEW CONTEXT" << std::endl;
 		exit(EXIT_FAILURE);

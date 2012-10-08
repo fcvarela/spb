@@ -11,13 +11,13 @@ class Planet;
 
 class TerrainQuadtree : public Node {
 public:
-	TerrainQuadtree(TerrainQuadtree *parent, Planet *planet, uint16_t maxlod, uint8_t face, uint8_t index, Vector3d center, Vector3d dx, Vector3d dy);
+	TerrainQuadtree(TerrainQuadtree *parent, Planet *planet, uint16_t maxlod, uint8_t index, Vector3d &center, Vector3d &dx, Vector3d &dy);
 	~TerrainQuadtree();
 
-	void buildQuadtreeElement(double *mesh, uint8_t size, uint8_t reverse, uint8_t border);
+	void buildQuadtreeElementd(double *mesh, uint8_t size, uint8_t reverse, uint8_t border);
+	void buildQuadtreeElementf(float *mesh, uint8_t size, uint8_t reverse, uint8_t border);
 
 	uint16_t maxlod;
-	uint8_t face;
 	uint8_t index;
 	uint64_t fullAddress;
 
@@ -66,7 +66,7 @@ public:
 	uint16_t *indexes;
 	uint16_t *skirtIndexes;
 	double *texcoords;
-	double *positionTextureContent;
+	float *positionTextureContent;
 
 	// corners
 	Vector3d topleft, topright, botleft, botright;

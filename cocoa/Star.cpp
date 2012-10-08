@@ -33,6 +33,7 @@ Star::Star(const libconfig::Setting &star, StarSystem *system) {
 Star::~Star() {}
 
 void Star::draw() {
+	return;
 	this->shader->bind();
 	glUniform1f(glGetUniformLocation(this->shader->program, "time"), __lasttime__);
 	glUniform1f(glGetUniformLocation(this->shader->program, "near"), __near__);

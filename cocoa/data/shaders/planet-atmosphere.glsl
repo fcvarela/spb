@@ -1,7 +1,6 @@
 #ifdef _VERTEX_
 
 varying vec3 v3Pos;
-uniform vec3 v3PlanetCenter;
 uniform float fInnerRadius;
 
 void main(void) {
