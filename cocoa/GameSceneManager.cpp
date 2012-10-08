@@ -152,7 +152,7 @@ void GameSceneManager::draw() {
 	}
 
 	// debug
-	// set up an orthogonal 2d projection matrix
+	// set up an orthogonal 2d projection matrixf
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 

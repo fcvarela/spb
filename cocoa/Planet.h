@@ -38,6 +38,9 @@ public:
 	~Planet();
 
 	void draw();
+	void drawDebug();
+	void drawAtmosphere();
+	void drawSurface();
 	void step();
 };
 

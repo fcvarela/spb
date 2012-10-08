@@ -149,15 +149,16 @@ uniform sampler2D pcolorTexture;
 
 uniform float weight;
 uniform float texturesize;
+
 uniform int index;
+
 uniform float far;
+uniform float near;
 
 uniform vec3 v3LightPos;
 
 void main() {
-    const float near = 1.0;
-    float offset = 0.0;
-    gl_FragDepth = (log(near * gl_TexCoord[6].z + offset) / log(near * far + offset));
+    gl_FragDepth = (log(near * gl_TexCoord[6].z) / log(near * far));
     vec3 normal = texture2D(normalTexture, gl_TexCoord[0].st).xyz;
     vec4 color = texture2D(colorTexture, gl_TexCoord[0].st);
 
@@ -199,23 +200,22 @@ void main() {
     */
 
     // lighting stuff
-    vec3 s = v3LightPos - normalize(vertex.xyz);
-    vec3 light = normalize(s.xyz);
+    vec3 s = normalize(vec3(gl_LightSource[0].position - vvertex));
 
     // finals
-    vec4 ambient = vec4(0.2);
-    vec4 diffuse = vec4(0.8);
-    vec4 specular = vec4(0.4);
+    vec4 ambient = vec4(0.05);
+    vec4 diffuse = vec4(0.0);
+    vec4 specular = vec4(0.0);
 
     // diffuse component
-    float diffuse_coeff = max(0.0, dot(normal, light));
+    float diffuse_coeff = max(0.0, dot(normal, s));
     if (diffuse_coeff > 0.0) {
-        diffuse = diffuse * diffuse_coeff;
+        diffuse = vec4(0.8, 0.8, 0.8, 1.0) * diffuse_coeff;
         
         // specular component
-        vec3 r = -reflect(light, normal);
+        vec3 r = -reflect(s, normal);
         vec3 v = normalize(-vvertex.xyz);
-        specular = specular * pow(max(dot(r, v), 0.0), 8.0) * color.a;
+        specular = vec4(0.4, 0.4, 0.4, 1.0) * pow(max(dot(r, v), 0.0), 8.0) * color.a;
     }
 
     gl_FragColor = color * (ambient + diffuse) + specular + (gl_Color + 0.25 * gl_SecondaryColor);

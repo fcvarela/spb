@@ -20,9 +20,12 @@ uint16_t __height__ = 0;
 uint8_t __keys__[512];
 double __camdelta__ = 0.0;
 int __running__ = GL_TRUE;
+
 FTFont *__font__;
+
 CGLContextObj __procedural_gen_ctx__;
 CGLContextObj __render_ctx__;
+
 tthread::mutex __procedural_gen_mutex__;
 
 void globalStep(void *arg) {
@@ -47,8 +50,6 @@ void proceduralGenLoop(void *arg) {
 
 	while (__running__) {
 		__procedural_gen_mutex__.lock();
-		glEnable(GL_LIGHTING);
-		glDisable(GL_LIGHTING);
 		usleep(10000);
 		__procedural_gen_mutex__.unlock();
 	}

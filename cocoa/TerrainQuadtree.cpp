@@ -84,10 +84,8 @@ TerrainQuadtree::~TerrainQuadtree() {
 void TerrainQuadtree::generateTextures() {
 	// init our FB
 	glGenFramebuffers(1, &this->framebuffer);
-	glBindFramebuffer(GL_FRAMEBUFFER, this->framebuffer);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->topoTexture->id, 0);
-	this->positionTexture->bind(GL_TEXTURE0);
 
+	// prepare viewport and projection
 	glDisable(GL_DEPTH_TEST);
 	glViewport(0, 0, this->textureSize, this->textureSize);
 	glMatrixMode(GL_PROJECTION);
@@ -98,7 +96,11 @@ void TerrainQuadtree::generateTextures() {
 	glLoadIdentity();
 	glTranslated(0.0, 0.0, -1.0);
 
-	// use generator shader
+	// generate topography
+	glBindFramebuffer(GL_FRAMEBUFFER, this->framebuffer);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->topoTexture->id, 0);
+	this->positionTexture->bind(GL_TEXTURE0);
+	
 	this->generatorShader->bind();
 	glUniform1i(glGetUniformLocation(this->generatorShader->program, "positionTexture"), 0);
 	glBegin(GL_QUADS);
@@ -120,7 +122,8 @@ void TerrainQuadtree::generateTextures() {
 	this->topoTexture->bind(GL_TEXTURE1);
 
 	this->generatorShaderN->bind();
-	glUniform1f(glGetUniformLocation(this->generatorShaderN->program, "size"), this->textureSize);
+	glUniform1f(glGetUniformLocation(this->generatorShaderN->program, "size"), (float)this->textureSize);
+	glUniform1f(glGetUniformLocation(this->generatorShaderN->program, "radius"), this->planet->radius);
 	glUniform1i(glGetUniformLocation(this->generatorShaderN->program, "topoTexture"), 1);
 	glUniform1i(glGetUniformLocation(this->generatorShaderN->program, "positionTexture"), 0);
 	glBegin(GL_QUADS);

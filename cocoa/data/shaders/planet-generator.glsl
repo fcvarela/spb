@@ -196,9 +196,10 @@ void main() {
   float height = ridgedmf(coords*2.0)*65536.0;
   int heighti = int(height);
   height = fract(height);
-  gl_FragColor.a = float(heighti/256) / 256.0;
-  gl_FragColor.r = float(mod(float(heighti), 256.0)) / 256.0;
-  gl_FragColor.g = height;
+  gl_FragColor.r = float(heighti/256) / 256.0;
+  gl_FragColor.g = float(mod(float(heighti), 256.0)) / 256.0;
+  gl_FragColor.b = height;
+  gl_FragColor.a = 1.0;
 }
 
 #endif

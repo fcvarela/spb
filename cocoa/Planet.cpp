@@ -168,12 +168,24 @@ void Planet::step() {
 Planet::~Planet() {}
 
 void Planet::draw() {
+	drawDebug();
+	drawAtmosphere();
+	drawSurface();
+
+	// draw our moons
+	for (std::list<Planet *>::iterator i = moons.begin(); i != moons.end(); ++i) {
+		Planet *moon = *i;
+		moon->draw();
+	}
+}
+
+void Planet::drawDebug() {
 	// debug first
 	glDepthMask(GL_FALSE);
 	Node::draw();
 
-	/*
 	// draw our orbit
+	/*
 	glPushMatrix();
 	glTranslated(parent->position.x(), parent->position.y(), parent->position.z());
 	
@@ -189,12 +201,14 @@ void Planet::draw() {
 	glVertex3d(position.x(), position.y()-radius*2.0, position.z());
 	glEnd();
 	glPopMatrix();
+	*/
 	glDepthMask(GL_TRUE);
+}
 
-	// finished debug
+void Planet::drawAtmosphere() {
 	glPushMatrix();
 	glTranslated(position.x(), position.y(), position.z());
-	*/
+
 	// draw atmosphere
 	glDepthMask(GL_FALSE);
 	glFrontFace(GL_CW);
@@ -226,10 +240,28 @@ void Planet::draw() {
 
 	glFrontFace(GL_CCW);
 	glDepthMask(GL_TRUE);
+	glPopMatrix();
+}
+
+void Planet::drawSurface() {
+	glPushMatrix();
+	glTranslated(position.x(), position.y(), position.z());
+	
+	GLdouble mat[16];
+	rotation.glMatrix(mat);
+	glMultMatrixd(mat);
+	rotation = rotation * Quatd(Vector3d(0.0, 1.0, 0.0), 1.0);
 
 	// draw surface
 	this->surfaceShader->bind();
-	shader = this->surfaceShader->program;
+	GLuint shader = this->surfaceShader->program;
+
+	// all positions relative to our center
+	// set uniforms
+	GameSceneManager *gsm = getGameSceneManager();
+	Vector3d v3CameraPos = gsm->camera->position - position;
+	Vector3d v3LightPos = system->star->position - position;
+	v3LightPos.normalize();
 
 	// tile textures
 	glUniform1i(glGetUniformLocation(shader, "normalTexture"), 0);
@@ -262,10 +294,4 @@ void Planet::draw() {
 
 	glPopMatrix();
 	this->surfaceShader->unbind();
-
-	// draw our moons
-	for (std::list<Planet *>::iterator i = moons.begin(); i != moons.end(); ++i) {
-		Planet *moon = *i;
-		moon->draw();
-	}
 }
