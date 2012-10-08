@@ -19,7 +19,7 @@ Texture::~Texture() {
 	glDeleteTextures(1, &this->id);
 }
 
-void Texture::bind(GLuint textureUnit=GL_TEXTURE0) {
+void Texture::bind(GLuint textureUnit) {
 	glActiveTexture(textureUnit);
 	glBindTexture(GL_TEXTURE_2D, this->id);
 }
