@@ -180,6 +180,7 @@ void Planet::draw() {
 }
 
 void Planet::drawDebug() {
+	glDisable(GL_LIGHTING);
 	// debug first
 	glDepthMask(GL_FALSE);
 	Node::draw();
@@ -203,6 +204,7 @@ void Planet::drawDebug() {
 	glPopMatrix();
 	*/
 	glDepthMask(GL_TRUE);
+	glEnable(GL_LIGHTING);
 }
 
 void Planet::drawAtmosphere() {
@@ -246,11 +248,6 @@ void Planet::drawAtmosphere() {
 void Planet::drawSurface() {
 	glPushMatrix();
 	glTranslated(position.x(), position.y(), position.z());
-	
-	GLdouble mat[16];
-	rotation.glMatrix(mat);
-	glMultMatrixd(mat);
-	rotation = rotation * Quatd(Vector3d(0.0, 1.0, 0.0), 1.0);
 
 	// draw surface
 	this->surfaceShader->bind();
@@ -259,7 +256,7 @@ void Planet::drawSurface() {
 	// all positions relative to our center
 	// set uniforms
 	GameSceneManager *gsm = getGameSceneManager();
-	Vector3d v3CameraPos = gsm->camera->position - position;
+	Vector3d v3CameraPos = (gsm->camera->position - position/this->radius);
 	Vector3d v3LightPos = system->star->position - position;
 	v3LightPos.normalize();
 

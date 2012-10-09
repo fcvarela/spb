@@ -21,6 +21,7 @@ public:
 	void reshape();
 	void step();
 	void draw();
+	void drawDebug();
 	Node *nearestNode();
 	void recalculatePositions(Vector3d &subtract);
 };

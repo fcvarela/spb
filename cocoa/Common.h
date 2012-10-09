@@ -27,6 +27,7 @@ extern int __running__;
 extern CGLContextObj __procedural_gen_ctx__;
 extern CGLContextObj __render_ctx__;
 extern tthread::mutex __procedural_gen_mutex__;
+extern tthread::mutex __reposition_mutex__;
 
 struct plane_t {GLfloat A, B, C, D;};
 union frustum_t {

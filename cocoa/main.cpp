@@ -21,10 +21,10 @@ int main(void) {
     GLFWvidmode return_struct;
 	glfwGetDesktopMode(&return_struct);
 
-	__width__ = return_struct.Width;
-	__height__ = return_struct.Height;
+	__width__ = 800;//return_struct.Width;
+	__height__ = 500;//return_struct.Height;
 
-	if (!glfwOpenWindow(__width__, __height__, 8, 8, 8, 8, 32, 0, GLFW_FULLSCREEN)) {
+	if (!glfwOpenWindow(__width__, __height__, 8, 8, 8, 8, 32, 0, GLFW_WINDOW)) {
 		glfwTerminate();
 		exit(EXIT_FAILURE);
 	}

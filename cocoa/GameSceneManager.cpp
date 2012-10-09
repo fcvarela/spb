@@ -120,6 +120,7 @@ void GameSceneManager::step() {
 	__camvelocity__ = (camera->position - curpos).length()/__dt__;
 
 	// step
+	__reposition_mutex__.lock();
 	for (std::list<StarSystem *>::iterator i = starSystems.begin(); i != starSystems.end(); ++i) {
 		StarSystem *ss = *i;
 		ss->step();
@@ -129,6 +130,7 @@ void GameSceneManager::step() {
 	camera->position -= nearest_position;
 	recalculatePositions(nearest_position);
 	__camdelta__ = (nearest_position - camera->position).length()/3.0;
+	__reposition_mutex__.unlock();
 }
 
 void GameSceneManager::draw() {
@@ -139,18 +141,34 @@ void GameSceneManager::draw() {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
+	// loclk
+	__reposition_mutex__.lock();
+
 	// set camera perspective
 	this->camera->setPerspective();
 
 	// update the view frustum
 	calculateFrustum(this->frustum);
 
-	// step
+	// draw
 	for (std::list<StarSystem *>::iterator i = starSystems.begin(); i != starSystems.end(); ++i) {
 		StarSystem *ss = *i;
 		ss->draw();
 	}
 
+	// unlock
+	__reposition_mutex__.unlock();
+
+	glDisable(GL_LIGHTING);
+	drawDebug();
+	glEnable(GL_LIGHTING);
+
+	double curtime = glfwGetTime();
+	__fps__ = 1.0/(curtime - __lastframe__);
+	__lastframe__ = glfwGetTime();
+}
+
+void GameSceneManager::drawDebug() {
 	// debug
 	// set up an orthogonal 2d projection matrixf
 	glMatrixMode(GL_PROJECTION);
@@ -194,8 +212,4 @@ void GameSceneManager::draw() {
 
 	__font__->Render(debug);
 	glEnable(GL_DEPTH_TEST);
-
-	double curtime = glfwGetTime();
-	__fps__ = 1.0/(curtime - __lastframe__);
-	__lastframe__ = glfwGetTime();
 }

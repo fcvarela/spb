@@ -1,7 +1,6 @@
 #ifdef _VERTEX_
 
 varying vec3 v3Pos;
-uniform float fInnerRadius;
 
 void main(void) {
 	v3Pos = gl_Vertex.xyz;
