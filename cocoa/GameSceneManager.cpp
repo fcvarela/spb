@@ -122,7 +122,7 @@ void GameSceneManager::step() {
 	__camvelocity__ = (camera->position - curpos).length()/__dt__;
 
 	// step
-	__reposition_mutex__.lock();
+	__gpu_mutex__.lock();
 	for (std::list<StarSystem *>::iterator i = starSystems.begin(); i != starSystems.end(); ++i) {
 		StarSystem *ss = *i;
 		ss->step();
@@ -132,19 +132,18 @@ void GameSceneManager::step() {
 	camera->position -= nearest_position;
 	recalculatePositions(nearest_position);
 	__camdelta__ = (nearest_position - camera->position).length()/3.0;
-	__reposition_mutex__.unlock();
+	__gpu_mutex__.unlock();
 }
 
 void GameSceneManager::draw() {
+	__gpu_mutex__.lock();
+	CGLSetCurrentContext(__render_ctx__);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glViewport(0, 0, __width__, __height__);
 	gluPerspective(__vfov__, __aratio__, __near__, __far__);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-
-	// loclk
-	__reposition_mutex__.lock();
 
 	// set camera perspective
 	this->camera->setPerspective();
@@ -158,9 +157,6 @@ void GameSceneManager::draw() {
 		ss->draw();
 	}
 
-	// unlock
-	__reposition_mutex__.unlock();
-
 	glDisable(GL_LIGHTING);
 	drawDebug();
 	glEnable(GL_LIGHTING);
@@ -168,6 +164,7 @@ void GameSceneManager::draw() {
 	double curtime = glfwGetTime();
 	__fps__ = 1.0/(curtime - __lastframe__);
 	__lastframe__ = glfwGetTime();
+	__gpu_mutex__.unlock();
 }
 
 void GameSceneManager::drawDebug() {

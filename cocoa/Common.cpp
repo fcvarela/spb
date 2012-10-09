@@ -2,6 +2,8 @@
 
 #include <GL/glfw.h>
 #include <GameSceneManager.h>
+#include <TerrainLoader.h>
+#include <TerrainQuadtree.h>
 #include <Common.h>
 #include <tinythread.h>
 
@@ -26,34 +28,37 @@ FTFont *__font__;
 CGLContextObj __procedural_gen_ctx__;
 CGLContextObj __render_ctx__;
 
-tthread::mutex __reposition_mutex__;
-tthread::mutex __procedural_gen_mutex__;
+tthread::mutex __gpu_mutex__;
 
 void globalStep(void *arg) {
 	while (__running__) {
-		// 200hz = 5ms
-		//usleep(4500);
 		double now = glfwGetTime();
 		__dt__ = now - __lasttime__;
 		__lasttime__ = now;
-
 		getGameSceneManager()->step();
 	}
 }
 
 void proceduralGenLoop(void *arg) {
-	// set our context appropriately
-	CGLSetCurrentContext(__procedural_gen_ctx__);
-
 	// we don't need vsync here...
 	GLint sync = 0;
 	CGLSetParameter(__procedural_gen_ctx__, kCGLCPSwapInterval, &sync);
 
 	while (__running__) {
-		__procedural_gen_mutex__.lock();
 		usleep(10000);
-		__procedural_gen_mutex__.unlock();
+		// set our context appropriately
+		//__gpu_mutex__.lock();
+		CGLSetCurrentContext(__procedural_gen_ctx__);
+		TerrainLoader *loader = getTerrainLoader();
+		TerrainQuadtree *node = loader->dequeue();
+		if (node != NULL) {
+			node->init();
+		}
+		CGLFlushDrawable(__procedural_gen_ctx__);
+		//__gpu_mutex__.unlock();
 	}
+
+	CGLDestroyContext(__procedural_gen_ctx__);
 }
 
 void calcFOV() {

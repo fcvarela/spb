@@ -2,6 +2,7 @@
 #include <GL/glfw.h>
 #include <TerrainQuadtree.h>
 #include <GameSceneManager.h>
+#include <TerrainLoader.h>
 #include <Planet.h>
 
 #include <list>
@@ -72,13 +73,18 @@ TerrainQuadtree::TerrainQuadtree(TerrainQuadtree *parent, Planet *planet, uint16
 	this->ready = false;
 
 	// init
-	this->generateVertices();
-	this->finishVertices();
-	this->generateTextures();
+	TerrainLoader *loader = getTerrainLoader();
+	loader->enqueue(this);
 }
 
 TerrainQuadtree::~TerrainQuadtree() {
 	// nada
+}
+
+void TerrainQuadtree::init() {
+	this->generateVertices();
+	this->finishVertices();
+	this->generateTextures();
 }
 
 void TerrainQuadtree::generateTextures() {
@@ -313,9 +319,6 @@ void TerrainQuadtree::finishVertices() {
 void TerrainQuadtree::analyse(double weight = 0.0) {
 	if (this->ready == false)
 		return;
-
-	this->draw();
-	return;
 
 	// do we need to draw our children?
 	Camera *camera = getGameSceneManager()->camera;

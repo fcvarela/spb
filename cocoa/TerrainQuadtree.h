@@ -14,6 +14,8 @@ public:
 	TerrainQuadtree(TerrainQuadtree *parent, Planet *planet, uint16_t maxlod, uint8_t index, Vector3d &center, Vector3d &dx, Vector3d &dy);
 	~TerrainQuadtree();
 
+	void init();
+
 	void buildQuadtreeElementd(double *mesh, uint8_t size, uint8_t reverse, uint8_t border);
 	void buildQuadtreeElementf(float *mesh, uint8_t size, uint8_t reverse, uint8_t border);
 
