@@ -1,10 +1,11 @@
 #ifdef _VERTEX_
 
 varying vec3 v3Pos;
+uniform float fInnerRadius;
 
 void main(void) {
-	v3Pos = gl_Vertex.xyz;
-    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+    v3Pos = normalize(gl_Vertex.xyz)*1.025*fInnerRadius;
+    gl_Position = gl_ModelViewProjectionMatrix * vec4(v3Pos, 1.0);
     gl_TexCoord[6] = gl_Position;
 }
 

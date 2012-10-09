@@ -88,7 +88,7 @@ void main() {
     float fCameraHeight = length(v3CameraPos);
     float fCameraHeight2 = fCameraHeight*fCameraHeight;
 
-    vec3 v3Pos = vertex.xyz;
+    vec3 v3Pos = gl_Vertex.xyz*fInnerRadius;
     vec3 v3Ray = v3Pos - v3CameraPos;
     float fFar = length(v3Ray);
     v3Ray /= fFar;
@@ -218,7 +218,7 @@ void main() {
         specular = vec4(0.4, 0.4, 0.4, 1.0) * pow(max(dot(r, v), 0.0), 8.0) * color.a;
     }
 
-    gl_FragColor = color * (ambient + diffuse) + specular + (gl_Color + 0.25 * gl_SecondaryColor);
+    gl_FragColor = /*color * (ambient + diffuse) + specular + */(gl_Color + 0.25 * gl_SecondaryColor);
     gl_FragColor.a = 1.0;
 }
 

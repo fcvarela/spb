@@ -20,7 +20,7 @@ Planet::Planet(const libconfig::Setting &planet, StarSystem *system, Node *paren
 
 	// physical dimension
 	planet.lookupValue("radius", this->radius);
-	this->atmosphere_radius = this->radius * 1.025;
+	this->atmosphere_radius = 1.025 * this->radius;
 
 	// name
 	planet.lookupValue("name", this->label);
@@ -36,7 +36,7 @@ Planet::Planet(const libconfig::Setting &planet, StarSystem *system, Node *paren
 
 	// atmosphere
 	glNewList(_atmosphereDisplayList, GL_COMPILE);
-	gluSphere(atmosphere, this->atmosphere_radius, 50, 50);
+	gluSphere(atmosphere, this->atmosphere_radius, 100, 100);
 	glEndList();
 	
 	// orbit
@@ -231,7 +231,7 @@ void Planet::drawAtmosphere() {
 	glUniform3f(glGetUniformLocation(shader, "v3LightPos"),
 		v3LightPos.x(), v3LightPos.y(), v3LightPos.z());
 
-	glUniform1f(glGetUniformLocation(shader, "fInnerRadius"), radius);
+	glUniform1f(glGetUniformLocation(shader, "fInnerRadius"), this->radius);
 
 	// frustum
 	glUniform1f(glGetUniformLocation(shader, "near"), __near__);
@@ -256,7 +256,7 @@ void Planet::drawSurface() {
 	// all positions relative to our center
 	// set uniforms
 	GameSceneManager *gsm = getGameSceneManager();
-	Vector3d v3CameraPos = (gsm->camera->position - position/this->radius);
+	Vector3d v3CameraPos = gsm->camera->position - position;
 	Vector3d v3LightPos = system->star->position - position;
 	v3LightPos.normalize();
 
