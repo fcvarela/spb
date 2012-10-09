@@ -55,7 +55,7 @@ void main() {
     gl_TexCoord[0] = gl_MultiTexCoord0;
     
     vec4 heightmap = texture2D(topoTexture, gl_TexCoord[0].st);
-    float height = heightmap.a*65536.0 + heightmap.r*256.0 - 32768.0;
+    float height = heightmap.r*65536.0 + heightmap.g*256.0 + heightmap.b - 32768.0;
     /*
     if (weight > 0.0) {
         vec2 oldtcoord = gl_TexCoord[0].st;
@@ -70,7 +70,7 @@ void main() {
         if (index == 4)
             parentCoords = 0.5-1.0/texturesize+vec2(oldtcoord.s/2.0, oldtcoord.t/2.0);
         vec4 pheightmap = texture2D(ptopoTexture, parentCoords);
-        float pheight = pheightmap.a*65536.0 + pheightmap.r*256.0 - 32768.0;
+        float pheight = pheightmap.r*65536.0 + pheightmap.g*256.0 + heightmap.b - 32768.0;
         height = mix(height, pheight, weight);
     }
     */
@@ -147,6 +147,9 @@ uniform sampler2D colorTexture;
 uniform sampler2D pnormalTexture;
 uniform sampler2D pcolorTexture;
 
+uniform sampler2D topoTexture;
+uniform sampler2D ptopoTexture;
+
 uniform float weight;
 uniform float texturesize;
 
@@ -174,6 +177,9 @@ void main() {
         |1|2|
         +-+-+
     */
+    vec4 heightmap = texture2D(topoTexture, gl_TexCoord[0].st);
+    float height = heightmap.r*65536.0 + heightmap.g*256.0 + heightmap.b - 32768.0;
+
     /*
     if (weight > 0.0) {
         vec2 parentCoords;
@@ -196,6 +202,8 @@ void main() {
         pnormal = normalize(gl_NormalMatrix * pnormal);
 
         normal = mix(normal, pnormal, weight);
+        float pheight = pheightmap.r*65536.0 + pheightmap.g*256.0 + heightmap.b - 32768.0;
+        height = mix(height, pheight, weight);
     }
     */
 
@@ -203,7 +211,7 @@ void main() {
     vec3 s = normalize(vec3(gl_LightSource[0].position - vvertex));
 
     // finals
-    vec4 ambient = vec4(0.05);
+    vec4 ambient = vec4(0.03, 0.03, 0.03, 1.0);
     vec4 diffuse = vec4(0.0);
     vec4 specular = vec4(0.0);
 
@@ -213,12 +221,14 @@ void main() {
         diffuse = vec4(0.8, 0.8, 0.8, 1.0) * diffuse_coeff;
         
         // specular component
-        vec3 r = -reflect(s, normal);
-        vec3 v = normalize(-vvertex.xyz);
-        specular = vec4(0.4, 0.4, 0.4, 1.0) * pow(max(dot(r, v), 0.0), 8.0) * color.a;
+        if (height < 0.0) {
+            vec3 r = -reflect(s, normal);
+            vec3 v = normalize(-vvertex.xyz);
+            specular = vec4(0.4, 0.4, 0.4, 1.0) * pow(max(dot(r, v), 0.0), 8.0);
+        }
     }
 
-    gl_FragColor = /*color * (ambient + diffuse) + specular + */(gl_Color + 0.25 * gl_SecondaryColor);
+    gl_FragColor = color * (ambient + diffuse) + specular + (gl_Color + 0.25 * gl_SecondaryColor);
     gl_FragColor.a = 1.0;
 }
 
