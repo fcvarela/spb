@@ -43,11 +43,11 @@ void proceduralGenLoop(void *arg) {
 	// we don't need vsync here...
 	GLint sync = 0;
 	CGLSetParameter(__procedural_gen_ctx__, kCGLCPSwapInterval, &sync);
+	CGLSetCurrentContext(__procedural_gen_ctx__);
 
 	while (__running__) {
-		usleep(10000);
+		usleep(5000);
 		// set our context appropriately
-		//__gpu_mutex__.lock();
 		CGLSetCurrentContext(__procedural_gen_ctx__);
 		TerrainLoader *loader = getTerrainLoader();
 		TerrainQuadtree *node = loader->dequeue();
@@ -55,7 +55,6 @@ void proceduralGenLoop(void *arg) {
 			node->init();
 		}
 		CGLFlushDrawable(__procedural_gen_ctx__);
-		//__gpu_mutex__.unlock();
 	}
 
 	CGLDestroyContext(__procedural_gen_ctx__);

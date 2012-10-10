@@ -65,10 +65,8 @@ int main(void) {
 	tthread::thread gameloopThread(globalStep, 0);
 	tthread::thread proceduralGenThread(proceduralGenLoop, 0);
 
-	while (__running__) {
-		// are we still running?
-		__running__ = glfwGetWindowParam(GLFW_OPENED);
-
+	__running__ = GL_TRUE;
+	while (glfwGetWindowParam(GLFW_OPENED)) {
 		// ask the game manager to update content
 		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 		getGameSceneManager()->draw();
@@ -77,8 +75,12 @@ int main(void) {
 		glfwSwapBuffers();
 	}
 
+	__running__ = GL_FALSE;
+	std::cerr << "Terminating" << std::endl;
+
 	// join threads
 	gameloopThread.join();
+	proceduralGenThread.join();
 
 	// close window
 	glfwTerminate();
