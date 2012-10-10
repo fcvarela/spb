@@ -186,7 +186,6 @@ void Planet::drawDebug() {
 	Node::draw();
 
 	// draw our orbit
-	/*
 	glPushMatrix();
 	glTranslated(parent->position.x(), parent->position.y(), parent->position.z());
 	
@@ -202,7 +201,6 @@ void Planet::drawDebug() {
 	glVertex3d(position.x(), position.y()-radius*2.0, position.z());
 	glEnd();
 	glPopMatrix();
-	*/
 	glDepthMask(GL_TRUE);
 	glEnable(GL_LIGHTING);
 }
