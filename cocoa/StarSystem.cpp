@@ -93,9 +93,6 @@ void StarSystem::step() {
 }
 
 void StarSystem::draw() {
-	GLfloat lightpos[3] = {star->position.x(), star->position.y(), star->position.z()};
-	glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
-	
 	// now draw the sun
 	star->draw();
 

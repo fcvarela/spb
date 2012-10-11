@@ -180,7 +180,6 @@ void Planet::draw() {
 }
 
 void Planet::drawDebug() {
-	glDisable(GL_LIGHTING);
 	// debug first
 	glDepthMask(GL_FALSE);
 	Node::draw();
@@ -202,7 +201,6 @@ void Planet::drawDebug() {
 	glEnd();
 	glPopMatrix();
 	glDepthMask(GL_TRUE);
-	glEnable(GL_LIGHTING);
 }
 
 void Planet::drawAtmosphere() {
@@ -256,7 +254,6 @@ void Planet::drawSurface() {
 	GameSceneManager *gsm = getGameSceneManager();
 	Vector3d v3CameraPos = gsm->camera->position - position;
 	Vector3d v3LightPos = system->star->position - position;
-	v3LightPos.normalize();
 
 	// tile textures
 	glUniform1i(glGetUniformLocation(shader, "normalTexture"), 0);

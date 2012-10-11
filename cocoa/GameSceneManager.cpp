@@ -30,8 +30,6 @@ bool GameSceneManager::init() {
 	glClearDepth(1.0);
 	glCullFace(GL_BACK);
 	glEnable(GL_CULL_FACE);
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
 
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
@@ -157,9 +155,7 @@ void GameSceneManager::draw() {
 		ss->draw();
 	}
 
-	glDisable(GL_LIGHTING);
 	drawDebug();
-	glEnable(GL_LIGHTING);
 
 	double curtime = glfwGetTime();
 	__fps__ = 1.0/(curtime - __lastframe__);
@@ -168,7 +164,8 @@ void GameSceneManager::draw() {
 }
 
 void GameSceneManager::drawDebug() {
-	// debug
+	glDisable(GL_DEPTH_TEST);
+
 	// set up an orthogonal 2d projection matrixf
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();

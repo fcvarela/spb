@@ -1,5 +1,7 @@
 /bin/sh bundle.sh spb
 
+cp /opt/X11/lib/libfreetype.6.dylib libs/
+
 clang++ -O2 \
 *.cpp \
 tinythread/*.cpp \
@@ -21,7 +23,11 @@ tinythread/*.cpp \
 ./glfw/lib/cocoa/libglfw.a \
 -L/usr/X11/lib \
 -lfreetype \
--o SPB.app/Contents/MacOS/spb
+-o spb.app/Contents/MacOS/spb
 
 cp -r conf spb.app/Contents/Resources
 cp -r data spb.app/Contents/Resources
+cp -r libs spb.app/Contents/Resources
+
+install_name_tool -change /opt/X11/lib/libfreetype.6.dylib @executable_path/../Resources/libs/libfreetype.6.dylib spb.app/Contents/MacOS/spb
+

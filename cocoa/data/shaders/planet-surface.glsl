@@ -6,6 +6,7 @@ uniform float texturesize;
 
 varying vec4 vertex;
 varying vec4 vvertex;
+varying vec4 vlight;
 
 uniform sampler2D topoTexture;
 uniform sampler2D ptopoTexture;
@@ -76,6 +77,7 @@ void main() {
     */
     vertex = vec4(normalize(gl_Vertex.xyz) * (height + fInnerRadius), 1.0);
     vvertex = gl_ModelViewMatrix * vertex;
+    vlight = gl_ModelViewMatrix * vec4(v3LightPos, 1.0);
     gl_Position = gl_ModelViewProjectionMatrix * vertex;
 
     // prepoare
@@ -107,7 +109,7 @@ void main() {
     }
 
     float fCameraAngle = dot(-v3Ray, v3Pos) / length(v3Pos);
-    float fLightAngle = dot(v3LightPos, v3Pos) / length(v3Pos);
+    float fLightAngle = dot(normalize(v3LightPos), v3Pos) / length(v3Pos);
     float fCameraScale = scale(fCameraAngle);
     float fLightScale = scale(fLightAngle);
     float fCameraOffset = fDepth*fCameraScale;
@@ -140,6 +142,7 @@ void main() {
 
 varying vec4 vertex;
 varying vec4 vvertex;
+varying vec4 vlight;
 
 uniform sampler2D normalTexture;
 uniform sampler2D colorTexture;
@@ -208,7 +211,7 @@ void main() {
     */
 
     // lighting stuff
-    vec3 s = normalize(vec3(gl_LightSource[0].position - vvertex));
+    vec3 s = normalize(vec3(vlight - vvertex));
 
     // finals
     vec4 ambient = vec4(0.03, 0.03, 0.03, 1.0);
