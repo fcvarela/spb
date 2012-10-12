@@ -1,4 +1,4 @@
-/bin/sh bundle.sh spb
+/bin/sh bundle.sh Vaalbara
 
 cp /opt/X11/lib/libfreetype.6.dylib libs/
 
@@ -23,11 +23,11 @@ tinythread/*.cpp \
 ./glfw/lib/cocoa/libglfw.a \
 -L/usr/X11/lib \
 -lfreetype \
--o spb.app/Contents/MacOS/spb
+-o Vaalbara.app/Contents/MacOS/Vaalbara
 
-cp -r conf spb.app/Contents/Resources
-cp -r data spb.app/Contents/Resources
-cp -r libs spb.app/Contents/Resources
+cp -r conf Vaalbara.app/Contents/Resources
+cp -r data Vaalbara.app/Contents/Resources
+cp -r libs Vaalbara.app/Contents/Resources
 
-install_name_tool -change /opt/X11/lib/libfreetype.6.dylib @executable_path/../Resources/libs/libfreetype.6.dylib spb.app/Contents/MacOS/spb
+install_name_tool -change /opt/X11/lib/libfreetype.6.dylib @executable_path/../Resources/libs/libfreetype.6.dylib Vaalbara.app/Contents/MacOS/Vaalbara
 
