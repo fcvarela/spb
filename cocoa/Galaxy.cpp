@@ -530,7 +530,7 @@ const Vector3d& Galaxy::GetStarPos(int idx)
 }
 
 void Galaxy::draw() {
-	SingleTimeStep(1);
+	SingleTimeStep(10000);
 	glDisable(GL_DEPTH_TEST);
 	glColor3f(1,1,1);
 
