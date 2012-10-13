@@ -1,5 +1,6 @@
 #include <GL/glfw.h>
 #include "Galaxy.h"
+#include <Quaternion.h>
 #include <SOIL.h>
 #include <cstdlib>
 #include <stdexcept>
@@ -44,6 +45,15 @@ const Vector3d& GallacticStar::CalcXY()
 
 	m_pos = Vector3d(p.x() + (a * cosalpha * cosbeta - b * sinalpha * sinbeta),
 		p.y() + (a * cosalpha * sinbeta + b * sinalpha * cosbeta), 0.0);
+
+	double factor = 3.0;
+
+	Quatd nrotx = Quatd(Vector3d(1.0, 0.0, 0.0), m_inclinationx * factor);
+	Quatd nrotxy = nrotx * Quatd(Vector3d(0.0, 1.0, 0.0), m_inclinationy * factor);
+	nrotxy.rotate(m_pos);
+
+	//nrot = Quatd(Vector3d(0.0, 1.0, 0.0), m_inclinationy * 3.0);
+	//nrot.rotate(m_pos);
 	return m_pos;
 }
 
@@ -83,6 +93,21 @@ Galaxy::Galaxy(double rad,
   	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   	m_texStar = SOIL_load_OGL_texture("data/textures/particle.bmp", SOIL_LOAD_AUTO, m_texStar, SOIL_FLAG_MIPMAPS);
   	std::cerr << m_texStar << std::endl;
+
+  	m_colNum = 200;
+  	m_t0 = 1000;
+  	m_t1 = 10000;
+  	m_dt = ((m_t1-m_t0)/m_colNum);
+
+	double x, y, z;
+	for (int i=0; i<m_colNum; ++i) {
+		Color &col = m_col[i];
+		colourSystem *cs = &SMPTEsystem;
+		bbTemp = m_t0 + m_dt*i;
+		spectrum_to_xyz(bb_spectrum, &x, &y, &z);
+		xyz_to_rgb(cs, x, y, z, &col.r, &col.g, &col.b);
+		norm_rgb(&col.r, &col.g, &col.b);
+	}
 }
 
 //------------------------------------------------------------------------
@@ -201,7 +226,8 @@ void Galaxy::InitStars(double sigma)
 		m_pStars[i].m_b = rad * GetExcentricity(rad);
 		m_pStars[i].m_angle = GetAngularOffset(rad);
 		m_pStars[i].m_theta = 360.0 * ((double)rand() / RAND_MAX);
-		m_pStars[i].m_inclination = 15.0 * ((double)rand() / RAND_MAX);
+		m_pStars[i].m_inclinationx = ((double)rand() / RAND_MAX);
+		m_pStars[i].m_inclinationy = ((double)rand() / RAND_MAX);
 		m_pStars[i].m_velTheta = GetOrbitalVelocity(rad);
 		m_pStars[i].m_center = Vector3d(0,0,0);
 		m_pStars[i].m_temp = 6000.0 + (6000.0 * ((double)rand() / RAND_MAX)) - 3000.0;
@@ -223,6 +249,8 @@ void Galaxy::InitStars(double sigma)
 		m_pDust[i].m_b = rad * GetExcentricity(rad);
 		m_pDust[i].m_angle = GetAngularOffset(rad);
 		m_pDust[i].m_theta = 360.0 * ((double)rand() / RAND_MAX);
+		m_pDust[i].m_inclinationx = ((double)rand() / RAND_MAX);
+		m_pDust[i].m_inclinationy = ((double)rand() / RAND_MAX);
 		m_pDust[i].m_velTheta = GetOrbitalVelocity( (m_pDust[i].m_a + m_pDust[i].m_b)/2.0 );
 		m_pDust[i].m_center = Vector3d(0,0,0);
 		m_pDust[i].m_temp = 6000 + rad/4.0;
@@ -244,6 +272,8 @@ void Galaxy::InitStars(double sigma)
 		m_pH2[k1].m_b = rad * GetExcentricity(rad);
 		m_pH2[k1].m_angle = GetAngularOffset(rad);
 		m_pH2[k1].m_theta = 360.0 * ((double)rand() / RAND_MAX);
+		m_pH2[k1].m_inclinationx = ((double)rand() / RAND_MAX);
+		m_pH2[k1].m_inclinationy = ((double)rand() / RAND_MAX);
 		m_pH2[k1].m_velTheta = GetOrbitalVelocity( (m_pH2[k1].m_a + m_pH2[k1].m_b)/2.0 );
 		m_pH2[k1].m_center = Vector3d(0,0,0);
 		m_pH2[k1].m_temp = 6000 + (6000 * ((double)rand() / RAND_MAX)) - 3000;
@@ -254,15 +284,17 @@ void Galaxy::InitStars(double sigma)
 		int k2 = 2*i+1;
 		m_pH2[k2].m_a = rad + 1000;
 		m_pH2[k2].m_b = rad * GetExcentricity(rad);
-	m_pH2[k2].m_angle = m_pH2[k1].m_angle; //GetAngularOffset(rad);
-	m_pH2[k2].m_theta = m_pH2[k1].m_theta;
-	m_pH2[k2].m_velTheta = m_pH2[k1].m_velTheta;
-	m_pH2[k2].m_center = m_pH2[k1].m_center;
-	m_pH2[k2].m_temp = m_pH2[k1].m_temp;
-	m_pH2[k2].m_mag = m_pH2[k1].m_mag;
-	idx = std::min(1.0/dh * (m_pH2[k2].m_a + m_pH2[k2].m_b)/2.0, 99.0);
-	m_numberByRad[idx]++;
-}
+		m_pH2[k2].m_angle = m_pH2[k1].m_angle; //GetAngularOffset(rad);
+		m_pH2[k2].m_theta = m_pH2[k1].m_theta;
+		m_pH2[k2].m_inclinationx = m_pH2[k1].m_inclinationx;
+		m_pH2[k2].m_inclinationy = m_pH2[k1].m_inclinationy;
+		m_pH2[k2].m_velTheta = m_pH2[k1].m_velTheta;
+		m_pH2[k2].m_center = m_pH2[k1].m_center;
+		m_pH2[k2].m_temp = m_pH2[k1].m_temp;
+		m_pH2[k2].m_mag = m_pH2[k1].m_mag;
+		idx = std::min(1.0/dh * (m_pH2[k2].m_a + m_pH2[k2].m_b)/2.0, 99.0);
+		m_numberByRad[idx]++;
+	}
 }
 
 //------------------------------------------------------------------------
@@ -498,7 +530,7 @@ const Vector3d& Galaxy::GetStarPos(int idx)
 }
 
 void Galaxy::draw() {
-	SingleTimeStep(100000);
+	SingleTimeStep(1);
 	glDisable(GL_DEPTH_TEST);
 	glColor3f(1,1,1);
 
@@ -527,13 +559,12 @@ void Galaxy::drawStars() {
 
 	glPointSize(4.0);
 	glBegin(GL_POINTS);
-	glColor3f(1.0, 1.0, 1.0);
 	for (int i=1; i<num; ++i) {
-		//const Color &col = ColorFromTemperature(pStars[i].m_temp);
-		/*glColor3f(col.r * pStars[i].m_mag,
+		const Color &col = ColorFromTemperature(pStars[i].m_temp);
+		glColor3f(col.r * pStars[i].m_mag,
 				col.g * pStars[i].m_mag,
-				col.b * pStars[i].m_mag);*/
-		glVertex3f(pStars[i].m_pos.x(), pStars[i].m_pos.y(), 0.0f);
+				col.b * pStars[i].m_mag);
+		glVertex3f(pStars[i].m_pos.x(), pStars[i].m_pos.y(), pStars[i].m_pos.z());
 
 	}
 	glEnd();
@@ -557,16 +588,16 @@ void Galaxy::drawDust() {
 	GallacticStar *pDust = GetDust();
 	int num = GetNumDust();
 
-	glPointSize(1.0);//maxSize);
+	glPointSize(maxSize);
 	glBegin(GL_POINTS);
 
 	for (int i=0; i<num; ++i) {
 		const Vector3d &pos = pDust[i].m_pos;
-		/*const Color &col = ColorFromTemperature(pDust[i].m_temp);
+		const Color &col = ColorFromTemperature(pDust[i].m_temp);
 		glColor3f(col.r * pDust[i].m_mag,
 			col.g * pDust[i].m_mag,
-			col.b * pDust[i].m_mag);*/
-		glVertex3f(pos.x(), pos.y(), 0.0f);
+			col.b * pDust[i].m_mag);
+		glVertex3f(pos.x(), pos.y(), pos.z());
 
 	}
 	glEnd();
@@ -603,19 +634,19 @@ void Galaxy::drawH2() {
 		if (size<1)
 			continue;
 
-		glPointSize(1.0);//2*size);
+		glPointSize(2*size);
 		glBegin(GL_POINTS);
-		/*const Color &col = ColorFromTemperature(pH2[k1].m_temp);
+		const Color &col = ColorFromTemperature(pH2[k1].m_temp);
 		glColor3f(col.r * pH2[i].m_mag * 2,
 			col.g * pH2[i].m_mag,
-			col.b * pH2[i].m_mag);*/
-		glVertex3f(p1.x(), p1.y(), 0.0f);
+			col.b * pH2[i].m_mag);
+		glVertex3f(p1.x(), p1.y(), p1.z());
 		glEnd();
 
 		glPointSize(size/6);
 		glBegin(GL_POINTS);
 		glColor3f(1,1,1);
-		glVertex3f(p1.x(), p1.y(), 0.0f);
+		glVertex3f(p1.x(), p1.y(), p1.z());
 		glEnd();
 	}
 	glDisable(GL_POINT_SPRITE);
@@ -648,4 +679,11 @@ void Galaxy::DrawEllipsis(double a, double b, double angle) {
     glVertex3f(X, Y, 0);
    }
    glEnd();
+}
+
+Color Galaxy::ColorFromTemperature(double temp) const {
+	int idx = (temp - m_t0) / (m_t1-m_t0) * m_colNum;
+	idx = std::min(m_colNum-1, idx);
+	idx = std::max(0, idx);
+	return m_col[idx];
 }

@@ -56,9 +56,10 @@ bool GameSceneManager::init() {
 	}
 
 	// set camera position to middle ground between star and planet
-	std::list<StarSystem *>::iterator i = starSystems.begin();
+	/*std::list<StarSystem *>::iterator i = starSystems.begin();
 	StarSystem *nearestSystem = *i;
 	Star *nearestStar = (Star *)nearestSystem->star;
+	*/
 	camera->position = Vector3d(0.0, 0.0, 5000.0);//nearestStar->radius * 10.0);
 
 	// initialize the galaxy

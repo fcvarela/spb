@@ -4,6 +4,11 @@
 #include <GL/glfw.h>
 #include "Vector.h"
 
+struct Color {
+	double r;
+	double g;
+	double b;
+};
 
 class GallacticStar {
 public:
@@ -13,7 +18,8 @@ public:
  	double m_theta;			// position on the ellipse
 	double m_velTheta;		// angular velocity
 	double m_angle;			// inclination of the ellipse
-	double m_inclination;	// orbital inclination
+	double m_inclinationx;	// orbital inclination
+	double m_inclinationy;	// orbital inclination
 	double m_a;				// minor semiaxis
 	double m_b;				// major semiaxis
 	double m_temp;			// star temperature
@@ -91,7 +97,11 @@ public:
 	void drawDust();
 	void drawH2();
 	void draw();
+	Color ColorFromTemperature(double temp) const;
 
+	int m_colNum;
+	double m_t0, m_t1, m_dt;
+	Color m_col[200];
 	GLuint m_texStar;
 
 	void InitStars(double sigma);
