@@ -59,7 +59,11 @@ bool GameSceneManager::init() {
 	std::list<StarSystem *>::iterator i = starSystems.begin();
 	StarSystem *nearestSystem = *i;
 	Star *nearestStar = (Star *)nearestSystem->star;
-	camera->position = Vector3d(0.0, 0.0, nearestStar->radius * 10.0);
+	camera->position = Vector3d(0.0, 0.0, 5000.0);//nearestStar->radius * 10.0);
+
+	// initialize the galaxy
+	galaxy = new Galaxy();
+	galaxy->Reset(13000, 4000, 0.0004, 0.9, 0.9, 0.5, 200, 300, 40000);
 
 	// prepare our viewport
 	this->reshape();
@@ -149,12 +153,16 @@ void GameSceneManager::draw() {
 	// update the view frustum
 	calculateFrustum(this->frustum);
 
-	// draw
-	for (std::list<StarSystem *>::iterator i = starSystems.begin(); i != starSystems.end(); ++i) {
+	// draw galaxy
+	glEnable(GL_POINT_SPRITE);
+	galaxy->draw();
+	glDisable(GL_POINT_SPRITE);
+	// draw system
+	/*for (std::list<StarSystem *>::iterator i = starSystems.begin(); i != starSystems.end(); ++i) {
 		StarSystem *ss = *i;
 		ss->draw();
 	}
-
+	*/
 	drawDebug();
 
 	double curtime = glfwGetTime();
@@ -198,13 +206,15 @@ void GameSceneManager::drawDebug() {
 	glColor3f(1.0, 1.0, 1.0);
 	glRasterPos2f(-__width__/2.0f+12.0, -__height__/2.0f+13.0);
 	char debug[1024];
-	sprintf(debug, "SPS: %.2f FPS: %.2f Camera velocity: (%.2f km/h, %.2f UA/s, %.2f c) Nearest node: %s", 
+	sprintf(debug, "SPS: %.2f FPS: %.2f Camera velocity: (%.2f km/h, %.2f UA/s, %.2f c) Nearest node: %s Galaxy dist: %.2f Galaxy SMA: %.2f", 
 		1.0/__dt__,
 		__fps__,
 		__camvelocity__/3.6,
 		__camvelocity__*6.68458712E-12,
 		__camvelocity__/299792458.0,
-		nearestNode()->label.c_str());
+		nearestNode()->label.c_str(),
+		(galaxy->m_pos - camera->position).length(),
+		galaxy->m_radGalaxy);
 
 	__font__->Render(debug);
 	glEnable(GL_DEPTH_TEST);

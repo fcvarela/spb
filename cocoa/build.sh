@@ -1,12 +1,13 @@
 /bin/sh bundle.sh Vaalbara
 
-cp /opt/X11/lib/libfreetype.6.dylib libs/
+cp /usr/X11/lib/libfreetype.6.dylib libs/
 
 clang++ -O2 \
 *.cpp \
 tinythread/*.cpp \
 -g \
 -I. \
+-I./SOIL \
 -I./glfw/include \
 -I/usr/local/include \
 -I/usr/X11/include \
@@ -17,6 +18,7 @@ tinythread/*.cpp \
 -framework IOKit \
 -framework OpenAL \
 -framework GLUT \
+SOIL/libsoil.a \
 /usr/local/lib/libconfig++.a \
 /usr/local/lib/libGLEW.a \
 /usr/local/lib/libftgl.a \
@@ -30,4 +32,6 @@ cp -r data Vaalbara.app/Contents/Resources
 cp -r libs Vaalbara.app/Contents/Resources
 
 install_name_tool -change /opt/X11/lib/libfreetype.6.dylib @executable_path/../Resources/libs/libfreetype.6.dylib Vaalbara.app/Contents/MacOS/Vaalbara
+
+install_name_tool -change /usr/X11/lib/libfreetype.6.dylib @executable_path/../Resources/libs/libfreetype.6.dylib Vaalbara.app/Contents/MacOS/Vaalbara
 

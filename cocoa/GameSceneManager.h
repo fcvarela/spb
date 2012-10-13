@@ -5,6 +5,7 @@
 #include <StarSystem.h>
 #include <Camera.h>
 #include <Common.h>
+#include <Galaxy.h>
 
 class GameSceneManager {
 public:
@@ -13,6 +14,7 @@ public:
 	frustum_t frustum;
 
 	Camera *camera;
+	Galaxy *galaxy;
 
 	GameSceneManager();
 	~GameSceneManager();
