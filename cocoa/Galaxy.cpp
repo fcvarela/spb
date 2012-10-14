@@ -46,15 +46,32 @@ const Vector3d& GallacticStar::CalcXY()
 	m_pos = Vector3d(p.x() + (a * cosalpha * cosbeta - b * sinalpha * sinbeta),
 		p.y() + (a * cosalpha * sinbeta + b * sinalpha * cosbeta), 0.0);
 
-	double factor = 3.0;
+	/*
+	// base variation
+	double factor = 4.0;
 
-	Quatd nrotx = Quatd(Vector3d(1.0, 0.0, 0.0), m_inclinationx * factor);
-	Quatd nrotxy = nrotx * Quatd(Vector3d(0.0, 1.0, 0.0), m_inclinationy * factor);
-	nrotxy.rotate(m_pos);
+	// between core edge and disk [4 to 6k ly]
+	if (m_pos.length() < 6000.0 and m_pos.length() > 4000.0)
+		factor += (6000.0 - m_pos.length())/500.0;
 
-	//nrot = Quatd(Vector3d(0.0, 1.0, 0.0), m_inclinationy * 3.0);
-	//nrot.rotate(m_pos);
+	if (m_pos.length() <= 4000.0)
+		factor = 60.0;
+	*/
+	double factor = 4.0;
+	Quatd nrot = Quatd(Vector3d(1.0, 0.0, 0.0), 0.0);
+	nrot = nrot * Quatd(Vector3d(1.0, 0.0, 0.0), m_inclinationx * factor);
+	nrot = nrot * Quatd(Vector3d(0.0, 1.0, 0.0), m_inclinationy * factor);
+
+	/*
+	if (factor > 4.0)
+		nrot = nrot * Quatd(Vector3d(0.0, 0.0, 1.0), (m_inclinationx+m_inclinationy) * 360.0);
+	*/
+	nrot.rotate(m_pos);
 	return m_pos;
+}
+
+double Galaxy::my_random() {
+	return ((double)rand()/(double)RAND_MAX);
 }
 
 //------------------------------------------------------------------------
@@ -220,18 +237,18 @@ void Galaxy::InitStars(double sigma)
 					 m_radFarField,   // ende der intensitätskurve
 					 1000.0);           // Anzahl der stützstellen
 	for (int i=3; i<m_numStars; ++i) {
-		double rad = cdf.ValFromProp((double)rand()/(double)RAND_MAX);
+		double rad = cdf.ValFromProp(my_random());
 
 		m_pStars[i].m_a = rad;
 		m_pStars[i].m_b = rad * GetExcentricity(rad);
 		m_pStars[i].m_angle = GetAngularOffset(rad);
-		m_pStars[i].m_theta = 360.0 * ((double)rand() / RAND_MAX);
-		m_pStars[i].m_inclinationx = ((double)rand() / RAND_MAX);
-		m_pStars[i].m_inclinationy = ((double)rand() / RAND_MAX);
+		m_pStars[i].m_theta = 360.0 * my_random();
+		m_pStars[i].m_inclinationx = my_random();
+		m_pStars[i].m_inclinationy = my_random();
 		m_pStars[i].m_velTheta = GetOrbitalVelocity(rad);
 		m_pStars[i].m_center = Vector3d(0,0,0);
-		m_pStars[i].m_temp = 6000.0 + (6000.0 * ((double)rand() / RAND_MAX)) - 3000.0;
-		m_pStars[i].m_mag = 0.1 + 0.4 * (double)rand()/(double)RAND_MAX;
+		m_pStars[i].m_temp = 6000.0 + (6000.0 * my_random()) - 3000.0;
+		m_pStars[i].m_mag = 0.1 + 0.4 * my_random();
 
 		int idx = std::min(1.0/dh * (m_pStars[i].m_a + m_pStars[i].m_b)/2.0, 99.0);
 		m_numberByRad[idx]++;
@@ -239,45 +256,43 @@ void Galaxy::InitStars(double sigma)
 
 	// Initialise Dust
 	double x,y,rad;
-	for (int i=0; i<m_numDust; ++i)
-	{
-		x = 2*m_radGalaxy * ((double)rand() / RAND_MAX) - m_radGalaxy;
-		y = 2*m_radGalaxy * ((double)rand() / RAND_MAX) - m_radGalaxy;
+	for (int i=0; i<m_numDust; ++i) {
+		x = 2*m_radGalaxy * my_random() - m_radGalaxy;
+		y = 2*m_radGalaxy * my_random() - m_radGalaxy;
 		rad = sqrt(x*x+y*y);
 
 		m_pDust[i].m_a = rad;
 		m_pDust[i].m_b = rad * GetExcentricity(rad);
 		m_pDust[i].m_angle = GetAngularOffset(rad);
-		m_pDust[i].m_theta = 360.0 * ((double)rand() / RAND_MAX);
-		m_pDust[i].m_inclinationx = ((double)rand() / RAND_MAX);
-		m_pDust[i].m_inclinationy = ((double)rand() / RAND_MAX);
+		m_pDust[i].m_theta = 360.0 * my_random();
+		m_pDust[i].m_inclinationx = my_random();
+		m_pDust[i].m_inclinationy = my_random();
 		m_pDust[i].m_velTheta = GetOrbitalVelocity( (m_pDust[i].m_a + m_pDust[i].m_b)/2.0 );
 		m_pDust[i].m_center = Vector3d(0,0,0);
 		m_pDust[i].m_temp = 6000 + rad/4.0;
 
-		m_pDust[i].m_mag = 0.015 + 0.01 * (double)rand()/(double)RAND_MAX;
+		m_pDust[i].m_mag = 0.015 + 0.01 * my_random();
 		int idx = std::min(1.0/dh * (m_pDust[i].m_a + m_pDust[i].m_b)/2.0, 99.0);
 		m_numberByRad[idx]++;
 	}
 
 	// Initialise Dust
-	for (int i=0; i<m_numH2; ++i)
-	{
-		x = 2*(m_radGalaxy) * ((double)rand() / RAND_MAX) - (m_radGalaxy);
-		y = 2*(m_radGalaxy) * ((double)rand() / RAND_MAX) - (m_radGalaxy);
+	for (int i=0; i<m_numH2; ++i) {
+		x = 2*(m_radGalaxy) * my_random() - (m_radGalaxy);
+		y = 2*(m_radGalaxy) * my_random() - (m_radGalaxy);
 		rad = sqrt(x*x+y*y);
 
 		int k1 = 2*i;
 		m_pH2[k1].m_a = rad;
 		m_pH2[k1].m_b = rad * GetExcentricity(rad);
 		m_pH2[k1].m_angle = GetAngularOffset(rad);
-		m_pH2[k1].m_theta = 360.0 * ((double)rand() / RAND_MAX);
-		m_pH2[k1].m_inclinationx = ((double)rand() / RAND_MAX);
-		m_pH2[k1].m_inclinationy = ((double)rand() / RAND_MAX);
+		m_pH2[k1].m_theta = 360.0 * my_random();
+		m_pH2[k1].m_inclinationx = my_random();
+		m_pH2[k1].m_inclinationy = my_random();
 		m_pH2[k1].m_velTheta = GetOrbitalVelocity( (m_pH2[k1].m_a + m_pH2[k1].m_b)/2.0 );
 		m_pH2[k1].m_center = Vector3d(0,0,0);
-		m_pH2[k1].m_temp = 6000 + (6000 * ((double)rand() / RAND_MAX)) - 3000;
-		m_pH2[k1].m_mag = 0.1 + 0.05 * (double)rand()/(double)RAND_MAX;
+		m_pH2[k1].m_temp = 6000 + (6000 * my_random()) - 3000;
+		m_pH2[k1].m_mag = 0.1 + 0.05 * my_random();
 		int idx = std::min(1.0/dh * (m_pH2[k1].m_a + m_pH2[k1].m_b)/2.0, 99.0);
 		m_numberByRad[idx]++;
 
@@ -530,10 +545,9 @@ const Vector3d& Galaxy::GetStarPos(int idx)
 }
 
 void Galaxy::draw() {
-	SingleTimeStep(10000);
+	SingleTimeStep(0);
 	glDisable(GL_DEPTH_TEST);
 	glColor3f(1,1,1);
-
 	drawDust();
 	drawH2();
 	drawStars();
@@ -557,7 +571,7 @@ void Galaxy::drawStars() {
 	int num = GetNumStars();
 	GallacticStar *pStars = GetStars();
 
-	glPointSize(4.0);
+	glPointSize(5.0);
 	glBegin(GL_POINTS);
 	for (int i=1; i<num; ++i) {
 		const Color &col = ColorFromTemperature(pStars[i].m_temp);

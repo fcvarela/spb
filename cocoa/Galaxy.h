@@ -98,6 +98,7 @@ public:
 	void drawH2();
 	void draw();
 	Color ColorFromTemperature(double temp) const;
+	double my_random();
 
 	int m_colNum;
 	double m_t0, m_t1, m_dt;
