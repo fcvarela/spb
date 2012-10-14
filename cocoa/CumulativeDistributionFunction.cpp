@@ -95,7 +95,7 @@ void CumulativeDistributionFunction::BuildCDF(int nSteps)
 
     y = m_vX1[k] + (p - m_vY1[k]) / m_vM1[k];
 
-    printf("%2.4f, %2.4f, k=%d, %2.4f, %2.4f\n", p, y, k, m_vY1[k], m_vM1[k]);
+    //printf("%2.4f, %2.4f, k=%d, %2.4f, %2.4f\n", p, y, k, m_vY1[k], m_vM1[k]);
 
     m_vM2.push_back( (y - m_vY2.back()) / h);
     m_vX2.push_back(p);
