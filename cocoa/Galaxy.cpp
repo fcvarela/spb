@@ -11,24 +11,14 @@
 #include "CumulativeDistributionFunction.h"
 #include "specrend.h"
 
-
-//------------------------------------------------------------------------
-double rnd_spread(double v, double o)
-{
-	return (v + (2*o * (double)rand()/RAND_MAX - o));
+GallacticNode::GallacticNode() {
+	m_theta = 0.0;
+	m_a = 0.0;
+	m_b = 0.0;
+	m_center = Vector3d(0,0,0);
 }
 
-//------------------------------------------------------------------------
-GallacticStar::GallacticStar()
-:m_theta(0)
-,m_a(0)
-,m_b(0)
-,m_center(0,0,0)
-{}
-
-//-----------------------------------------------------------------------
-const Vector3d& GallacticStar::CalcXY()
-{
+const Vector3d& GallacticNode::CalcXY() {
 	double &a = m_a,
 	&b = m_b,
 	&theta = m_theta;
@@ -43,93 +33,23 @@ const Vector3d& GallacticStar::CalcXY()
 	cosbeta  = cos(beta),
 	sinbeta  = sin(beta);
 
-	m_pos = Vector3d(p.x() + (a * cosalpha * cosbeta - b * sinalpha * sinbeta),
+	position = Vector3d(p.x() + (a * cosalpha * cosbeta - b * sinalpha * sinbeta),
 		p.y() + (a * cosalpha * sinbeta + b * sinalpha * cosbeta), 0.0);
 
-	/*
-	// base variation
-	double factor = 4.0;
-
-	// between core edge and disk [4 to 6k ly]
-	if (m_pos.length() < 6000.0 and m_pos.length() > 4000.0)
-		factor += (6000.0 - m_pos.length())/500.0;
-
-	if (m_pos.length() <= 4000.0)
-		factor = 60.0;
-	*/
-	double factor = 20.0;
+	double factor = 15.0;
 	Quatd nrot = Quatd(Vector3d(1.0, 0.0, 0.0), 0.0);
 	nrot = nrot * Quatd(Vector3d(1.0, 0.0, 0.0), m_inclinationx * factor);
 	nrot = nrot * Quatd(Vector3d(0.0, 1.0, 0.0), m_inclinationy * factor);
 
-	/*
-	if (factor > 4.0)
-		nrot = nrot * Quatd(Vector3d(0.0, 0.0, 1.0), (m_inclinationx+m_inclinationy) * 360.0);
-	*/
-	nrot.rotate(m_pos);
-	return m_pos;
+	nrot.rotate(position);
+	return position;
 }
 
 double Galaxy::my_random() {
 	return ((double)rand()/(double)RAND_MAX);
 }
 
-//------------------------------------------------------------------------
-Galaxy::Galaxy(double rad,
-	double radCore,
-	double deltaAng,
-	double ex1,
-	double ex2,
-	double velInner,
-	double velOuter,
-	int numStars)
-:m_elEx1(ex1)
-,m_elEx2(ex2)
-,m_velOrigin(30)
-,m_velInner(velInner)
-,m_velOuter(velOuter)
-,m_angleOffset(deltaAng)
-,m_radCore(radCore)
-,m_radGalaxy(rad)
-,m_sigma(0.45)
-,m_velAngle(0.000001)
-,m_numStars(numStars)
-,m_numDust(11428)
-,m_numH2(200)
-,m_time(0)
-,m_timeStep(0)
-,m_pos(0, 0, 0)
-,m_pStars(NULL)
-,m_pDust(NULL)
-,m_pH2(NULL)
-{
-	FastMath::init();
-	glGenTextures(1, &m_texStar);
-	glBindTexture(GL_TEXTURE_2D, m_texStar);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  	m_texStar = SOIL_load_OGL_texture("data/textures/particle.bmp", SOIL_LOAD_AUTO, m_texStar, SOIL_FLAG_MIPMAPS);
-  	std::cerr << m_texStar << std::endl;
-
-  	m_colNum = 200;
-  	m_t0 = 1000;
-  	m_t1 = 10000;
-  	m_dt = ((m_t1-m_t0)/m_colNum);
-
-	double x, y, z;
-	for (int i=0; i<m_colNum; ++i) {
-		Color &col = m_col[i];
-		colourSystem *cs = &SMPTEsystem;
-		bbTemp = m_t0 + m_dt*i;
-		spectrum_to_xyz(bb_spectrum, &x, &y, &z);
-		xyz_to_rgb(cs, x, y, z, &col.r, &col.g, &col.b);
-		norm_rgb(&col.r, &col.g, &col.b);
-	}
-}
-
-//------------------------------------------------------------------------
-Galaxy::~Galaxy()
-{
+Galaxy::~Galaxy() {
 	delete [] m_pStars;
 	delete [] m_pDust;
 	delete [] m_pH2;
@@ -142,44 +62,52 @@ Galaxy::~Galaxy()
 	FastMath::release();
 }
 
-//------------------------------------------------------------------------
-void Galaxy::Reset()
-{
-	Reset(m_radGalaxy,
-		m_radCore,
-		m_angleOffset,
-		m_elEx1,
-		m_elEx2,
-		m_sigma,
-		m_velInner,
-		m_velOuter,
-		m_numStars);
-}
-
-//------------------------------------------------------------------------
-void Galaxy::Reset(double rad,
-	double radCore,
-	double deltaAng,
-	double ex1,
-	double ex2,
-	double sigma,
-	double velInner,
-	double velOuter,
-	int numStars)
-{
+Galaxy::Galaxy(double rad, double radCore, double deltaAng, double ex1, double ex2, double sigma, double velInner, double velOuter, int numStars) {
 	m_elEx1 = ex1;
 	m_elEx2 = ex2;
+	m_velOrigin = 30;
 	m_velInner = velInner;
 	m_velOuter = velOuter;
-	m_elEx2 = ex2;
 	m_angleOffset = deltaAng;
 	m_radCore = radCore;
 	m_radGalaxy = rad;
-	m_radFarField = m_radGalaxy * 2;  // there is no science behind this threshold it just should look nice
+	m_radFarField = m_radGalaxy * 2;
 	m_sigma = sigma;
+	m_velAngle = 0.000001;
 	m_numStars = numStars;
 	m_numDust = 11428;
+	m_numH2 = 200;
 	m_time = 0;
+	m_timeStep = 0;
+	m_pos.set(0.0, 0.0, 0.0);
+	m_pStars = NULL;
+	m_pDust = NULL;
+	m_pH2 = NULL;
+	
+	FastMath::init();
+
+	glGenTextures(1, &m_texStar);
+	glBindTexture(GL_TEXTURE_2D, m_texStar);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	m_texStar = SOIL_load_OGL_texture("data/textures/particle.bmp", SOIL_LOAD_AUTO, m_texStar, SOIL_FLAG_MIPMAPS);
+	std::cerr << m_texStar << std::endl;
+
+	m_colNum = 200;
+	m_t0 = 1000;
+	m_t1 = 10000;
+	m_dt = ((m_t1-m_t0)/m_colNum);
+
+	double x, y, z;
+	for (int i=0; i<m_colNum; ++i) {
+		Color &col = m_col[i];
+		colourSystem *cs = &SMPTEsystem;
+		bbTemp = m_t0 + m_dt*i;
+		spectrum_to_xyz(bb_spectrum, &x, &y, &z);
+		xyz_to_rgb(cs, x, y, z, &col.r, &col.g, &col.b);
+		norm_rgb(&col.r, &col.g, &col.b);
+	}
+
 
 	for (int i=0; i<100; ++i)
 		m_numberByRad[i] = 0;
@@ -187,21 +115,21 @@ void Galaxy::Reset(double rad,
 	InitStars(m_sigma);
 }
 
-//------------------------------------------------------------------------
-void Galaxy::InitStars(double sigma)
-{
-	m_pDust = new GallacticStar[m_numDust];
-	m_pStars = new GallacticStar[m_numStars];
-	m_pH2 = new GallacticStar[m_numH2*2];
+double Galaxy::GetAngularOffset(double rad) const {
+  return rad * m_angleOffset;
+}
+
+void Galaxy::InitStars(double sigma) {
+	m_pDust = new GallacticNode[m_numDust];
+	m_pStars = new GallacticNode[m_numStars];
+	m_pH2 = new GallacticNode[m_numH2*2];
+
 	m_pStarCoords = new double[m_numStars * 3];
 	m_pStarColors = new double[m_numStars * 3];
 	m_pDustCoords = new double[m_numDust * 3];
 	m_pDustColors = new double[m_numDust * 3];
 	m_pH2Coords = new double[m_numH2 * 3];
 	m_pH2Colors = new double[m_numH2 * 3];
-
-	// The first three stars can be used for aligning the
-	// camera with the galaxy rotation.
 
 	// First star ist the black hole at the centre
 	m_pStars[0].m_a = 0.0;
@@ -236,13 +164,7 @@ void Galaxy::InitStars(double sigma)
 
 	// Initialize the stars
 	CumulativeDistributionFunction cdf;
-	cdf.SetupRealistic(1.0,             // Maximalintensität
-					 0.02,            // k (bulge)
-					 m_radGalaxy/3.0, // disc skalenlänge
-					 m_radCore,       // bulge radius
-					 0,               // start der intensitätskurve
-					 m_radFarField,   // ende der intensitätskurve
-					 1000.0);           // Anzahl der stützstellen
+	cdf.SetupRealistic(1.0, 0.02, m_radGalaxy/3.0, m_radCore, 0, m_radFarField, 1000.0);
 	for (int i=3; i<m_numStars; ++i) {
 		double rad = cdf.ValFromProp(my_random());
 
@@ -306,7 +228,7 @@ void Galaxy::InitStars(double sigma)
 		int k2 = 2*i+1;
 		m_pH2[k2].m_a = rad + 1000;
 		m_pH2[k2].m_b = rad * GetExcentricity(rad);
-		m_pH2[k2].m_angle = m_pH2[k1].m_angle; //GetAngularOffset(rad);
+		m_pH2[k2].m_angle = m_pH2[k1].m_angle;
 		m_pH2[k2].m_theta = m_pH2[k1].m_theta;
 		m_pH2[k2].m_inclinationx = m_pH2[k1].m_inclinationx;
 		m_pH2[k2].m_inclinationy = m_pH2[k1].m_inclinationy;
@@ -343,242 +265,70 @@ void Galaxy::InitStars(double sigma)
 		memcpy(&m_pH2Colors[i*3], &col, sizeof(double)*3);
 	}
 
-	SingleTimeStep(0);
+	SingleTimeStep(100000);
 }
 
-//------------------------------------------------------------------------
-double Galaxy::GetSigma() const
-{
-	return m_sigma;
-}
-
-//------------------------------------------------------------------------
-void Galaxy::SetSigma(double s)
-{
-	m_sigma = s;
-	Reset();
-}
-
-//------------------------------------------------------------------------
-GallacticStar* Galaxy::GetStars() const
-{
-	return m_pStars;
-}
-
-//------------------------------------------------------------------------
-GallacticStar* Galaxy::GetDust() const
-{
-	return m_pDust;
-}
-
-//------------------------------------------------------------------------
-GallacticStar* Galaxy::GetH2() const
-{
-	return m_pH2;
-}
-
-//------------------------------------------------------------------------
-double Galaxy::GetRad() const
-{
-	return m_radGalaxy;
-}
-
-//------------------------------------------------------------------------
-double Galaxy::GetCoreRad() const
-{
-	return m_radCore;
-}
-
-//------------------------------------------------------------------------
-double Galaxy::GetFarFieldRad() const
-{
-	return m_radFarField;
-}
-
-//------------------------------------------------------------------------
-void Galaxy::SetAngularOffset(double offset)
-{
-	m_angleOffset = offset;
-	Reset();
-}
-
-//------------------------------------------------------------------------
-/** \brief Returns the orbital velocity in degrees per year.
-	\param rad Radius in parsec
-*/
-	double Galaxy::GetOrbitalVelocity(double rad) const
-	{
+double Galaxy::GetOrbitalVelocity(double rad) const {
 	double vel_kms(0);  // velovity in kilometer per seconds
 
 	// Calculate velovity in km per second
-	if (rad<m_radCore)
-	{
+	if (rad<m_radCore) {
 		double dv = (m_velInner-m_velOrigin) / m_radCore;
 		vel_kms = m_velOrigin + rad * dv;
-	}
-	else if (rad>=m_radCore)
-	{
+	} else if (rad>=m_radCore) {
 		double dv = (m_velOuter-m_velInner) / (m_radGalaxy - m_radCore);
 		vel_kms = m_velInner + dv * (rad-m_radCore);
 	}
 
 	// Calculate velocity in degree per year
-	double u = 2 * M_PI * rad * Constant::PC_TO_KM;        // Umfang in km
-	double time = u / (vel_kms * Constant::SEC_PER_YEAR);  // Umlaufzeit in Jahren
+	double u = 2 * M_PI * rad * Constant::PC_TO_KM;
+	double time = u / (vel_kms * Constant::SEC_PER_YEAR);
 
-	return 360.0 / time;                                   // Grad pro Jahr
-
-//  return 0.000005;
+	return 360.0 / time;
 }
 
-//------------------------------------------------------------------------
-double Galaxy::GetExcentricity(double r) const
-{
-	if (r<m_radCore)
-	{
+double Galaxy::GetExcentricity(double r) const {
+	if (r<m_radCore) {
 	// Core region of the galaxy. Innermost part is round
 	// excentricity increasing linear to the border of the core.
 		return 1 + (r / m_radCore) * (m_elEx1-1);
-	}
-	else if (r>m_radCore && r<=m_radGalaxy)
-	{
+	} else if (r>m_radCore && r<=m_radGalaxy) {
 		return m_elEx1 + (r-m_radCore) / (m_radGalaxy-m_radCore) * (m_elEx2-m_elEx1);
-	}
-	else if (r>m_radGalaxy && r <m_radFarField)
-	{
-	// excentricity is slowly reduced to 1.
+	} else if (r>m_radGalaxy && r <m_radFarField) {
+		// excentricity is slowly reduced to 1.
 		return m_elEx2 + (r - m_radGalaxy) / (m_radFarField - m_radGalaxy) * (1-m_elEx2);
-	}
-	else
+	} else
 		return 1;
 }
 
-//------------------------------------------------------------------------
-double Galaxy::GetAngularOffset(double rad) const
-{
-	return rad * m_angleOffset;
-}
-
-//------------------------------------------------------------------------
-double Galaxy::GetAngularOffset() const
-{
-	return m_angleOffset;
-}
-
-//------------------------------------------------------------------------
-double Galaxy::GetExInner() const
-{
-	return m_elEx1;
-}
-
-//-----------------------------------------------------------------------
-double Galaxy::GetExOuter() const
-{
-	return m_elEx2;
-}
-
-//-----------------------------------------------------------------------
-void Galaxy::SetRad(double rad)
-{
-	m_radGalaxy = rad;
-	Reset();
-}
-
-//-----------------------------------------------------------------------
-void Galaxy::SetCoreRad(double rad)
-{
-	m_radCore = rad;
-	Reset();
-}
-
-//-----------------------------------------------------------------------
-void Galaxy::SetExInner(double ex)
-{
-	m_elEx1 = ex;
-	Reset();
-}
-
-//-----------------------------------------------------------------------
-void Galaxy::SetExOuter(double ex)
-{
-	m_elEx2 = ex;
-	Reset();
-}
-
-//-----------------------------------------------------------------------
-double Galaxy::GetTimeStep() const
-{
-	return m_timeStep;
-}
-
-//-----------------------------------------------------------------------
-double Galaxy::GetTime() const
-{
-	return m_time;
-}
-
-//-----------------------------------------------------------------------
-void Galaxy::SingleTimeStep(double time)
-{
+void Galaxy::SingleTimeStep(double time) {
 	m_timeStep = time;
 	m_time += time;
 
 	Vector3d posOld;
-	for (int i=0; i<m_numStars; ++i)
-	{
+	for (int i=0; i<m_numStars; ++i) {
 		m_pStars[i].m_theta += (m_pStars[i].m_velTheta * time);
-		posOld = m_pStars[i].m_pos;
+		posOld = m_pStars[i].position;
 		m_pStars[i].CalcXY();
-		memcpy(&m_pStarCoords[i*3], m_pStars[i].m_pos, sizeof(double)*3);
+		memcpy(&m_pStarCoords[i*3], m_pStars[i].position, sizeof(double)*3);
 
-		Vector3d b = Vector3d(m_pStars[i].m_pos.x() - posOld.x(),
-			m_pStars[i].m_pos.y() - posOld.y(), 0.0);
-		m_pStars[i].m_vel = b;
+		Vector3d b = Vector3d(m_pStars[i].position.x() - posOld.x(), m_pStars[i].position.y() - posOld.y(), 0.0);
+		m_pStars[i].velocity = b;
 	}
 
-	for (int i=0; i<m_numDust; ++i)
-	{
+	for (int i=0; i<m_numDust; ++i) {
 		m_pDust[i].m_theta += (m_pDust[i].m_velTheta * time);
-		posOld = m_pDust[i].m_pos;
+		posOld = m_pDust[i].position;
 		m_pDust[i].CalcXY();
-		memcpy(&m_pDustCoords[i*3], m_pDust[i].m_pos, sizeof(double)*3);
+		memcpy(&m_pDustCoords[i*3], m_pDust[i].position, sizeof(double)*3);
 	}
 
-	for (int i=0; i<m_numH2*2; ++i)
-	{
+	for (int i=0; i<m_numH2*2; ++i) {
 		m_pH2[i].m_theta += (m_pH2[i].m_velTheta * time);
-		posOld = m_pDust[i].m_pos;
+		posOld = m_pDust[i].position;
 		m_pH2[i].CalcXY();
-		memcpy(&m_pH2Coords[i*3], m_pH2[i].m_pos, sizeof(double)*3);
+		memcpy(&m_pH2Coords[i*3], m_pH2[i].position, sizeof(double)*3);
 	}
-
-}
-
-int Galaxy::GetNumH2() const
-{
-	return m_numH2;
-}
-
-
-//-----------------------------------------------------------------------
-int Galaxy::GetNumStars() const
-{
-	return m_numStars;
-}
-
-//-----------------------------------------------------------------------
-int Galaxy::GetNumDust() const
-{
-	return m_numDust;
-}
-
-//-----------------------------------------------------------------------
-const Vector3d& Galaxy::GetStarPos(int idx)
-{
-	if (idx>=m_numStars)
-		throw std::runtime_error("index out of bounds.");
-
-	return m_pStars[idx].m_pos; //GetPos();
 }
 
 void Galaxy::draw() {
@@ -668,8 +418,8 @@ void Galaxy::drawH2() {
 		int k1 = 2*i;
 		int k2 = 2*i+1;
 
-		const Vector3d &p1 = m_pH2[k1].m_pos;
-		const Vector3d &p2 = m_pH2[k2].m_pos;
+		const Vector3d &p1 = m_pH2[k1].position;
+		const Vector3d &p2 = m_pH2[k2].position;
 
 		double dst = (p2-p1).length();
 		double size = ((1000-dst) / 10) - 50;
@@ -695,33 +445,6 @@ void Galaxy::drawH2() {
 	glDisable(GL_POINT_SPRITE);
 	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_BLEND);
-}
-
-
-void Galaxy::DrawEllipsis(double a, double b, double angle) {
-  const int steps = 100;
-  const double x = 0;
-  const double y = 0;
-
-  // Angle is given by Degree Value
-  double beta = -angle * M_PI / 180; //(Math.PI/180) converts Degree Value into Radians
-  double sinbeta = sin(beta);
-  double cosbeta = cos(beta);
-
-  glBegin(GL_LINE_STRIP);
-
-  for (int i=0; i<361; i += 360 / steps)
-  {
-    double alpha = i * (M_PI / 180) ;
-    double sinalpha = sin(alpha);
-    double cosalpha = cos(alpha);
-
-    double X = x + (a * cosalpha * cosbeta - b * sinalpha * sinbeta);
-    double Y = y + (a * cosalpha * sinbeta + b * sinalpha * cosbeta);
-
-    glVertex3f(X, Y, 0);
-   }
-   glEnd();
 }
 
 Color Galaxy::ColorFromTemperature(double temp) const {

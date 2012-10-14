@@ -63,11 +63,10 @@ bool GameSceneManager::init() {
 	camera->position = Vector3d(0.0, 0.0, 15000.0);//nearestStar->radius * 10.0);
 
 	// initialize the galaxy as type Sa
-	galaxy = new Galaxy();
-	galaxy->Reset(20000, 4000, 0.0004, 0.75, 1.0, 0.5, 200, 300, 80000);
+	galaxy = new Galaxy(20000, 4000, 0.0004, 0.75, 1.0, 0.5, 200, 300, 80000);
 	
 	// initialize the galaxy as type SBb
-	//galaxy->Reset(15000, 4000, 0.0003, 1.45, 1.0, 0.5, 400, 420, 40000);
+	//galaxy = new Galaxy(15000, 4000, 0.0003, 1.45, 1.0, 0.5, 400, 420, 40000);
 
 	// prepare our viewport
 	this->reshape();
