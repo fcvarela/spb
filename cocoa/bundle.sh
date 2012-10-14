@@ -39,6 +39,8 @@ if [ ! -f "${bundle_name}.app/Contents/Info.plist" ]; then
         <string>????</string>
         <key>CFBundleVersion</key>
         <string>0.1</string>
+        <key>CFBundleIconFile</key>
+        <string>Icon.icns</string>
 </dict>
 </plist>
 EOF
