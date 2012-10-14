@@ -64,7 +64,7 @@ bool GameSceneManager::init() {
 
 	// initialize the galaxy as type Sa
 	galaxy = new Galaxy();
-	galaxy->Reset(20000, 4000, 0.0004, 0.75, 1.0, 0.5, 200, 300, 40000);
+	galaxy->Reset(20000, 4000, 0.0004, 0.75, 1.0, 0.5, 200, 300, 80000);
 	
 	// initialize the galaxy as type SBb
 	//galaxy->Reset(15000, 4000, 0.0003, 1.45, 1.0, 0.5, 400, 420, 40000);
@@ -123,12 +123,12 @@ void GameSceneManager::step() {
 	__far__ = distance * 100000000000.0;
 
 	// reposition camera
+	__gpu_mutex__.lock();
 	Vector3d curpos = camera->position;
 	camera->step();
 	__camvelocity__ = (camera->position - curpos).length()/__dt__;
 
 	// step
-	__gpu_mutex__.lock();
 	for (std::list<StarSystem *>::iterator i = starSystems.begin(); i != starSystems.end(); ++i) {
 		StarSystem *ss = *i;
 		ss->step();

@@ -57,7 +57,7 @@ const Vector3d& GallacticStar::CalcXY()
 	if (m_pos.length() <= 4000.0)
 		factor = 60.0;
 	*/
-	double factor = 4.0;
+	double factor = 20.0;
 	Quatd nrot = Quatd(Vector3d(1.0, 0.0, 0.0), 0.0);
 	nrot = nrot * Quatd(Vector3d(1.0, 0.0, 0.0), m_inclinationx * factor);
 	nrot = nrot * Quatd(Vector3d(0.0, 1.0, 0.0), m_inclinationy * factor);
@@ -94,7 +94,7 @@ Galaxy::Galaxy(double rad,
 ,m_sigma(0.45)
 ,m_velAngle(0.000001)
 ,m_numStars(numStars)
-,m_numDust(numStars/3.5)
+,m_numDust(11428)
 ,m_numH2(200)
 ,m_time(0)
 ,m_timeStep(0)
@@ -133,6 +133,12 @@ Galaxy::~Galaxy()
 	delete [] m_pStars;
 	delete [] m_pDust;
 	delete [] m_pH2;
+	delete [] m_pStarCoords;
+	delete [] m_pStarColors;
+	delete [] m_pDustCoords;
+	delete [] m_pDustColors;
+	delete [] m_pH2Coords;
+	delete [] m_pH2Colors;
 	FastMath::release();
 }
 
@@ -172,7 +178,7 @@ void Galaxy::Reset(double rad,
 	m_radFarField = m_radGalaxy * 2;  // there is no science behind this threshold it just should look nice
 	m_sigma = sigma;
 	m_numStars = numStars;
-	m_numDust = numStars/2;
+	m_numDust = 11428;
 	m_time = 0;
 
 	for (int i=0; i<100; ++i)
@@ -184,14 +190,15 @@ void Galaxy::Reset(double rad,
 //------------------------------------------------------------------------
 void Galaxy::InitStars(double sigma)
 {
-	delete [] m_pDust;
 	m_pDust = new GallacticStar[m_numDust];
-
-	delete [] m_pStars;
 	m_pStars = new GallacticStar[m_numStars];
-
-	delete [] m_pH2;
 	m_pH2 = new GallacticStar[m_numH2*2];
+	m_pStarCoords = new double[m_numStars * 3];
+	m_pStarColors = new double[m_numStars * 3];
+	m_pDustCoords = new double[m_numDust * 3];
+	m_pDustColors = new double[m_numDust * 3];
+	m_pH2Coords = new double[m_numH2 * 3];
+	m_pH2Colors = new double[m_numH2 * 3];
 
 	// The first three stars can be used for aligning the
 	// camera with the galaxy rotation.
@@ -310,6 +317,33 @@ void Galaxy::InitStars(double sigma)
 		idx = std::min(1.0/dh * (m_pH2[k2].m_a + m_pH2[k2].m_b)/2.0, 99.0);
 		m_numberByRad[idx]++;
 	}
+
+	// set star colors
+	for (int i=0; i<m_numStars; i++) {
+		Color col = ColorFromTemperature(m_pStars[i].m_temp);
+		col.r *= m_pStars[i].m_mag;
+		col.g *= m_pStars[i].m_mag;
+		col.b *= m_pStars[i].m_mag;
+		memcpy(&m_pStarColors[i*3], &col, sizeof(double)*3);
+	}
+
+	for (int i=0; i<m_numDust; i++) {
+		Color col = ColorFromTemperature(m_pDust[i].m_temp);
+		col.r *= m_pDust[i].m_mag;
+		col.g *= m_pDust[i].m_mag;
+		col.b *= m_pDust[i].m_mag;
+		memcpy(&m_pDustColors[i*3], &col, sizeof(double)*3);
+	}
+
+	for (int i=0; i<m_numH2; i++) {
+		Color col = ColorFromTemperature(m_pH2[i].m_temp);
+		col.r *= m_pH2[i].m_mag*2.0;
+		col.g *= m_pH2[i].m_mag;
+		col.b *= m_pH2[i].m_mag;
+		memcpy(&m_pH2Colors[i*3], &col, sizeof(double)*3);
+	}
+
+	SingleTimeStep(0);
 }
 
 //------------------------------------------------------------------------
@@ -495,6 +529,7 @@ void Galaxy::SingleTimeStep(double time)
 		m_pStars[i].m_theta += (m_pStars[i].m_velTheta * time);
 		posOld = m_pStars[i].m_pos;
 		m_pStars[i].CalcXY();
+		memcpy(&m_pStarCoords[i*3], m_pStars[i].m_pos, sizeof(double)*3);
 
 		Vector3d b = Vector3d(m_pStars[i].m_pos.x() - posOld.x(),
 			m_pStars[i].m_pos.y() - posOld.y(), 0.0);
@@ -506,6 +541,7 @@ void Galaxy::SingleTimeStep(double time)
 		m_pDust[i].m_theta += (m_pDust[i].m_velTheta * time);
 		posOld = m_pDust[i].m_pos;
 		m_pDust[i].CalcXY();
+		memcpy(&m_pDustCoords[i*3], m_pDust[i].m_pos, sizeof(double)*3);
 	}
 
 	for (int i=0; i<m_numH2*2; ++i)
@@ -513,6 +549,7 @@ void Galaxy::SingleTimeStep(double time)
 		m_pH2[i].m_theta += (m_pH2[i].m_velTheta * time);
 		posOld = m_pDust[i].m_pos;
 		m_pH2[i].CalcXY();
+		memcpy(&m_pH2Coords[i*3], m_pH2[i].m_pos, sizeof(double)*3);
 	}
 
 }
@@ -545,9 +582,7 @@ const Vector3d& Galaxy::GetStarPos(int idx)
 }
 
 void Galaxy::draw() {
-	SingleTimeStep(0);
 	glDisable(GL_DEPTH_TEST);
-	glColor3f(1,1,1);
 	drawDust();
 	drawH2();
 	drawStars();
@@ -556,32 +591,25 @@ void Galaxy::draw() {
 
 void Galaxy::drawStars() {
 	glBindTexture(GL_TEXTURE_2D, m_texStar);
-
+	
 	float maxSize = 0.0f;
 	glGetFloatv(GL_POINT_SIZE_MAX, &maxSize );
 	glPointParameterf(GL_POINT_SIZE_MAX, maxSize);
 	glPointParameterf(GL_POINT_SIZE_MIN, 1.0f);
 	glTexEnvf(GL_POINT_SPRITE, GL_COORD_REPLACE, GL_TRUE);
-
+	
 	glEnable(GL_POINT_SPRITE);
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-
-	int num = GetNumStars();
-	GallacticStar *pStars = GetStars();
-
+	
 	glPointSize(5.0);
-	glBegin(GL_POINTS);
-	for (int i=1; i<num; ++i) {
-		const Color &col = ColorFromTemperature(pStars[i].m_temp);
-		glColor3f(col.r * pStars[i].m_mag,
-				col.g * pStars[i].m_mag,
-				col.b * pStars[i].m_mag);
-		glVertex3f(pStars[i].m_pos.x(), pStars[i].m_pos.y(), pStars[i].m_pos.z());
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_COLOR_ARRAY);
+	glVertexPointer(3, GL_DOUBLE, 0, m_pStarCoords);
+	glColorPointer(3, GL_DOUBLE, 0, m_pStarColors);
+	glDrawArrays(GL_POINTS, 0, m_numStars);
 
-	}
-	glEnd();
 	glDisable(GL_POINT_SPRITE);
 	glDisable(GL_BLEND);
 	glDisable(GL_TEXTURE_2D);
@@ -599,22 +627,14 @@ void Galaxy::drawDust() {
 	glEnable(GL_BLEND);            // soft blending of point sprites
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
-	GallacticStar *pDust = GetDust();
-	int num = GetNumDust();
-
 	glPointSize(maxSize);
-	glBegin(GL_POINTS);
 
-	for (int i=0; i<num; ++i) {
-		const Vector3d &pos = pDust[i].m_pos;
-		const Color &col = ColorFromTemperature(pDust[i].m_temp);
-		glColor3f(col.r * pDust[i].m_mag,
-			col.g * pDust[i].m_mag,
-			col.b * pDust[i].m_mag);
-		glVertex3f(pos.x(), pos.y(), pos.z());
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_COLOR_ARRAY);
+	glVertexPointer(3, GL_DOUBLE, 0, m_pDustCoords);
+	glColorPointer(3, GL_DOUBLE, 0, m_pDustColors);
+	glDrawArrays(GL_POINTS, 0, 	m_numDust);
 
-	}
-	glEnd();
 	glDisable(GL_POINT_SPRITE);
 	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_BLEND);
@@ -633,15 +653,23 @@ void Galaxy::drawH2() {
 	glEnable(GL_BLEND);            // soft blending of point sprites
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
-	GallacticStar *pH2 = GetH2();
-	int num = GetNumH2();
+	/*
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_COLOR_ARRAY);
+	glVertexPointer(3, GL_DOUBLE, 0, m_pH2Coords);
+	glColorPointer(3, GL_DOUBLE, 0, m_pH2Colors);
+	glPointSize(40);
+	glDrawArrays(GL_POINTS, 0, m_numH2);
+	glPointSize(15/6);
+	glDrawArrays(GL_POINTS, 0, m_numH2);
+	*/
 
-	for (int i=0; i<num; ++i) {
+	for (int i=0; i<m_numH2; ++i) {
 		int k1 = 2*i;
 		int k2 = 2*i+1;
 
-		const Vector3d &p1 = pH2[k1].m_pos;
-		const Vector3d &p2 = pH2[k2].m_pos;
+		const Vector3d &p1 = m_pH2[k1].m_pos;
+		const Vector3d &p2 = m_pH2[k2].m_pos;
 
 		double dst = (p2-p1).length();
 		double size = ((1000-dst) / 10) - 50;
@@ -650,10 +678,10 @@ void Galaxy::drawH2() {
 
 		glPointSize(2*size);
 		glBegin(GL_POINTS);
-		const Color &col = ColorFromTemperature(pH2[k1].m_temp);
-		glColor3f(col.r * pH2[i].m_mag * 2,
-			col.g * pH2[i].m_mag,
-			col.b * pH2[i].m_mag);
+		const Color &col = ColorFromTemperature(m_pH2[k1].m_temp);
+		glColor3f(col.r * m_pH2[i].m_mag * 2,
+			col.g * m_pH2[i].m_mag,
+			col.b * m_pH2[i].m_mag);
 		glVertex3f(p1.x(), p1.y(), p1.z());
 		glEnd();
 
@@ -663,6 +691,7 @@ void Galaxy::drawH2() {
 		glVertex3f(p1.x(), p1.y(), p1.z());
 		glEnd();
 	}
+	
 	glDisable(GL_POINT_SPRITE);
 	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_BLEND);

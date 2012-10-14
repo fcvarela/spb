@@ -138,6 +138,10 @@ public:
   GallacticStar *m_pStars;          ///< Pointer to an array of star data
   GallacticStar *m_pDust;           ///< Pointer to an array of dusty areas
   GallacticStar *m_pH2;
+
+  double *m_pStarCoords, *m_pStarColors;
+  double *m_pDustCoords, *m_pDustColors;
+  double *m_pH2Coords, *m_pH2Colors;
 };
 
 #endif

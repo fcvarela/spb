@@ -244,9 +244,9 @@ void norm_rgb(double *r, double *g, double *b)
     double greatest = Max(*r, Max(*g, *b));
 
     if (greatest > 0) {
-    	*r /= greatest;
-	*g /= greatest;
-	*b /= greatest;
+        *r /= (greatest*0.5);
+        *g /= (greatest*0.5);
+        *b /= (greatest*0.5);
     }
 #undef Max
 }
