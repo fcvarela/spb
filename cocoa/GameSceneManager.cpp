@@ -63,7 +63,7 @@ bool GameSceneManager::init() {
 	camera->position = Vector3d(0.0, 0.0, 15000.0);//nearestStar->radius * 10.0);
 
 	// initialize the galaxy as type Sa
-	galaxy = new Galaxy(20000, 4000, 0.0004, 0.75, 1.0, 0.5, 200, 300, 80000);
+	galaxy = new Galaxy(20000, 4000, 0.0004, 0.75, 1.0, 0.5, 200, 300, 100000);
 	
 	// initialize the galaxy as type SBb
 	//galaxy = new Galaxy(15000, 4000, 0.0003, 1.45, 1.0, 0.5, 400, 420, 40000);
@@ -175,7 +175,7 @@ void GameSceneManager::draw() {
 }
 
 void GameSceneManager::drawDebug() {
-	glDisable(GL_DEPTH_TEST);
+	glDepthMask(GL_FALSE);
 
 	// set up an orthogonal 2d projection matrixf
 	glMatrixMode(GL_PROJECTION);
@@ -209,16 +209,18 @@ void GameSceneManager::drawDebug() {
 	glColor3f(1.0, 1.0, 1.0);
 	glRasterPos2f(-__width__/2.0f+12.0, -__height__/2.0f+13.0);
 	char debug[1024];
-	sprintf(debug, "SPS: %.2f FPS: %.2f Camera velocity: (%.2f km/h, %.2f UA/s, %.2f c) Nearest node: %s Galaxy dist: %.2f Galaxy SMA: %.2f", 
+
+	Octree *node = this->galaxy->octree->nodeForPosition(camera->position);
+	int count = node->items.size();
+
+	sprintf(debug, "SPS: %.2f FPS: %.2f Camera velocity: %.2f Nearest node: %s Galaxy dist: %.2f Galaxy SMA: %.2f CurrentOctant: %d OctantStars: %d", 
 		1.0/__dt__,
 		__fps__,
-		__camvelocity__/3.6,
-		__camvelocity__*6.68458712E-12,
-		__camvelocity__/299792458.0,
+		__camvelocity__,
 		nearestNode()->label.c_str(),
 		(galaxy->m_pos - camera->position).length(),
-		galaxy->m_radGalaxy);
+		galaxy->m_radGalaxy, node->index, count);
 
 	__font__->Render(debug);
-	glEnable(GL_DEPTH_TEST);
+	glDepthMask(GL_TRUE);
 }

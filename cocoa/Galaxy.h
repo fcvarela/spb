@@ -3,6 +3,7 @@
 
 #include <GL/glfw.h>
 #include <Node.h>
+#include <Octree.h>
 
 struct Color {
 	double r;
@@ -38,6 +39,7 @@ public:
 	void drawDust();
 	void drawH2();
 	void draw();
+
 	Color ColorFromTemperature(double temp) const;
 	double GetOrbitalVelocity(double rad) const;
 	double GetExcentricity(double r) const;
@@ -80,6 +82,8 @@ public:
 	double *m_pStarCoords, *m_pStarColors;
 	double *m_pDustCoords, *m_pDustColors;
 	double *m_pH2Coords, *m_pH2Colors;
+
+	Octree *octree;
 };
 
 #endif

@@ -84,6 +84,7 @@ Galaxy::Galaxy(double rad, double radCore, double deltaAng, double ex1, double e
 	m_pDust = NULL;
 	m_pH2 = NULL;
 	
+	this->octree = new Octree(NULL, 0, m_pos, rad*4.0, 30);
 	FastMath::init();
 
 	glGenTextures(1, &m_texStar);
@@ -91,7 +92,6 @@ Galaxy::Galaxy(double rad, double radCore, double deltaAng, double ex1, double e
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	m_texStar = SOIL_load_OGL_texture("data/textures/particle.bmp", SOIL_LOAD_AUTO, m_texStar, SOIL_FLAG_MIPMAPS);
-	std::cerr << m_texStar << std::endl;
 
 	m_colNum = 200;
 	m_t0 = 1000;
@@ -108,9 +108,12 @@ Galaxy::Galaxy(double rad, double radCore, double deltaAng, double ex1, double e
 		norm_rgb(&col.r, &col.g, &col.b);
 	}
 
-
 	for (int i=0; i<100; ++i)
 		m_numberByRad[i] = 0;
+
+	// initialize our seed here
+	static unsigned seed = 2000;
+	srand(seed);
 
 	InitStars(m_sigma);
 }
@@ -165,6 +168,8 @@ void Galaxy::InitStars(double sigma) {
 	// Initialize the stars
 	CumulativeDistributionFunction cdf;
 	cdf.SetupRealistic(1.0, 0.02, m_radGalaxy/3.0, m_radCore, 0, m_radFarField, 1000.0);
+
+	// this specific order of random cannot ever ever ever change
 	for (int i=3; i<m_numStars; ++i) {
 		double rad = cdf.ValFromProp(my_random());
 
@@ -178,7 +183,6 @@ void Galaxy::InitStars(double sigma) {
 		m_pStars[i].m_center = Vector3d(0,0,0);
 		m_pStars[i].m_temp = 6000.0 + (6000.0 * my_random()) - 3000.0;
 		m_pStars[i].m_mag = 0.1 + 0.4 * my_random();
-
 		int idx = std::min(1.0/dh * (m_pStars[i].m_a + m_pStars[i].m_b)/2.0, 99.0);
 		m_numberByRad[idx]++;
 	}
@@ -199,7 +203,6 @@ void Galaxy::InitStars(double sigma) {
 		m_pDust[i].m_velTheta = GetOrbitalVelocity( (m_pDust[i].m_a + m_pDust[i].m_b)/2.0 );
 		m_pDust[i].m_center = Vector3d(0,0,0);
 		m_pDust[i].m_temp = 6000 + rad/4.0;
-
 		m_pDust[i].m_mag = 0.015 + 0.01 * my_random();
 		int idx = std::min(1.0/dh * (m_pDust[i].m_a + m_pDust[i].m_b)/2.0, 99.0);
 		m_numberByRad[idx]++;
@@ -266,6 +269,11 @@ void Galaxy::InitStars(double sigma) {
 	}
 
 	SingleTimeStep(100000);
+
+	for (int i=0; i<m_numStars; i++) {
+		Octree *inserthere = this->octree->nodeForPosition(m_pStars[i].position);
+		inserthere->insertItem(&m_pStars[i]);
+	}
 }
 
 double Galaxy::GetOrbitalVelocity(double rad) const {
@@ -336,6 +344,7 @@ void Galaxy::draw() {
 	drawDust();
 	drawH2();
 	drawStars();
+	unsigned long total = this->octree->draw();
 	glEnable(GL_DEPTH_TEST);
 }
 
