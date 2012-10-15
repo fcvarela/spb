@@ -89,6 +89,7 @@ void Octree::insertItem(GallacticNode *item) {
 }
 
 unsigned long Octree::draw() {
+	return 0;
 	uint64_t totaldrawn = items.size();
 	if (children[0] != NULL)
 		for (uint8_t i=0; i<8; i++)
@@ -96,7 +97,7 @@ unsigned long Octree::draw() {
 
 	if (items.size() == 0)
 		return 0;
-	
+
 	glColor4f(0.0, 1.0, 0.0, 0.5);
 	glBegin(GL_LINES);
 
