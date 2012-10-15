@@ -192,10 +192,10 @@ void GameSceneManager::drawDebug() {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	GLfloat botleft[2] = {-__width__/2.0f+8.0, -__height__/2.0f+08.0};
-	GLfloat topleft[2] = {-__width__/2.0f+8.0, -__height__/2.0f+26.0};
-	GLfloat topright[2] = {__width__/2.0f-8.0, -__height__/2.0f+26.0};
-	GLfloat botright[2] = {__width__/2.0f-8.0, -__height__/2.0f+08.0};
+	GLfloat botleft[2] = {-__width__/2.0f+8.0f, -__height__/2.0f+08.0f};
+	GLfloat topleft[2] = {-__width__/2.0f+8.0f, -__height__/2.0f+26.0f};
+	GLfloat topright[2] = {__width__/2.0f-8.0f, -__height__/2.0f+26.0f};
+	GLfloat botright[2] = {__width__/2.0f-8.0f, -__height__/2.0f+08.0f};
 
 	// draw background
 	glColor4f(0.2, 0.2, 0.2, 0.4);
