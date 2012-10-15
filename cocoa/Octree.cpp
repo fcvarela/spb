@@ -89,11 +89,13 @@ void Octree::insertItem(GallacticNode *item) {
 }
 
 unsigned long Octree::draw() {
-	
 	uint64_t totaldrawn = items.size();
-	if (children[0] != NULL)
+	if (children[0] != NULL) {
 		for (uint8_t i=0; i<8; i++)
 			totaldrawn += children[i]->draw();
+
+		return totaldrawn;
+	}
 
 	if (items.size() == 0)
 		return 0;
