@@ -7,6 +7,8 @@ Camera::Camera() {
 	label = "CAMERA";
 }
 
+Camera::~Camera() {}
+
 void Camera::step() {
 	Vector3d direction = Vector3d(0.0, 0.0, 0.0);
 	

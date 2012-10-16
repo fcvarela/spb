@@ -5,6 +5,8 @@
 #include <Node.h>
 #include <Octree.h>
 
+class CumulativeDistributionFunction;
+
 struct Color {
 	double r;
 	double g;
@@ -82,6 +84,7 @@ public:
 
 	double *m_pDustCoords, *m_pDustColors;
 	double *m_pH2Coords, *m_pH2Colors;
+	CumulativeDistributionFunction *cdf;
 
 	Octree *octree;
 };

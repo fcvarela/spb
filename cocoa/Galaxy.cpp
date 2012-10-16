@@ -57,7 +57,9 @@ Galaxy::~Galaxy() {
 	delete [] m_pDustColors;
 	delete [] m_pH2Coords;
 	delete [] m_pH2Colors;
+	delete octree;
 	FastMath::release();
+	delete cdf;
 }
 
 Galaxy::Galaxy(double rad, double radCore, double deltaAng, double ex1, double ex2, double sigma, double velInner, double velOuter, int numStars) {
@@ -81,8 +83,9 @@ Galaxy::Galaxy(double rad, double radCore, double deltaAng, double ex1, double e
 	m_pStars = NULL;
 	m_pDust = NULL;
 	m_pH2 = NULL;
-	
+
 	this->octree = new Octree(NULL, 0, m_pos, rad*4.0, 30);
+
 	FastMath::init();
 
 	glGenTextures(1, &m_texStar);
@@ -162,12 +165,12 @@ void Galaxy::InitStars(double sigma) {
 	double dh = (double)m_radFarField/100.0;
 
 	// Initialize the stars
-	CumulativeDistributionFunction cdf;
-	cdf.SetupRealistic(1.0, 0.02, m_radGalaxy/3.0, m_radCore, 0, m_radFarField, 1000.0);
+	cdf = new CumulativeDistributionFunction();
+	cdf->SetupRealistic(1.0, 0.02, m_radGalaxy/3.0, m_radCore, 0, m_radFarField, 1000.0);
 
 	// this specific order of random cannot ever ever ever change
 	for (int i=3; i<m_numStars; ++i) {
-		double rad = cdf.ValFromProp(my_random());
+		double rad = cdf->ValFromProp(my_random());
 
 		m_pStars[i].m_a = rad;
 		m_pStars[i].m_b = rad * GetExcentricity(rad);
@@ -204,7 +207,7 @@ void Galaxy::InitStars(double sigma) {
 		m_numberByRad[idx]++;
 	}
 
-	// Initialise Dust
+	// Initialise H2
 	for (int i=0; i<m_numH2; ++i) {
 		x = 2*(m_radGalaxy) * my_random() - (m_radGalaxy);
 		y = 2*(m_radGalaxy) * my_random() - (m_radGalaxy);
@@ -247,7 +250,6 @@ void Galaxy::InitStars(double sigma) {
 		col.b *= m_pStars[i].m_mag;
 		m_pStars[i].color = col;
 	}
-
 	for (int i=0; i<m_numDust; i++) {
 		Color col = ColorFromTemperature(m_pDust[i].m_temp);
 		col.r *= m_pDust[i].m_mag;
@@ -255,7 +257,6 @@ void Galaxy::InitStars(double sigma) {
 		col.b *= m_pDust[i].m_mag;
 		memcpy(&m_pDustColors[i*3], &col, sizeof(double)*3);
 	}
-
 	for (int i=0; i<m_numH2; i++) {
 		Color col = ColorFromTemperature(m_pH2[i].m_temp);
 		col.r *= m_pH2[i].m_mag*2.0;

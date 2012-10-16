@@ -45,6 +45,11 @@ Octree::~Octree() {
 
 	delete this->starCoords;
 	delete this->starColors;
+
+	for (uint8_t i=0; i<8; i++) {
+		if (this->children[i] != NULL)
+			delete this->children[i];
+	}
 }
 
 bool Octree::containsPosition(Vector3d &position) {

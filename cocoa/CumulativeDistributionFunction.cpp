@@ -4,9 +4,7 @@
 #include <cstdio>
 #include <cmath>
 #include <stdexcept>
-
-using namespace std;
-
+#include <iostream>
 
 //-------------------------------------------------------------------------------------------------
 CumulativeDistributionFunction::CumulativeDistributionFunction()
@@ -16,8 +14,12 @@ CumulativeDistributionFunction::CumulativeDistributionFunction()
   ,m_vX1()
   ,m_vM2()
   ,m_vY2()
-  ,m_vX2()
-{}
+  ,m_vX2() {}
+
+CumulativeDistributionFunction::~CumulativeDistributionFunction()
+{
+
+}
 
 //-------------------------------------------------------------------------------------------------
 void CumulativeDistributionFunction::SetupRealistic(double I0, double k, double a, double RBulge, double min, double max, int nSteps)
@@ -102,10 +104,6 @@ void CumulativeDistributionFunction::BuildCDF(int nSteps)
     m_vY2.push_back(y);
   }
 }
-
-//-------------------------------------------------------------------------------------------------
-CumulativeDistributionFunction::~CumulativeDistributionFunction()
-{}
 
 //-------------------------------------------------------------------------------------------------
 double CumulativeDistributionFunction::PropFromVal(double fVal)

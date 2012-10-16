@@ -49,7 +49,6 @@ int main(void) {
 		exit(EXIT_FAILURE);
 	}
 
-	
 	// initialize a second context (procedural gen) that shares resources with the current
 	__render_ctx__ = CGLGetCurrentContext();
 	CGLPixelFormatObj current_pf = CGLGetPixelFormat(__render_ctx__);

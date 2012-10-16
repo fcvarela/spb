@@ -1,5 +1,5 @@
-#ifndef _CUMULATIVE_DISTRIBUTION_FUNCTION_H
-#define _CUMULATIVE_DISTRIBUTION_FUNCTION_H
+#ifndef __CUMULATIVE_DISTRIBUTION_FUNCTION
+#define __CUMULATIVE_DISTRIBUTION_FUNCTION
 
 //-------------------------------------------------------------------------------------------------
 #include <vector>
@@ -49,4 +49,4 @@ class CumulativeDistributionFunction
     double Intensity(double x);
 };
 
-#endif // CUMULATIVEDISTRIBUTIONFUNCTION_H
+#endif
