@@ -34,9 +34,6 @@ int main(void) {
 	// set window title
 	glfwSetWindowTitle("SPB");
 
-	// setup key handler
-	glfwSetKeyCallback(My_Key_Callback);
-
 	// calculate opengl drawing parameters (window fov)
 	calcFOV();
 

@@ -53,8 +53,6 @@ Galaxy::~Galaxy() {
 	delete [] m_pStars;
 	delete [] m_pDust;
 	delete [] m_pH2;
-	delete [] m_pStarCoords;
-	delete [] m_pStarColors;
 	delete [] m_pDustCoords;
 	delete [] m_pDustColors;
 	delete [] m_pH2Coords;
@@ -127,8 +125,6 @@ void Galaxy::InitStars(double sigma) {
 	m_pStars = new GallacticNode[m_numStars];
 	m_pH2 = new GallacticNode[m_numH2*2];
 
-	m_pStarCoords = new double[m_numStars * 3];
-	m_pStarColors = new double[m_numStars * 3];
 	m_pDustCoords = new double[m_numDust * 3];
 	m_pDustColors = new double[m_numDust * 3];
 	m_pH2Coords = new double[m_numH2 * 3];
@@ -249,7 +245,7 @@ void Galaxy::InitStars(double sigma) {
 		col.r *= m_pStars[i].m_mag;
 		col.g *= m_pStars[i].m_mag;
 		col.b *= m_pStars[i].m_mag;
-		memcpy(&m_pStarColors[i*3], &col, sizeof(double)*3);
+		m_pStars[i].color = col;
 	}
 
 	for (int i=0; i<m_numDust; i++) {
@@ -274,6 +270,8 @@ void Galaxy::InitStars(double sigma) {
 		Octree *inserthere = this->octree->nodeForPosition(m_pStars[i].position);
 		inserthere->insertItem(&m_pStars[i]);
 	}
+
+	this->octree->synch();
 }
 
 double Galaxy::GetOrbitalVelocity(double rad) const {
@@ -318,8 +316,6 @@ void Galaxy::SingleTimeStep(double time) {
 		m_pStars[i].m_theta += (m_pStars[i].m_velTheta * time);
 		posOld = m_pStars[i].position;
 		m_pStars[i].CalcXY();
-		memcpy(&m_pStarCoords[i*3], m_pStars[i].position, sizeof(double)*3);
-
 		Vector3d b = Vector3d(m_pStars[i].position.x() - posOld.x(), m_pStars[i].position.y() - posOld.y(), 0.0);
 		m_pStars[i].velocity = b;
 	}
@@ -344,7 +340,6 @@ void Galaxy::draw() {
 	drawDust();
 	drawH2();
 	drawStars();
-	unsigned long total = this->octree->draw();
 	glEnable(GL_DEPTH_TEST);
 }
 
@@ -365,9 +360,8 @@ void Galaxy::drawStars() {
 	glPointSize(5.0);
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
-	glVertexPointer(3, GL_DOUBLE, 0, m_pStarCoords);
-	glColorPointer(3, GL_DOUBLE, 0, m_pStarColors);
-	glDrawArrays(GL_POINTS, 0, m_numStars);
+
+	this->octree->draw();
 
 	glDisable(GL_POINT_SPRITE);
 	glDisable(GL_BLEND);

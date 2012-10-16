@@ -35,6 +35,8 @@ void globalStep(void *arg) {
 		double now = glfwGetTime();
 		__dt__ = now - __lasttime__;
 		__lasttime__ = now;
+		for (uint16_t i=0; i<512; i++)
+			__keys__[i] = glfwGetKey(i);
 		getGameSceneManager()->step();
 	}
 }
@@ -110,10 +112,30 @@ void calculateFrustum(frustum_t &frustum) {
 	extractPlane(frustum.f, modelview, -3);
 }
 
-void GLFWCALL My_Key_Callback(int key, int action) {
-	uint8_t val = 0;
-	if (action == GLFW_PRESS)
-		val = 1;
+int boxInFrustum(double *boundingBox) {
+	GameSceneManager *sm = getGameSceneManager();
+	double dist;
 
-	__keys__[key] = val;
+	// calculate camera distance to frustum
+	uint8_t i, k;
+	uint8_t in, out;
+	for (i=0; i<6; i++) {
+		in = out = 0;
+		for (k=0; k<8 && (in==0 || out==0); k++) {
+			dist = 
+			sm->frustum.planes[i].A * boundingBox[k*3+0] +
+			sm->frustum.planes[i].B * boundingBox[k*3+1] +
+			sm->frustum.planes[i].C * boundingBox[k*3+2] +
+			sm->frustum.planes[i].D;
+
+			if (dist < 0) out++;
+			else in++;
+		}
+		if (!in)
+			return 0;
+		else if (out)
+			return 1;
+	}
+
+	return 1;
 }

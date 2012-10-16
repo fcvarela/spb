@@ -1,4 +1,5 @@
 #include <GL/glfw.h>
+#include <Common.h>
 #include <Galaxy.h>
 #include <Octree.h>
 
@@ -25,6 +26,25 @@ Octree::Octree(Octree *parent, uint64_t index, Vector3d &center, double size, un
 	maxx = center.x() + size/2.0;
 	maxy = center.y() + size/2.0;
 	maxz = center.z() + size/2.0;
+
+	boundingBox[0][0] = minx; boundingBox[0][1] = maxy; boundingBox[0][2] = minz;
+	boundingBox[1][0] = minx; boundingBox[1][1] = maxy; boundingBox[1][2] = maxz;
+	boundingBox[2][0] = maxx; boundingBox[2][1] = maxy; boundingBox[2][2] = minz;
+	boundingBox[3][0] = maxx; boundingBox[3][1] = maxy; boundingBox[3][2] = maxz;
+	boundingBox[4][0] = minx; boundingBox[4][1] = miny; boundingBox[4][2] = minz;
+	boundingBox[5][0] = minx; boundingBox[5][1] = miny; boundingBox[5][2] = maxz;
+	boundingBox[6][0] = maxx; boundingBox[6][1] = miny; boundingBox[6][2] = minz;
+	boundingBox[7][0] = maxx; boundingBox[7][1] = miny; boundingBox[7][2] = maxz;
+
+	starColors = NULL;
+	starCoords = NULL;
+}
+
+Octree::~Octree() {
+	items.clear();
+
+	delete this->starCoords;
+	delete this->starColors;
 }
 
 bool Octree::containsPosition(Vector3d &position) {
@@ -33,6 +53,28 @@ bool Octree::containsPosition(Vector3d &position) {
 		position.y() > center.y()-size/2.0 && position.y() < center.y()+size/2.0 &&
 		position.z() > center.z()-size/2.0 && position.z() < center.z()+size/2.0
 	);
+}
+
+// build arrays to draw our stars
+void Octree::synch() {
+	if (children[0] != NULL) {
+		for (uint8_t i=0; i<8; i++)
+			children[i]->synch();
+	}
+
+	if (items.size() == 0)
+		return;
+
+	this->starCoords = new double[items.size() * 3];
+	this->starColors = new double[items.size() * 3];
+
+	// copy to array
+	unsigned short i=0;
+	for (std::list<GallacticNode *>::iterator s=items.begin(); s!=items.end(); ++s) {
+		memcpy(&starCoords[i*3], (*s)->position, sizeof(double)*3);
+		memcpy(&starColors[i*3], &((*s)->color), sizeof(double)*3);
+		i++;
+	}
 }
 
 Octree *Octree::nodeForPosition(Vector3d &position) {
@@ -88,18 +130,23 @@ void Octree::insertItem(GallacticNode *item) {
 	node->insertItem(item);
 }
 
-unsigned long Octree::draw() {
-	uint64_t totaldrawn = items.size();
+void Octree::draw() {
+	if (!boxInFrustum((double *)&boundingBox[0]))
+		return;
+
 	if (children[0] != NULL) {
 		for (uint8_t i=0; i<8; i++)
-			totaldrawn += children[i]->draw();
-
-		return totaldrawn;
+			children[i]->draw();
+		return;
 	}
 
-	if (items.size() == 0)
-		return 0;
+	if (this->starCoords == NULL)
+		return;
 
+	glVertexPointer(3, GL_DOUBLE, 0, this->starCoords);
+	glColorPointer(3, GL_DOUBLE, 0, starColors);
+	glDrawArrays(GL_POINTS, 0, items.size());
+	/*
 	glColor4f(0.0, 1.0, 0.0, 0.5);
 	glBegin(GL_LINES);
 
@@ -142,6 +189,5 @@ unsigned long Octree::draw() {
 	glVertex3d(maxx, maxy, maxz);
 
 	glEnd();
-
-	return totaldrawn;
+	*/
 }

@@ -29,18 +29,15 @@ void Camera::step() {
 		direction += Vector3d(0.0, -1.0, 0.0);
 
 	target_velocity = direction * __camdelta__;
-	if (target_velocity != velocity)
-		acceleration = (target_velocity - velocity) * 30.0;
-	else
-		acceleration = Vector3d(0.0, 0.0, 0.0);
-
-	Vector3d posdelta = velocity * __dt__;
-	rotation.rotate(posdelta);
-
+	acceleration = (target_velocity - velocity) * 20.0;
 	velocity += acceleration * __dt__;
-	position += posdelta;
+	Vector3d delta = velocity * __dt__;
+	rotation.rotate(delta);
+	position += delta;
 
+	// process rotation of camera
 	Vector3d angle = Vector3d(0.0, 0.0, 0.0);
+
 	if (__keys__[GLFW_KEY_LEFT] == 1)
 		angle += Vector3d(0.0, 1.0, 0.0);
 
@@ -59,31 +56,15 @@ void Camera::step() {
 	if (__keys__['X'] == 1)
 		angle += Vector3d(0.0, 0.0, 1.0);
 
-	target_angrate = angle * 40.0;
-	if (target_angrate != angrate)
-		angaccel = (target_angrate - angrate) * 30.0;
-	else
-		angaccel = Vector3d(0.0, 0.0, 0.0);
-
-	Vector3d angdelta = angrate * __dt__;
+	target_angrate = angle * 90.0;
+	angaccel = (target_angrate - angrate) * 10.0;
 	angrate += angaccel * __dt__;
-
-	if (angdelta != Vector3d(0.0, 0.0, 0.0)) {
-		double angdeltalen = angdelta.length();
-		angdelta.normalize();
-		Quatd nrot(angdelta, angdeltalen);
-		rotation = rotation * nrot;
+	delta = angrate * __dt__;
+	double deltalen = delta.length();
+	if (deltalen > 1.0E-13) {
+		delta.normalize();
+		rotation = rotation * Quatd(delta, deltalen);
 	}
-
-	// make sure we lock when sufficiently close to zero
-	if (velocity.length() < 10E-12)
-		velocity = Vector3d(0.0, 0.0, 0.0);
-	if (acceleration.length() < 10E-12)
-		velocity = Vector3d(0.0, 0.0, 0.0);
-	if (angrate.length() < 10E-12)
-		angrate = Vector3d(0.0, 0.0, 0.0);
-	if (angaccel.length() < 10E-12)
-		angaccel = Vector3d(0.0, 0.0, 0.0);
 }
 
 void Camera::setPerspective() {

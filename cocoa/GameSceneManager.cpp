@@ -136,7 +136,7 @@ void GameSceneManager::step() {
 	// set camera delta according to nearest node
 	camera->position -= nearest_position;
 	recalculatePositions(nearest_position);
-	__camdelta__ = (nearest_position - camera->position).length()/3.0;
+	__camdelta__ = (nearest_position - camera->position).length();
 	__gpu_mutex__.unlock();
 }
 
@@ -213,7 +213,7 @@ void GameSceneManager::drawDebug() {
 	Octree *node = this->galaxy->octree->nodeForPosition(camera->position);
 	int count = node->items.size();
 
-	sprintf(debug, "SPS: %.2f FPS: %.2f Camera velocity: %.2f Nearest node: %s Galaxy dist: %.2f Galaxy SMA: %.2f CurrentOctant: %d OctantStars: %d", 
+	sprintf(debug, "SPS: %.2f FPS: %.2f Camera velocity: %.2f Nearest node: %s Galaxy dist: %.2f Galaxy SMA: %.2f CurrentOctant: %lld OctantStars: %d", 
 		1.0/__dt__,
 		__fps__,
 		__camvelocity__,

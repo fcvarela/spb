@@ -27,6 +27,7 @@ extern int __running__;
 extern CGLContextObj __procedural_gen_ctx__;
 extern CGLContextObj __render_ctx__;
 extern tthread::mutex __gpu_mutex__;
+extern tthread::mutex __input_mutex__;
 
 struct plane_t {GLfloat A, B, C, D;};
 union frustum_t {
@@ -37,6 +38,7 @@ union frustum_t {
 // frustum tools
 void calculateFrustum(frustum_t &frustum);
 void extractPlane(plane_t &plane, GLfloat *mat, int row);
+int boxInFrustum(double *boundingBox);
 void globalStep(void *arg);
 void proceduralGenLoop(void *arg);
 void calcFOV();

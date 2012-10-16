@@ -25,6 +25,7 @@ public:
 	double m_b;				// major semiaxis
 	double m_temp;			// star temperature
 	double m_mag;			// brigtness;
+	Color color;
 	Vector3d  m_center;		// center of the elliptical orbit
 };
 
@@ -79,7 +80,6 @@ public:
 	GallacticNode *m_pDust;           ///< Pointer to an array of dusty areas
 	GallacticNode *m_pH2;
 
-	double *m_pStarCoords, *m_pStarColors;
 	double *m_pDustCoords, *m_pDustColors;
 	double *m_pH2Coords, *m_pH2Colors;
 
