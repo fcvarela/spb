@@ -16,13 +16,13 @@ struct Color {
 class GallacticNode : public Node {
 public:
 	GallacticNode();
-	const Vector3d& CalcXY();
+	const Vector3d& CalcXZ();
 
  	double m_theta;			// position on the ellipse
 	double m_velTheta;		// angular velocity
 	double m_angle;			// inclination of the ellipse
 	double m_inclinationx;	// orbital inclination
-	double m_inclinationy;	// orbital inclination
+	double m_inclinationz;	// orbital inclination
 	double m_a;				// minor semiaxis
 	double m_b;				// major semiaxis
 	double m_temp;			// star temperature

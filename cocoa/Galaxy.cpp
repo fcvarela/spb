@@ -18,7 +18,7 @@ GallacticNode::GallacticNode() {
 	m_center = Vector3d(0,0,0);
 }
 
-const Vector3d& GallacticNode::CalcXY() {
+const Vector3d& GallacticNode::CalcXZ() {
 	double &a = m_a,
 	&b = m_b,
 	&theta = m_theta;
@@ -33,13 +33,15 @@ const Vector3d& GallacticNode::CalcXY() {
 	cosbeta  = cos(beta),
 	sinbeta  = sin(beta);
 
-	position = Vector3d(p.x() + (a * cosalpha * cosbeta - b * sinalpha * sinbeta),
-		p.y() + (a * cosalpha * sinbeta + b * sinalpha * cosbeta), 0.0);
+	position = Vector3d(
+		p.x() + (a * cosalpha * cosbeta - b * sinalpha * sinbeta),
+		0.0,
+		p.y() + (a * cosalpha * sinbeta + b * sinalpha * cosbeta));
 
 	double factor = 15.0;
 	Quatd nrot = Quatd(Vector3d(1.0, 0.0, 0.0), 0.0);
 	nrot = nrot * Quatd(Vector3d(1.0, 0.0, 0.0), m_inclinationx * factor);
-	nrot = nrot * Quatd(Vector3d(0.0, 1.0, 0.0), m_inclinationy * factor);
+	nrot = nrot * Quatd(Vector3d(0.0, 0.0, 1.0), m_inclinationz * factor);
 
 	nrot.rotate(position);
 	return position;
@@ -177,7 +179,7 @@ void Galaxy::InitStars(double sigma) {
 		m_pStars[i].m_angle = GetAngularOffset(rad);
 		m_pStars[i].m_theta = 360.0 * my_random();
 		m_pStars[i].m_inclinationx = my_random();
-		m_pStars[i].m_inclinationy = my_random();
+		m_pStars[i].m_inclinationz = my_random();
 		m_pStars[i].m_velTheta = GetOrbitalVelocity(rad);
 		m_pStars[i].m_center = Vector3d(0,0,0);
 		m_pStars[i].m_temp = 6000.0 + (6000.0 * my_random()) - 3000.0;
@@ -198,7 +200,7 @@ void Galaxy::InitStars(double sigma) {
 		m_pDust[i].m_angle = GetAngularOffset(rad);
 		m_pDust[i].m_theta = 360.0 * my_random();
 		m_pDust[i].m_inclinationx = my_random();
-		m_pDust[i].m_inclinationy = my_random();
+		m_pDust[i].m_inclinationz = my_random();
 		m_pDust[i].m_velTheta = GetOrbitalVelocity( (m_pDust[i].m_a + m_pDust[i].m_b)/2.0 );
 		m_pDust[i].m_center = Vector3d(0,0,0);
 		m_pDust[i].m_temp = 6000 + rad/4.0;
@@ -219,7 +221,7 @@ void Galaxy::InitStars(double sigma) {
 		m_pH2[k1].m_angle = GetAngularOffset(rad);
 		m_pH2[k1].m_theta = 360.0 * my_random();
 		m_pH2[k1].m_inclinationx = my_random();
-		m_pH2[k1].m_inclinationy = my_random();
+		m_pH2[k1].m_inclinationz = my_random();
 		m_pH2[k1].m_velTheta = GetOrbitalVelocity( (m_pH2[k1].m_a + m_pH2[k1].m_b)/2.0 );
 		m_pH2[k1].m_center = Vector3d(0,0,0);
 		m_pH2[k1].m_temp = 6000 + (6000 * my_random()) - 3000;
@@ -233,7 +235,7 @@ void Galaxy::InitStars(double sigma) {
 		m_pH2[k2].m_angle = m_pH2[k1].m_angle;
 		m_pH2[k2].m_theta = m_pH2[k1].m_theta;
 		m_pH2[k2].m_inclinationx = m_pH2[k1].m_inclinationx;
-		m_pH2[k2].m_inclinationy = m_pH2[k1].m_inclinationy;
+		m_pH2[k2].m_inclinationz = m_pH2[k1].m_inclinationz;
 		m_pH2[k2].m_velTheta = m_pH2[k1].m_velTheta;
 		m_pH2[k2].m_center = m_pH2[k1].m_center;
 		m_pH2[k2].m_temp = m_pH2[k1].m_temp;
@@ -316,31 +318,32 @@ void Galaxy::SingleTimeStep(double time) {
 	for (int i=0; i<m_numStars; ++i) {
 		m_pStars[i].m_theta += (m_pStars[i].m_velTheta * time);
 		posOld = m_pStars[i].position;
-		m_pStars[i].CalcXY();
-		Vector3d b = Vector3d(m_pStars[i].position.x() - posOld.x(), m_pStars[i].position.y() - posOld.y(), 0.0);
+		m_pStars[i].CalcXZ();
+		Vector3d b = Vector3d(m_pStars[i].position.x() - posOld.x(), 0.0, m_pStars[i].position.z() - posOld.z());
 		m_pStars[i].velocity = b;
 	}
 
 	for (int i=0; i<m_numDust; ++i) {
 		m_pDust[i].m_theta += (m_pDust[i].m_velTheta * time);
 		posOld = m_pDust[i].position;
-		m_pDust[i].CalcXY();
+		m_pDust[i].CalcXZ();
 		memcpy(&m_pDustCoords[i*3], m_pDust[i].position, sizeof(double)*3);
 	}
 
 	for (int i=0; i<m_numH2*2; ++i) {
 		m_pH2[i].m_theta += (m_pH2[i].m_velTheta * time);
 		posOld = m_pDust[i].position;
-		m_pH2[i].CalcXY();
+		m_pH2[i].CalcXZ();
 		memcpy(&m_pH2Coords[i*3], m_pH2[i].position, sizeof(double)*3);
 	}
 }
 
 void Galaxy::draw() {
 	glDisable(GL_DEPTH_TEST);
-	drawDust();
+	glActiveTexture(GL_TEXTURE0);
+	//drawDust();
 	drawH2();
-	drawStars();
+	//drawStars();
 	glEnable(GL_DEPTH_TEST);
 }
 
@@ -361,9 +364,9 @@ void Galaxy::drawStars() {
 	glPointSize(5.0);
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
-
 	this->octree->draw();
-
+	glDisableClientState(GL_COLOR_ARRAY);
+	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisable(GL_POINT_SPRITE);
 	glDisable(GL_BLEND);
 	glDisable(GL_TEXTURE_2D);
@@ -387,8 +390,9 @@ void Galaxy::drawDust() {
 	glEnableClientState(GL_COLOR_ARRAY);
 	glVertexPointer(3, GL_DOUBLE, 0, m_pDustCoords);
 	glColorPointer(3, GL_DOUBLE, 0, m_pDustColors);
-	glDrawArrays(GL_POINTS, 0, 	m_numDust);
-
+	glDrawArrays(GL_POINTS, 0, 	1);
+	glDisableClientState(GL_COLOR_ARRAY);
+	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisable(GL_POINT_SPRITE);
 	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_BLEND);

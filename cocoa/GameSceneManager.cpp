@@ -62,7 +62,7 @@ bool GameSceneManager::init() {
 	StarSystem *nearestSystem = *i;
 	Star *nearestStar = (Star *)nearestSystem->star;
 	*/
-	camera->position = Vector3d(0.0, 0.0, 15000.0);
+	camera->position = Vector3d(0.0, 0.0, 40000.0);
 
 	// initialize the galaxy as type Sa
 	galaxy = new Galaxy(20000, 4000, 0.0004, 0.75, 1.0, 0.5, 200, 300, 200000);
@@ -121,7 +121,6 @@ void GameSceneManager::step() {
 	__far__ = distance * 100000000000.0;
 
 	// reposition camera
-	__gpu_mutex__.lock();
 	Vector3d curpos = camera->position;
 	camera->step();
 	__camvelocity__ = (camera->position - curpos).length()/__dt__;
@@ -136,7 +135,6 @@ void GameSceneManager::step() {
 	camera->position -= nearest_position;
 	recalculatePositions(nearest_position);
 	__camdelta__ = (nearest_position - camera->position).length();
-	__gpu_mutex__.unlock();
 }
 
 void GameSceneManager::draw() {
@@ -159,17 +157,18 @@ void GameSceneManager::draw() {
 	glEnable(GL_POINT_SPRITE);
 	galaxy->draw();
 	glDisable(GL_POINT_SPRITE);
+
 	// draw system
-	/*for (std::list<StarSystem *>::iterator i = starSystems.begin(); i != starSystems.end(); ++i) {
+	for (std::list<StarSystem *>::iterator i = starSystems.begin(); i != starSystems.end(); ++i) {
 		StarSystem *ss = *i;
 		ss->draw();
 	}
-	*/
-	drawDebug();
+
+	//drawDebug();
 
 	double curtime = glfwGetTime();
 	__fps__ = 1.0/(curtime - __lastframe__);
-	__lastframe__ = glfwGetTime();
+	__lastframe__ = curtime;
 	__gpu_mutex__.unlock();
 }
 

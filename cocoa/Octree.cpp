@@ -149,9 +149,11 @@ void Octree::draw() {
 		return;
 
 	glVertexPointer(3, GL_DOUBLE, 0, this->starCoords);
-	glColorPointer(3, GL_DOUBLE, 0, starColors);
+	glColorPointer(3, GL_DOUBLE, 0, this->starColors);
 	glDrawArrays(GL_POINTS, 0, items.size());
-	/*
+}
+
+void Octree::drawDebug() {
 	glColor4f(0.0, 1.0, 0.0, 0.5);
 	glBegin(GL_LINES);
 
@@ -194,5 +196,4 @@ void Octree::draw() {
 	glVertex3d(maxx, maxy, maxz);
 
 	glEnd();
-	*/
 }

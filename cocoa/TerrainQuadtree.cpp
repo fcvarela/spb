@@ -398,6 +398,10 @@ void TerrainQuadtree::draw() {
 	uint16_t indexcount = (this->gridSizep1*this->gridSize*2) + (this->gridSize*4);
 	glDrawElements(GL_TRIANGLE_STRIP, indexcount, GL_UNSIGNED_SHORT, 0);
 
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	glDisableClientState(GL_INDEX_ARRAY);
+	glDisableClientState(GL_VERTEX_ARRAY);
+
 	this->lastDrawn = glfwGetTime();
 }
 

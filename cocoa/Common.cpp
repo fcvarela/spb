@@ -32,12 +32,14 @@ tthread::mutex __gpu_mutex__;
 
 void globalStep(void *arg) {
 	while (__running__) {
+		__gpu_mutex__.lock();
 		double now = glfwGetTime();
 		__dt__ = now - __lasttime__;
 		__lasttime__ = now;
 		for (uint16_t i=0; i<512; i++)
 			__keys__[i] = glfwGetKey(i);
 		getGameSceneManager()->step();
+		__gpu_mutex__.unlock();
 	}
 }
 
@@ -49,6 +51,7 @@ void proceduralGenLoop(void *arg) {
 
 	while (__running__) {
 		usleep(5000);
+		__gpu_mutex__.lock();
 		// set our context appropriately
 		CGLSetCurrentContext(__procedural_gen_ctx__);
 		TerrainLoader *loader = getTerrainLoader();
@@ -57,6 +60,7 @@ void proceduralGenLoop(void *arg) {
 			node->init();
 		}
 		CGLFlushDrawable(__procedural_gen_ctx__);
+		__gpu_mutex__.unlock();
 	}
 
 	CGLDestroyContext(__procedural_gen_ctx__);
