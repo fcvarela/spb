@@ -29,10 +29,20 @@ int main(void) {
 		exit(EXIT_FAILURE);
 	}
 
-	glewInit();
-
 	// set window title
 	glfwSetWindowTitle("SPB");
+
+	// initialize glew
+	glewInit();
+
+	// initialize a second context (procedural gen) that shares resources with the current
+	__render_ctx__ = CGLGetCurrentContext();
+	CGLPixelFormatObj current_pf = CGLGetPixelFormat(__render_ctx__);
+	CGLError err = CGLCreateContext(current_pf, __render_ctx__, &__procedural_gen_ctx__);
+	if (err != kCGLNoError) {
+		std::cerr << "ERROR CREATING NEW CONTEXT" << std::endl;
+		exit(EXIT_FAILURE);
+	}
 
 	// calculate opengl drawing parameters (window fov)
 	calcFOV();
@@ -46,15 +56,6 @@ int main(void) {
 	if (!gsm->init()) {
 		glfwTerminate();
 		delete gsm;
-		exit(EXIT_FAILURE);
-	}
-
-	// initialize a second context (procedural gen) that shares resources with the current
-	__render_ctx__ = CGLGetCurrentContext();
-	CGLPixelFormatObj current_pf = CGLGetPixelFormat(__render_ctx__);
-	CGLError err = CGLCreateContext(current_pf, __render_ctx__, &__procedural_gen_ctx__);
-	if (err != kCGLNoError) {
-		std::cerr << "ERROR CREATING NEW CONTEXT" << std::endl;
 		exit(EXIT_FAILURE);
 	}
 

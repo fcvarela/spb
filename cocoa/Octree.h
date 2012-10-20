@@ -22,6 +22,7 @@ public:
 	void initChildren();
 	bool containsPosition(Vector3d &position);
 	Octree *nodeForPosition(Vector3d &position);
+	GallacticNode *nearestNode(Vector3d &position);
 	void synch();
 
 	uint64_t index;

@@ -342,18 +342,13 @@ void Galaxy::draw() {
 	glDisable(GL_DEPTH_TEST);
 	glActiveTexture(GL_TEXTURE0);
 	//drawDust();
-	drawH2();
-	//drawStars();
+	//drawH2();
+	drawStars();
 	glEnable(GL_DEPTH_TEST);
 }
 
 void Galaxy::drawStars() {
 	glBindTexture(GL_TEXTURE_2D, m_texStar);
-	
-	float maxSize = 0.0f;
-	glGetFloatv(GL_POINT_SIZE_MAX, &maxSize );
-	glPointParameterf(GL_POINT_SIZE_MAX, maxSize);
-	glPointParameterf(GL_POINT_SIZE_MIN, 1.0f);
 	glTexEnvf(GL_POINT_SPRITE, GL_COORD_REPLACE, GL_TRUE);
 	
 	glEnable(GL_POINT_SPRITE);
@@ -374,6 +369,7 @@ void Galaxy::drawStars() {
 
 void Galaxy::drawDust() {
 	glBindTexture(GL_TEXTURE_2D, m_texStar);
+
 	float maxSize = 0.0f;
 	glGetFloatv( GL_POINT_SIZE_MAX, &maxSize );
 	glPointParameterf(GL_POINT_SIZE_MAX, maxSize);
@@ -390,7 +386,7 @@ void Galaxy::drawDust() {
 	glEnableClientState(GL_COLOR_ARRAY);
 	glVertexPointer(3, GL_DOUBLE, 0, m_pDustCoords);
 	glColorPointer(3, GL_DOUBLE, 0, m_pDustColors);
-	glDrawArrays(GL_POINTS, 0, 	1);
+	glDrawArrays(GL_POINTS, 0, 	m_numDust);
 	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisable(GL_POINT_SPRITE);
@@ -400,6 +396,7 @@ void Galaxy::drawDust() {
 
 void Galaxy::drawH2() {
 	glBindTexture(GL_TEXTURE_2D, m_texStar);
+
 	float maxSize = 0.0f;
 	glGetFloatv( GL_POINT_SIZE_MAX, &maxSize );
 	glPointParameterf(GL_POINT_SIZE_MAX, maxSize);
@@ -411,7 +408,6 @@ void Galaxy::drawH2() {
 	glEnable(GL_BLEND);            // soft blending of point sprites
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
-	/*
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
 	glVertexPointer(3, GL_DOUBLE, 0, m_pH2Coords);
@@ -420,7 +416,6 @@ void Galaxy::drawH2() {
 	glDrawArrays(GL_POINTS, 0, m_numH2);
 	glPointSize(15/6);
 	glDrawArrays(GL_POINTS, 0, m_numH2);
-	*/
 
 	for (int i=0; i<m_numH2; ++i) {
 		int k1 = 2*i;

@@ -117,13 +117,14 @@ void GameSceneManager::step() {
 	Vector3d nearest_position = nearest->position;
 	double distance = (camera->position - nearest_position).length();
 
-	__near__ = 1.0;
-	__far__ = distance * 100000000000.0;
-
 	// reposition camera
 	Vector3d curpos = camera->position;
+
+	__gpu_mutex__.lock();
 	camera->step();
 	__camvelocity__ = (camera->position - curpos).length()/__dt__;
+	__near__ = 1.0;
+	__far__ = distance * 100000000000.0;
 
 	// step
 	for (std::list<StarSystem *>::iterator i = starSystems.begin(); i != starSystems.end(); ++i) {
@@ -132,9 +133,17 @@ void GameSceneManager::step() {
 	}
 
 	// set camera delta according to nearest node
+	/*
 	camera->position -= nearest_position;
 	recalculatePositions(nearest_position);
+	*/
+	__gpu_mutex__.unlock();
+
 	__camdelta__ = (nearest_position - camera->position).length();
+	GallacticNode *node = galaxy->octree->nearestNode(camera->position);
+	if (node != NULL) {
+		__camdelta__ = (node->position - camera->position).length();
+	}
 }
 
 void GameSceneManager::draw() {
@@ -157,14 +166,24 @@ void GameSceneManager::draw() {
 	glEnable(GL_POINT_SPRITE);
 	galaxy->draw();
 	glDisable(GL_POINT_SPRITE);
+	GallacticNode *node = galaxy->octree->nearestNode(camera->position);
+	if (node != NULL) {
+		std::cerr << "Node is not null" << std::endl;
+		glColor3f(1.0, 0.0, 0.0);
+		glBegin(GL_LINES);
+		glVertex3f(node->position.x(), node->position.y(), node->position.z());
+		glVertex3f(node->position.x(), node->position.y()+10000.0, node->position.z());
+		glEnd();
+	}
 
 	// draw system
+	/*
 	for (std::list<StarSystem *>::iterator i = starSystems.begin(); i != starSystems.end(); ++i) {
 		StarSystem *ss = *i;
 		ss->draw();
 	}
-
-	//drawDebug();
+	*/
+	drawDebug();
 
 	double curtime = glfwGetTime();
 	__fps__ = 1.0/(curtime - __lastframe__);

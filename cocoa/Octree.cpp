@@ -95,6 +95,24 @@ Octree *Octree::nodeForPosition(Vector3d &position) {
 	return this;
 }
 
+GallacticNode *Octree::nearestNode(Vector3d &position) {
+	// get node for this position
+	Octree *on = this->nodeForPosition(position);
+
+	// get stars
+	double mindistance = this->size * 10.0;
+	GallacticNode *out = NULL;
+	for (std::list<GallacticNode *>::iterator i=on->items.begin(); i!=on->items.end(); i++) {
+		double distance = ((*i)->position - position).length();
+		if (distance < mindistance) {
+			mindistance = distance;
+			out = (*i);
+		}
+	}
+
+	return out;
+}
+
 void Octree::initChildren() {
 	uint8_t i=0;
 	for (int x = -1; x < 2; x+=2) {

@@ -244,10 +244,11 @@ void Planet::drawAtmosphere() {
 void Planet::drawSurface() {
 	glPushMatrix();
 	glTranslated(position.x(), position.y(), position.z());
-
+	
 	// draw surface
 	this->surfaceShader->bind();
 	GLuint shader = this->surfaceShader->program;
+
 
 	// all positions relative to our center
 	// set uniforms
@@ -259,6 +260,7 @@ void Planet::drawSurface() {
 	glUniform1i(glGetUniformLocation(shader, "normalTexture"), 0);
 	glUniform1i(glGetUniformLocation(shader, "colorTexture"), 1);
 	glUniform1i(glGetUniformLocation(shader, "topoTexture"), 2);
+
         
     // tile parent textures
 	glUniform1i(glGetUniformLocation(shader, "pnormalTexture"), 3);
@@ -281,8 +283,9 @@ void Planet::drawSurface() {
 	glUniform1f(glGetUniformLocation(shader, "near"), __near__);
 	glUniform1f(glGetUniformLocation(shader, "far"), __far__);
 
-	for (uint8_t q=0; q<6; q++)
+	for (uint8_t q=0; q<6; q++) {
 		this->quadtrees[q]->analyse(0.0);
+	}
 
 	glPopMatrix();
 	this->surfaceShader->unbind();

@@ -402,6 +402,9 @@ void TerrainQuadtree::draw() {
 	glDisableClientState(GL_INDEX_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
 
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
 	this->lastDrawn = glfwGetTime();
 }
 
