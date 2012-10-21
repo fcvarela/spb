@@ -1,0 +1,51 @@
+# Include files to watch for changes
+INCLUDE_FILES = $(wildcard src/*.h)
+
+# Local source files
+SOURCE_FILES = $(wildcard src/*.cpp)
+
+# Object files
+objects = $(subst src,build,$(SOURCE_FILES:.cpp=.o))
+
+# Compiler flags
+CFLAGS = -Isrc -I. -I./SOIL -I./glfw/include
+
+# Linker flags
+LINKFLAGS = SOIL/libsoil.a \
+			/usr/local/lib/libconfig++.a \
+			./libconfig-1.4.9/lib/.libs/libconfig++.a \
+			./libconfig-1.4.9/lib/.libs/libconfig.a \
+			/usr/local/lib/libGLEW.a \
+			/usr/local/lib/libftgl.a \
+			./glfw/lib/cocoa/libglfw.a \
+			-L/usr/X11/lib \
+			-lfreetype
+
+# Compile command
+COMPILE = g++ -O0 -ggdb -Wall -Werror -Wfatal-errors 
+
+# OS Detection
+OS=$(shell uname -s)
+#ifeq ($(OS), Linux)
+#    CFLAGS += `sdl-config --cflags` -I/usr/include/freetype2
+#    LINKFLAGS += -lopenal -lglut -lGLU `sdl-config --libs`
+#    COMPILE += -Dlinux
+#    OUTPUT = Vaalbara
+#endif
+ifeq ($(OS), Darwin)
+    CFLAGS += -I/usr/local/include -I/usr/X11/include -I/usr/X11/include/freetype2
+    LINKFLAGS += -L/usr/local/lib -lobjc -framework Cocoa -framework OpenGL -framework IOKit -framework OpenAL -framework GLUT
+    COMPILE += -arch x86_64 -Dmacosx
+    OUTPUT = Vaalbara.app/Contents/MacOS/Vaalbara
+endif
+
+COMPILE += $(CFLAGS)
+
+vaalbara: $(objects)
+	$(COMPILE) -o $(OUTPUT) $(objects) $(LINKFLAGS)
+
+$(objects): build/%.o: src/%.cpp $(INCLUDE_FILES) Makefile
+	$(COMPILE) $< -c -o $@
+
+clean:
+	rm -rf Vaalbara.app

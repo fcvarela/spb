@@ -418,10 +418,7 @@ void TerrainQuadtree::buildQuadtreeElementd(double *mesh, uint8_t size, uint8_t 
 	gsize = size + 1.0 + (border * 2.0);
 	dxovergridsize = dx/(double)size;
 	dyovergridsize = dy/(double)size;
-	
 	gridsizeover2 = size/2.0;
-
-	double length = 0.0;
 
 	for (u=0; u<gsize; u++) {
 		for (v=0; v<gsize; v++) {
@@ -452,10 +449,7 @@ void TerrainQuadtree::buildQuadtreeElementf(float *mesh, uint8_t size, uint8_t r
 	gsize = size + 1.0 + (border * 2.0);
 	dxovergridsize = dx/(double)size;
 	dyovergridsize = dy/(double)size;
-	
 	gridsizeover2 = size/2.0;
-
-	double length = 0.0;
 
 	for (u=0; u<gsize; u++) {
 		for (v=0; v<gsize; v++) {
