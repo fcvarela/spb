@@ -42,6 +42,7 @@ public:
 	void drawDust();
 	void drawH2();
 	void draw();
+	void drawColored();
 
 	Color ColorFromTemperature(double temp) const;
 	double GetOrbitalVelocity(double rad) const;

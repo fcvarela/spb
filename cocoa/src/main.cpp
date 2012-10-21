@@ -32,6 +32,9 @@ int main(void) {
 	// set window title
 	glfwSetWindowTitle("SPB");
 
+	// show cursor
+	glfwEnable(GLFW_MOUSE_CURSOR);
+
 	// initialize glew
 	glewInit();
 

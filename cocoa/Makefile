@@ -31,7 +31,7 @@ ifeq ($(OS), Linux)
     LINKFLAGS += -lopenal -lGLU
     COMPILE += -Dlinux
     OUTPUT = Vaalbara
-#endif
+endif
 ifeq ($(OS), Darwin)
     CFLAGS += -I/usr/local/include -I/usr/X11/include -I/usr/X11/include/freetype2
     LINKFLAGS += -L/usr/local/lib -lobjc -framework Cocoa -framework OpenGL -framework IOKit -framework OpenAL

@@ -65,7 +65,7 @@ bool GameSceneManager::init() {
 	camera->position = Vector3d(0.0, 0.0, 40000.0);
 
 	// initialize the galaxy as type Sa
-	galaxy = new Galaxy(20000, 4000, 0.0004, 0.75, 1.0, 0.5, 200, 300, 200000);
+	galaxy = new Galaxy(20000, 4000, 0.0004, 0.75, 1.0, 0.5, 200, 300, 150000);
 
 	// prepare our viewport
 	this->reshape();
@@ -139,10 +139,9 @@ void GameSceneManager::step() {
 	*/
 	__gpu_mutex__.unlock();
 
-	__camdelta__ = (nearest_position - camera->position).length();
-	GallacticNode *node = galaxy->octree->nearestNode(camera->position);
-	if (node != NULL) {
-		__camdelta__ = (node->position - camera->position).length();
+	__camdelta__ = camera->position.length();
+	if (__selectednode__ != NULL) {
+		__camdelta__ = (__selectednode__->position - camera->position).length();
 	}
 }
 
@@ -162,17 +161,38 @@ void GameSceneManager::draw() {
 	// update the view frustum
 	calculateFrustum(this->frustum);
 
+	// got clicks? draw color coded objects to figure out if there
+	// was a hit
+	if (__mousebuttons__[0] == 1) {
+		galaxy->drawColored();
+		GLubyte color[3];
+		glReadPixels(__mousepos__[0], __height__ - 1 - __mousepos__[1], 1, 1, GL_RGB, GL_UNSIGNED_BYTE, color);
+
+		// ids are sequencial
+		uint32_t id = color[2] + color[1]*256 + color[0]*65536;
+		if (id > 0) {
+			// get first id
+			uint32_t firstid = galaxy->m_pStars[0].colorid[2] +\
+							   galaxy->m_pStars[0].colorid[1] * 256 +\
+							   galaxy->m_pStars[0].colorid[0] * 65536;
+
+			__selectednode__ = &galaxy->m_pStars[id-firstid];
+		}
+
+		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+		glfwPollEvents();
+	}
+
 	// draw galaxy
 	glEnable(GL_POINT_SPRITE);
 	galaxy->draw();
 	glDisable(GL_POINT_SPRITE);
-	GallacticNode *node = galaxy->octree->nearestNode(camera->position);
-	if (node != NULL) {
-		std::cerr << "Node is not null" << std::endl;
+
+	if (__selectednode__ != NULL) {
 		glColor3f(1.0, 0.0, 0.0);
 		glBegin(GL_LINES);
-		glVertex3f(node->position.x(), node->position.y(), node->position.z());
-		glVertex3f(node->position.x(), node->position.y()+10000.0, node->position.z());
+		glVertex3f(__selectednode__->position.x(), __selectednode__->position.y(), __selectednode__->position.z());
+		glVertex3f(0., 0., 0.);
 		glEnd();
 	}
 
@@ -183,6 +203,8 @@ void GameSceneManager::draw() {
 		ss->draw();
 	}
 	*/
+
+	glfwPollEvents();
 	drawDebug();
 
 	double curtime = glfwGetTime();

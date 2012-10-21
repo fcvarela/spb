@@ -20,9 +20,11 @@ double __far__ = 0.0;
 uint16_t __width__ = 0;
 uint16_t __height__ = 0;
 uint8_t __keys__[512];
+int __mousepos__[2];
+int __mousebuttons__[2];
 double __camdelta__ = 0.0;
 int __running__ = GL_TRUE;
-
+Node *__selectednode__;
 FTFont *__font__;
 
 CGLContextObj __procedural_gen_ctx__;
@@ -34,8 +36,19 @@ void globalStep(void *arg) {
 		double now = glfwGetTime();
 		__dt__ = now - __lasttime__;
 		__lasttime__ = now;
+
+		// poll events. can't do this on any thread other than main (cocoa)
+		// glfwPollEvents();
+
+		// get active keys
 		for (uint16_t i=0; i<512; i++)
 			__keys__[i] = glfwGetKey(i);
+
+		// get mouse position and buttons
+		glfwGetMousePos(&__mousepos__[0], &__mousepos__[1]);
+		__mousebuttons__[0] = glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT);
+		__mousebuttons__[1] = glfwGetMouseButton(GLFW_MOUSE_BUTTON_RIGHT);
+
 		getGameSceneManager()->step();
 	}
 }

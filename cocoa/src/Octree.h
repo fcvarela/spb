@@ -33,6 +33,7 @@ public:
 	// debug
 	double minx, miny, minz, maxx, maxy, maxz;
 	void draw();
+	void drawColored();
 	void drawDebug();
 };
 

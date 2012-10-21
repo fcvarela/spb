@@ -171,6 +171,27 @@ void Octree::draw() {
 	glDrawArrays(GL_POINTS, 0, items.size());
 }
 
+void Octree::drawColored() {
+	if (!boxInFrustum((double *)&boundingBox[0]))
+		return;
+
+	if (children[0] != NULL) {
+		for (uint8_t i=0; i<8; i++)
+			children[i]->drawColored();
+		return;
+	}
+
+	if (this->starCoords == NULL)
+		return;
+
+	GallacticNode *n;
+	for (std::list<GallacticNode *>::iterator i = items.begin(); i != items.end(); ++i) {
+		n = (*i);
+		glColor3ub(n->colorid[0], n->colorid[1], n->colorid[2]);
+		glVertex3d(n->position.x(), n->position.y(), n->position.z());
+	}
+}
+
 void Octree::drawDebug() {
 	glColor4f(0.0, 1.0, 0.0, 0.5);
 	glBegin(GL_LINES);

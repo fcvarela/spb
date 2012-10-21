@@ -6,6 +6,7 @@
 #include <GL/glfw.h>
 #include <FTGL/ftgl.h>
 #include <tinythread.h>
+#include <Node.h>
 
 extern double __dt__;
 extern double __lasttime__;
@@ -20,9 +21,12 @@ extern double __aratio__;
 extern double __near__;
 extern double __far__;
 extern uint8_t __keys__[512];
+extern int __mousepos__[2];
+extern int __mousebuttons__[2];
 extern double __camdelta__;
 extern FTFont *__font__;
 extern int __running__;
+extern Node *__selectednode__;
 
 extern CGLContextObj __procedural_gen_ctx__;
 extern CGLContextObj __render_ctx__;

@@ -7,12 +7,15 @@
 
 class Node {
 public:
-	Vector3d	position, velocity, acceleration;
-	Quatd		rotation;
-	Vector3d	angrate, angaccel;
-	std::string	label;
+	Vector3d position, velocity, acceleration;
+	Quatd rotation;
+	Vector3d angrate, angaccel;
 
-	Shader		*shader;
+	static uint32_t g_id;
+	uint8_t colorid[3];
+	std::string label;
+
+	Shader *shader;
 
 	Node();
 	virtual void step();
