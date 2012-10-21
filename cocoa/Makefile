@@ -22,19 +22,19 @@ LINKFLAGS = SOIL/libsoil.a \
 			-lfreetype
 
 # Compile command
-COMPILE = g++ -O0 -ggdb -Wall -Werror -Wfatal-errors 
+COMPILE = g++ -O3 -g -ggdb -Wall -Werror -Wfatal-errors 
 
 # OS Detection
 OS=$(shell uname -s)
-#ifeq ($(OS), Linux)
-#    CFLAGS += `sdl-config --cflags` -I/usr/include/freetype2
-#    LINKFLAGS += -lopenal -lglut -lGLU `sdl-config --libs`
-#    COMPILE += -Dlinux
-#    OUTPUT = Vaalbara
+ifeq ($(OS), Linux)
+    CFLAGS += -I/usr/include/freetype2
+    LINKFLAGS += -lopenal -lGLU
+    COMPILE += -Dlinux
+    OUTPUT = Vaalbara
 #endif
 ifeq ($(OS), Darwin)
     CFLAGS += -I/usr/local/include -I/usr/X11/include -I/usr/X11/include/freetype2
-    LINKFLAGS += -L/usr/local/lib -lobjc -framework Cocoa -framework OpenGL -framework IOKit -framework OpenAL -framework GLUT
+    LINKFLAGS += -L/usr/local/lib -lobjc -framework Cocoa -framework OpenGL -framework IOKit -framework OpenAL
     COMPILE += -arch x86_64 -Dmacosx
     OUTPUT = Vaalbara.app/Contents/MacOS/Vaalbara
 endif
@@ -49,3 +49,4 @@ $(objects): build/%.o: src/%.cpp $(INCLUDE_FILES) Makefile
 
 clean:
 	rm -rf Vaalbara.app
+	rm -r build/*.o
