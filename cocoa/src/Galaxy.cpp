@@ -36,9 +36,17 @@ const Vector3d& GallacticNode::CalcXZ() {
 	position = Vector3d(
 		p.x() + (a * cosalpha * cosbeta - b * sinalpha * sinbeta),
 		0.0,
-		p.y() + (a * cosalpha * sinbeta + b * sinalpha * cosbeta));
+		p.z() + (a * cosalpha * sinbeta + b * sinalpha * cosbeta));
 
+	// center bulge allows 90 deg inclinations
+	// edge should fall to 5
 	double factor = 15.0;
+	if (m_a < 6000.0) {
+		double distance = 6000.0 - m_a;
+		factor = 35.0 * (1.0 - distance / 6000.0);
+	}
+	factor = 7.5;
+
 	Quatd nrot = Quatd(Vector3d(1.0, 0.0, 0.0), 0.0);
 	nrot = nrot * Quatd(Vector3d(1.0, 0.0, 0.0), m_inclinationx * factor);
 	nrot = nrot * Quatd(Vector3d(0.0, 0.0, 1.0), m_inclinationz * factor);
@@ -178,8 +186,8 @@ void Galaxy::InitStars(double sigma) {
 		m_pStars[i].m_b = rad * GetExcentricity(rad);
 		m_pStars[i].m_angle = GetAngularOffset(rad);
 		m_pStars[i].m_theta = 360.0 * my_random();
-		m_pStars[i].m_inclinationx = my_random();
-		m_pStars[i].m_inclinationz = my_random();
+		m_pStars[i].m_inclinationx = 2.0*my_random()-1.0;
+		m_pStars[i].m_inclinationz = 2.0*my_random()-1.0;
 		m_pStars[i].m_velTheta = GetOrbitalVelocity(rad);
 		m_pStars[i].m_center = Vector3d(0,0,0);
 		m_pStars[i].m_temp = 6000.0 + (6000.0 * my_random()) - 3000.0;
@@ -199,8 +207,8 @@ void Galaxy::InitStars(double sigma) {
 		m_pDust[i].m_b = rad * GetExcentricity(rad);
 		m_pDust[i].m_angle = GetAngularOffset(rad);
 		m_pDust[i].m_theta = 360.0 * my_random();
-		m_pDust[i].m_inclinationx = my_random();
-		m_pDust[i].m_inclinationz = my_random();
+		m_pDust[i].m_inclinationx = 2.0*my_random()-1.0;
+		m_pDust[i].m_inclinationz = 2.0*my_random()-1.0;
 		m_pDust[i].m_velTheta = GetOrbitalVelocity( (m_pDust[i].m_a + m_pDust[i].m_b)/2.0 );
 		m_pDust[i].m_center = Vector3d(0,0,0);
 		m_pDust[i].m_temp = 6000 + rad/4.0;
@@ -220,8 +228,8 @@ void Galaxy::InitStars(double sigma) {
 		m_pH2[k1].m_b = rad * GetExcentricity(rad);
 		m_pH2[k1].m_angle = GetAngularOffset(rad);
 		m_pH2[k1].m_theta = 360.0 * my_random();
-		m_pH2[k1].m_inclinationx = my_random();
-		m_pH2[k1].m_inclinationz = my_random();
+		m_pH2[k1].m_inclinationx = 2.0*my_random()-1.0;
+		m_pH2[k1].m_inclinationz = 2.0*my_random()-1.0;
 		m_pH2[k1].m_velTheta = GetOrbitalVelocity( (m_pH2[k1].m_a + m_pH2[k1].m_b)/2.0 );
 		m_pH2[k1].m_center = Vector3d(0,0,0);
 		m_pH2[k1].m_temp = 6000 + (6000 * my_random()) - 3000;

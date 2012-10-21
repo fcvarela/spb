@@ -65,7 +65,7 @@ bool GameSceneManager::init() {
 	camera->position = Vector3d(0.0, 0.0, 40000.0);
 
 	// initialize the galaxy as type Sa
-	galaxy = new Galaxy(20000, 4000, 0.0004, 0.75, 1.0, 0.5, 200, 300, 150000);
+	galaxy = new Galaxy(20000, 4000, 0.0004, 0.75, 1.0, 0.5, 200, 300, 250000);
 
 	// prepare our viewport
 	this->reshape();
@@ -189,7 +189,7 @@ void GameSceneManager::draw() {
 	glDisable(GL_POINT_SPRITE);
 
 	if (__selectednode__ != NULL) {
-		glColor3f(1.0, 0.0, 0.0);
+		glColor4f(1.0, 0.0, 0.0, 0.7);
 		glBegin(GL_LINES);
 		glVertex3f(__selectednode__->position.x(), __selectednode__->position.y(), __selectednode__->position.z());
 		glVertex3f(0., 0., 0.);
