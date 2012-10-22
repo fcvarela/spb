@@ -70,6 +70,9 @@ public:
 	double *texcoords;
 	float *positionTextureContent;
 
+	// generation
+	GLuint generationScreenList;
+
 	// corners
 	Vector3d topleft, topright, botleft, botright;
 

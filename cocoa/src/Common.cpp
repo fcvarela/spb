@@ -37,9 +37,6 @@ void globalStep(void *arg) {
 		__dt__ = now - __lasttime__;
 		__lasttime__ = now;
 
-		// poll events. can't do this on any thread other than main (cocoa)
-		// glfwPollEvents();
-
 		// get active keys
 		for (uint16_t i=0; i<512; i++)
 			__keys__[i] = glfwGetKey(i);
@@ -59,15 +56,19 @@ void proceduralGenLoop(void *arg) {
 	CGLSetParameter(__procedural_gen_ctx__, kCGLCPSwapInterval, &sync);
 
 	while (__running__) {
-		usleep(5000);
-		// set our context appropriately
-		CGLSetCurrentContext(__procedural_gen_ctx__);
 		TerrainLoader *loader = getTerrainLoader();
 		TerrainQuadtree *node = loader->dequeue();
 		if (node != NULL) {
-			node->init();
+			
+			//__gpu_mutex__.lock();
+			// set our context appropriately
+			CGLSetCurrentContext(__procedural_gen_ctx__);
+			double start = glfwGetTime();node->init();double end = glfwGetTime();
+			CGLFlushDrawable(__procedural_gen_ctx__);
+			//__gpu_mutex__.unlock();
+			
+			std::cerr << "took " << end-start << "seconds" << std::endl;
 		}
-		CGLFlushDrawable(__procedural_gen_ctx__);
 	}
 
 	CGLDestroyContext(__procedural_gen_ctx__);

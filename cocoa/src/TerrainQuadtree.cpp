@@ -62,6 +62,8 @@ TerrainQuadtree::TerrainQuadtree(TerrainQuadtree *parent, Planet *planet, uint16
 		this->generatorShader = parent->generatorShader;
 		this->generatorShaderN = parent->generatorShaderN;
 		this->generatorShaderC = parent->generatorShaderC;
+
+		this->framebuffer = parent->framebuffer;
 	}
 
 	this->positionTexture = NULL;
@@ -73,6 +75,7 @@ TerrainQuadtree::TerrainQuadtree(TerrainQuadtree *parent, Planet *planet, uint16
 	this->ready = false;
 
 	// init
+	this->generateVertices();
 	TerrainLoader *loader = getTerrainLoader();
 	loader->enqueue(this);
 }
@@ -82,25 +85,39 @@ TerrainQuadtree::~TerrainQuadtree() {
 }
 
 void TerrainQuadtree::init() {
-	this->generateVertices();
 	this->finishVertices();
 	this->generateTextures();
 }
 
 void TerrainQuadtree::generateTextures() {
-	// init our FB
-	glGenFramebuffers(1, &this->framebuffer);
-
 	// prepare viewport and projection
-	glDisable(GL_DEPTH_TEST);
-	glViewport(0, 0, this->textureSize, this->textureSize);
-	glMatrixMode(GL_PROJECTION);
-	glPolygonMode(GL_FRONT, GL_FILL);
-	glLoadIdentity();
-	glOrtho(0.0, (double)this->textureSize, 0.0, (double)this->textureSize, 0.0, 1.0);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	glTranslated(0.0, 0.0, -1.0);
+	//glDisable(GL_DEPTH_TEST);
+	
+	// do not setup the proj more than once
+	if (this->parent == NULL) {
+		glViewport(0, 0, this->textureSize, this->textureSize);
+		glMatrixMode(GL_PROJECTION);
+		glPolygonMode(GL_FRONT, GL_FILL);
+		glLoadIdentity();
+		glOrtho(0.0, (double)this->textureSize, 0.0, (double)this->textureSize, 0.0, 1.0);
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+		glTranslated(0.0, 0.0, -1.0);
+
+		generationScreenList = glGenLists(1);
+		glNewList(generationScreenList, GL_COMPILE);
+		glBegin(GL_QUADS);
+		glTexCoord2f(0.0, 0.0);
+		glVertex3f(0.0, 0.0, 0.0);
+		glTexCoord2f(1.0, 0.0);
+		glVertex3f(this->textureSize, 0.0, 0.0);
+		glTexCoord2f(1.0, 1.0);
+		glVertex3f(this->textureSize, this->textureSize, 0.0);
+		glTexCoord2f(0.0, 1.0);
+		glVertex3f(0.0, this->textureSize, 0.0);
+		glEnd();
+		glEndList();
+	}
 
 	// generate topography
 	glBindFramebuffer(GL_FRAMEBUFFER, this->framebuffer);
@@ -109,21 +126,12 @@ void TerrainQuadtree::generateTextures() {
 	
 	this->generatorShader->bind();
 	glUniform1i(glGetUniformLocation(this->generatorShader->program, "positionTexture"), 0);
-	glBegin(GL_QUADS);
-	glTexCoord2f(0.0, 0.0);
-	glVertex3f(0.0, 0.0, 0.0);
-	glTexCoord2f(1.0, 0.0);
-	glVertex3f(this->textureSize, 0.0, 0.0);
-	glTexCoord2f(1.0, 1.0);
-	glVertex3f(this->textureSize, this->textureSize, 0.0);
-	glTexCoord2f(0.0, 1.0);
-	glVertex3f(0.0, this->textureSize, 0.0);
-	glEnd();
+	glCallList(generationScreenList);
 	this->generatorShader->unbind();
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	// generate normals
-	glBindFramebuffer(GL_FRAMEBUFFER, this->framebuffer);
+	//glBindFramebuffer(GL_FRAMEBUFFER, this->framebuffer);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->normalTexture->id, 0);
 	this->topoTexture->bind(GL_TEXTURE1);
 
@@ -132,38 +140,20 @@ void TerrainQuadtree::generateTextures() {
 	glUniform1f(glGetUniformLocation(this->generatorShaderN->program, "radius"), this->planet->radius);
 	glUniform1i(glGetUniformLocation(this->generatorShaderN->program, "topoTexture"), 1);
 	glUniform1i(glGetUniformLocation(this->generatorShaderN->program, "positionTexture"), 0);
-	glBegin(GL_QUADS);
-	glTexCoord2f(0.0, 0.0);
-	glVertex3f(0.0, 0.0, 0.0);
-	glTexCoord2f(1.0, 0.0);
-	glVertex3f(this->textureSize, 0.0, 0.0);
-	glTexCoord2f(1.0, 1.0);
-	glVertex3f(this->textureSize, this->textureSize, 0.0);
-	glTexCoord2f(0.0, 1.0);
-	glVertex3f(0.0, this->textureSize, 0.0);
-	glEnd();
+	glCallList(generationScreenList);
 	this->generatorShaderN->unbind();
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	// generate colors
-	glBindFramebuffer(GL_FRAMEBUFFER, this->framebuffer);
+	//glBindFramebuffer(GL_FRAMEBUFFER, this->framebuffer);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->colorTexture->id, 0);
 	this->generatorShaderC->bind();
 	glUniform1i(glGetUniformLocation(this->generatorShaderC->program, "topoTexture"), 1);
-	glBegin(GL_QUADS);
-	glTexCoord2f(0.0, 0.0);
-	glVertex3f(0.0, 0.0, 0.0);
-	glTexCoord2f(1.0, 0.0);
-	glVertex3f(this->textureSize, 0.0, 0.0);
-	glTexCoord2f(1.0, 1.0);
-	glVertex3f(this->textureSize, this->textureSize, 0.0);
-	glTexCoord2f(0.0, 1.0);
-	glVertex3f(0.0, this->textureSize, 0.0);
-	glEnd();
+	glCallList(generationScreenList);
 	this->generatorShaderC->unbind();
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	glEnable(GL_DEPTH_TEST);
+	//glEnable(GL_DEPTH_TEST);
 	this->ready = true;
 }
 
