@@ -94,7 +94,7 @@ Galaxy::Galaxy(double rad, double radCore, double deltaAng, double ex1, double e
 	m_pDust = NULL;
 	m_pH2 = NULL;
 
-	this->octree = new Octree(NULL, 0, m_pos, rad*4.0, 30);
+	this->octree = new Octree(NULL, 0, m_pos, m_radFarField*2.0, 100);
 
 	FastMath::init();
 
@@ -337,11 +337,7 @@ void Galaxy::draw() {
 	glActiveTexture(GL_TEXTURE0);
 	drawDust();
 	drawH2();
-	// make sure we're in synch
-	glfwPollEvents();
 	drawStars();
-	// make sure we're in synch
-	glfwPollEvents();
 	glEnable(GL_DEPTH_TEST);
 }
 
@@ -365,13 +361,11 @@ void Galaxy::drawColored() {
 void Galaxy::drawStars() {
 	glBindTexture(GL_TEXTURE_2D, m_texStar);
 	glTexEnvf(GL_POINT_SPRITE, GL_COORD_REPLACE, GL_TRUE);
-	
 	glEnable(GL_POINT_SPRITE);
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-	
-	glPointSize(5.0);
+	glPointSize(4.0);
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
 	this->octree->draw();
@@ -384,19 +378,16 @@ void Galaxy::drawStars() {
 
 void Galaxy::drawDust() {
 	glBindTexture(GL_TEXTURE_2D, m_texStar);
-
 	float maxSize = 0.0f;
 	glGetFloatv( GL_POINT_SIZE_MAX, &maxSize );
 	glPointParameterf(GL_POINT_SIZE_MAX, maxSize);
 	glPointParameterf(GL_POINT_SIZE_MIN, 1.0f);
 	glTexEnvf(GL_POINT_SPRITE, GL_COORD_REPLACE, GL_TRUE);
 	glEnable(GL_POINT_SPRITE);
-	glEnable(GL_TEXTURE_2D);       // point sprite texture support
-	glEnable(GL_BLEND);            // soft blending of point sprites
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-
 	glPointSize(maxSize);
-
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
 	glVertexPointer(3, GL_DOUBLE, 0, m_pDustCoords);
@@ -411,25 +402,21 @@ void Galaxy::drawDust() {
 
 void Galaxy::drawH2() {
 	glBindTexture(GL_TEXTURE_2D, m_texStar);
-
 	float maxSize = 0.0f;
 	glGetFloatv( GL_POINT_SIZE_MAX, &maxSize );
 	glPointParameterf(GL_POINT_SIZE_MAX, maxSize);
 	glPointParameterf(GL_POINT_SIZE_MIN, 1.0f);
 	glTexEnvf(GL_POINT_SPRITE, GL_COORD_REPLACE, GL_TRUE);
-
 	glEnable(GL_POINT_SPRITE);
-	glEnable(GL_TEXTURE_2D);       // point sprite texture support
-	glEnable(GL_BLEND);            // soft blending of point sprites
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
 	glVertexPointer(3, GL_DOUBLE, 0, m_pH2Coords);
 	glColorPointer(3, GL_DOUBLE, 0, m_pH2Colors);
 	glPointSize(40);
 	glDrawArrays(GL_POINTS, 0, m_numH2);
-	
 	glDisable(GL_POINT_SPRITE);
 	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_BLEND);

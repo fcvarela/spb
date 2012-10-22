@@ -65,7 +65,7 @@ bool GameSceneManager::init() {
 	camera->position = Vector3d(0.0, 0.0, 40000.0);
 
 	// initialize the galaxy as type Sa
-	galaxy = new Galaxy(20000, 4000, 0.0004, 0.75, 1.0, 0.5, 200, 300, 250000);
+	galaxy = new Galaxy(20000, 4000, 0.0004, 0.75, 1.0, 0.5, 200, 300, 150000);
 
 	// prepare our viewport
 	this->reshape();
@@ -180,7 +180,6 @@ void GameSceneManager::draw() {
 		}
 
 		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-		glfwPollEvents();
 	}
 
 	// draw galaxy
@@ -204,7 +203,6 @@ void GameSceneManager::draw() {
 	}
 	*/
 
-	glfwPollEvents();
 	drawDebug();
 
 	double curtime = glfwGetTime();
