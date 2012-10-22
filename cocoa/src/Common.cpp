@@ -59,15 +59,15 @@ void proceduralGenLoop(void *arg) {
 		TerrainLoader *loader = getTerrainLoader();
 		TerrainQuadtree *node = loader->dequeue();
 		if (node != NULL) {
-			
-			//__gpu_mutex__.lock();
 			// set our context appropriately
 			CGLSetCurrentContext(__procedural_gen_ctx__);
-			double start = glfwGetTime();node->init();double end = glfwGetTime();
+			double start = glfwGetTime();
+			node->init();
+			double end = glfwGetTime();
+			double span = end-start;
+			span += 0.0;
 			CGLFlushDrawable(__procedural_gen_ctx__);
-			//__gpu_mutex__.unlock();
-			
-			std::cerr << "took " << end-start << "seconds" << std::endl;
+			//std::cerr << "took " << end-start << "seconds" << std::endl;
 		}
 	}
 

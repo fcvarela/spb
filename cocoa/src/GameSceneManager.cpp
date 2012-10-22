@@ -173,8 +173,8 @@ void GameSceneManager::draw() {
 		if (id > 0) {
 			// get first id
 			uint32_t firstid = galaxy->m_pStars[0].colorid[2] +\
-							   galaxy->m_pStars[0].colorid[1] * 256 +\
-							   galaxy->m_pStars[0].colorid[0] * 65536;
+				galaxy->m_pStars[0].colorid[1] * 256 +\
+				galaxy->m_pStars[0].colorid[0] * 65536;
 
 			__selectednode__ = &galaxy->m_pStars[id-firstid];
 		}

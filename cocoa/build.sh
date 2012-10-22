@@ -1,7 +1,7 @@
 /bin/sh bundle.sh Vaalbara
 
 cp /usr/X11/lib/libfreetype.6.dylib libs/
-make -j8
+make -j5
 
 cp -r conf Vaalbara.app/Contents/Resources
 cp -r data Vaalbara.app/Contents/Resources

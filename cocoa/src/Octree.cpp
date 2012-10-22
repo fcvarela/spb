@@ -139,6 +139,7 @@ void Octree::initChildren() {
 
 // i really should template this...
 void Octree::insertItem(GallacticNode *item) {
+	item->coloridToLabel();
 	// am i the one? make sure we can hold it
 	if (this->items.size() < this->maxItemsPerNode && this->children[0]==NULL) {
 		this->items.push_back(item);

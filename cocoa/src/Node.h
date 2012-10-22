@@ -18,6 +18,8 @@ public:
 	Shader *shader;
 
 	Node();
+	void coloridToLabel();
+	
 	virtual void step();
 	virtual void draw();
 };
