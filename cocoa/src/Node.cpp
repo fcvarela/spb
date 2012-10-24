@@ -39,6 +39,4 @@ void Node::coloridToLabel() {
 		label.push_back(65+digit);
 		id = (id - digit) / 26;
 	} while (id > 0);
-	
-	std::cerr << label << std::endl;
 }
