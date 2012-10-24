@@ -264,6 +264,7 @@ void Galaxy::InitStars(double sigma) {
 	SingleTimeStep(100000);
 
 	for (int i=0; i<m_numStars; i++) {
+		m_pStars[i].coloridToLabel();
 		Octree *inserthere = this->octree->nodeForPosition(m_pStars[i].position);
 		inserthere->insertItem(&m_pStars[i]);
 	}

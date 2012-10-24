@@ -31,11 +31,14 @@ void Node::draw() {
 }
 
 void Node::coloridToLabel() {
+	// base26
 	uint32_t id = colorid[2] + colorid[1] * 256 + colorid[0] * 65536;
-	while (id > 10) {
-		uint8_t digit = 65 + id%10;
-		label.push_back(digit);
-		id /= 10;
-	}
+
+	do {
+		uint8_t digit = id % 26;
+		label.push_back(65+digit);
+		id = (id - digit) / 26;
+	} while (id > 0);
+	
 	std::cerr << label << std::endl;
 }
