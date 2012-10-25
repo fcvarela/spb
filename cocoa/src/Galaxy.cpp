@@ -192,6 +192,12 @@ void Galaxy::InitStars(double sigma) {
 		m_pStars[i].m_center = Vector3d(0,0,0);
 		m_pStars[i].m_temp = 6000.0 + (6000.0 * my_random()) - 3000.0;
 		m_pStars[i].m_mag = 0.1 + 0.4 * my_random();
+
+		// up to 1000 solar radii converted to light years
+		m_pStars[i].m_radius = 100.0 * (my_random()+0.1);
+		std::cerr << "Node has " << m_pStars[i].m_radius << " solar masses" << std::endl;
+		m_pStars[i].m_radius *= 6.955E8 * 1.05702341E-16;
+
 		int idx = std::min(1.0/dh * (m_pStars[i].m_a + m_pStars[i].m_b)/2.0, 99.0);
 		m_numberByRad[idx]++;
 	}

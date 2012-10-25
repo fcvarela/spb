@@ -27,6 +27,7 @@ public:
 	double m_b;				// major semiaxis
 	double m_temp;			// star temperature
 	double m_mag;			// brigtness;
+	double m_radius;
 	Color color;
 	Vector3d  m_center;		// center of the elliptical orbit
 };

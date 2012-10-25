@@ -123,7 +123,7 @@ void GameSceneManager::step() {
 	__gpu_mutex__.lock();
 	camera->step();
 	__camvelocity__ = (camera->position - curpos).length()/__dt__;
-	__near__ = 1.0;
+	__near__ = 0.001;
 	__far__ = distance * 100000000000.0;
 
 	// step
@@ -140,8 +140,8 @@ void GameSceneManager::step() {
 	__gpu_mutex__.unlock();
 
 	__camdelta__ = camera->position.length();
-	if (__selectednode__ != NULL) {
-		__camdelta__ = (__selectednode__->position - camera->position).length();
+	if (__selectedstar__ != NULL) {
+		__camdelta__ = (__selectedstar__->position - camera->position).length();
 	}
 }
 
@@ -176,7 +176,7 @@ void GameSceneManager::draw() {
 				galaxy->m_pStars[0].colorid[1] * 256 +\
 				galaxy->m_pStars[0].colorid[0] * 65536;
 
-			__selectednode__ = &galaxy->m_pStars[id-firstid];
+			__selectedstar__ = &galaxy->m_pStars[id-firstid];
 		}
 
 		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
@@ -187,11 +187,14 @@ void GameSceneManager::draw() {
 	galaxy->draw();
 	glDisable(GL_POINT_SPRITE);
 
-	if (__selectednode__ != NULL) {
+	if (__selectedstar__ != NULL) {
+		Vector3d newpos = Vector3d(__selectedstar__->position);
+		newpos.normalize();
+		newpos = newpos * (__selectedstar__->position.length() - __selectedstar__->m_radius);
 		glColor4f(1.0, 0.0, 0.0, 0.7);
 		glBegin(GL_LINES);
-		glVertex3f(__selectednode__->position.x(), __selectednode__->position.y(), __selectednode__->position.z());
-		glVertex3f(0., 0., 0.);
+		glVertex3f(__selectedstar__->position.x(), __selectedstar__->position.y(), __selectedstar__->position.z());
+		glVertex3f(newpos.x(), newpos.y(), newpos.z());
 		glEnd();
 	}
 

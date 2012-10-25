@@ -7,6 +7,7 @@
 #include <FTGL/ftgl.h>
 #include <tinythread.h>
 #include <Node.h>
+#include <Galaxy.h>
 
 extern double __dt__;
 extern double __lasttime__;
@@ -27,6 +28,7 @@ extern double __camdelta__;
 extern FTFont *__font__;
 extern int __running__;
 extern Node *__selectednode__;
+extern GallacticNode *__selectedstar__;
 
 extern CGLContextObj __procedural_gen_ctx__;
 extern CGLContextObj __render_ctx__;
