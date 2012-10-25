@@ -10,6 +10,7 @@
 #include "FastMath.h"
 #include "CumulativeDistributionFunction.h"
 #include "specrend.h"
+#include <GameSceneManager.h>
 
 GallacticNode::GallacticNode() {
 	m_theta = 0.0;
@@ -94,7 +95,7 @@ Galaxy::Galaxy(double rad, double radCore, double deltaAng, double ex1, double e
 	m_pDust = NULL;
 	m_pH2 = NULL;
 
-	this->octree = new Octree(NULL, 0, m_pos, m_radFarField*2.0, 100);
+	this->octree = new Octree(NULL, 0, m_pos, m_radFarField*2.0, 256);
 
 	FastMath::init();
 
@@ -127,6 +128,9 @@ Galaxy::Galaxy(double rad, double radCore, double deltaAng, double ex1, double e
 	srand(seed);
 
 	InitStars(m_sigma);
+
+	// init shader
+	this->shader = new Shader("data/shaders/galaxy.glsl");
 }
 
 double Galaxy::GetAngularOffset(double rad) const {
@@ -194,12 +198,10 @@ void Galaxy::InitStars(double sigma) {
 		m_pStars[i].m_mag = 0.1 + 0.4 * my_random();
 
 		// up to 1000 solar radii converted to light years
-		/*
 		double min = 0.1;
 		double max = 1000.0;
 		m_pStars[i].m_radius = (max - min) * ((double)rand()/(double)RAND_MAX) + min;
 		m_pStars[i].m_radius *= 6.955E8 * 1.05702341E-16;
-		*/
 		int idx = std::min(1.0/dh * (m_pStars[i].m_a + m_pStars[i].m_b)/2.0, 99.0);
 		m_numberByRad[idx]++;
 	}
@@ -368,21 +370,31 @@ void Galaxy::drawColored() {
 }
 
 void Galaxy::drawStars() {
+	GameSceneManager *gm = getGameSceneManager();
+	Vector3d c = gm->camera->position;
+
+	this->shader->bind();
+	glUniform1i(glGetUniformLocation(this->shader->program, "texture"), 0);
+	glUniform1f(glGetUniformLocation(this->shader->program, "random"), __dt__);
+	glUniform3f(glGetUniformLocation(this->shader->program, "cameraPos"), c.x(), c.y(), c.z());
 	glBindTexture(GL_TEXTURE_2D, m_texStar);
 	glTexEnvf(GL_POINT_SPRITE, GL_COORD_REPLACE, GL_TRUE);
 	glEnable(GL_POINT_SPRITE);
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
+	glPointParameteri(GL_POINT_SPRITE_COORD_ORIGIN, GL_LOWER_LEFT);
+	glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-	glPointSize(4.0);
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
 	this->octree->draw();
 	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisable(GL_VERTEX_PROGRAM_POINT_SIZE);
 	glDisable(GL_POINT_SPRITE);
 	glDisable(GL_BLEND);
 	glDisable(GL_TEXTURE_2D);
+	this->shader->unbind();
 }
 
 void Galaxy::drawDust() {

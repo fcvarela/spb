@@ -6,6 +6,7 @@
 
 // needs serious error checking
 Shader::Shader(const char *shader_file) {
+	std::cerr << "Initializing shader: " << shader_file << std::endl;
 	program = glCreateProgram();
 
 	char *shader_source = loadShader(shader_file);

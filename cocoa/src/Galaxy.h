@@ -4,6 +4,7 @@
 #include <GL/glfw.h>
 #include <Node.h>
 #include <Octree.h>
+#include <Shader.h>
 
 class CumulativeDistributionFunction;
 
@@ -57,6 +58,7 @@ public:
 	double m_t0, m_t1, m_dt;
 	Color m_col[200];
 	GLuint m_texStar;
+	Shader *shader;
 
 	void InitStars(double sigma);
 	
