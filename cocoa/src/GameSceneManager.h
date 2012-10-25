@@ -9,8 +9,6 @@
 
 class GameSceneManager {
 public:
-	// list of star systems that exist
-	std::list<StarSystem *> starSystems;
 	frustum_t frustum;
 
 	Camera *camera;
@@ -23,9 +21,9 @@ public:
 	void reshape();
 	void step();
 	void draw();
+	void drawGalaxy();
+	void drawSystems();
 	void drawDebug();
-	Node *nearestNode();
-	void recalculatePositions(Vector3d &subtract);
 };
 
 GameSceneManager *getGameSceneManager();

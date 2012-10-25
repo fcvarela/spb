@@ -35,33 +35,8 @@ bool GameSceneManager::init() {
 
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
-	// read config and set initial camera position
+	// set initial camera position
 	this->camera = new Camera();
-
-	// iterate systems in config and add them to list
-	libconfig::Config cfg;
-	try {
-		cfg.readFile("conf/universe.cfg");
-		const libconfig::Setting& root = cfg.getRoot();
-		const libconfig::Setting &systems = root["systems"];
-		for (int i=0; i<systems.getLength(); i++) {
-			const libconfig::Setting &system = systems[i];
-			StarSystem *newSystem = new StarSystem(system);
-			starSystems.push_back(newSystem);
-		}
-	} catch(const libconfig::FileIOException &fioex) {
-		std::cerr << "I/O error while reading file." << std::endl;
-		return(EXIT_FAILURE);
-	} catch(const libconfig::ParseException &pex) {
-		std::cerr << "Parse error at " << pex.getFile() << ":" << pex.getLine() << " - " << pex.getError() << std::endl;
-		return(EXIT_FAILURE);
-	}
-
-	// set camera position to middle ground between star and planet
-	/*std::list<StarSystem *>::iterator i = starSystems.begin();
-	StarSystem *nearestSystem = *i;
-	Star *nearestStar = (Star *)nearestSystem->star;
-	*/
 	camera->position = Vector3d(0.0, 0.0, 40000.0);
 
 	// initialize the galaxy as type Sa
@@ -85,58 +60,9 @@ void GameSceneManager::reshape() {
 	glLoadIdentity();
 }
 
-// get planet closest to camera
-Node *GameSceneManager::nearestNode() {
-	std::list<StarSystem *>::iterator i = starSystems.begin();
-	StarSystem *nearestSystem = *i;
-	double mindistance = (camera->position - (*i)->position).length();
-	double distance;
-
-	for (i = starSystems.begin(); i != starSystems.end(); ++i) {
-		distance = (camera->position - (*i)->position).length();
-		if (distance < mindistance) {
-			mindistance = distance;
-			nearestSystem = (*i);
-		}
-	}
-
-	// got closest system. get closest planet in system
-	Node *nearestNode = nearestSystem->nearestNode(camera);
-
-	return nearestNode;
-}
-
-// subtract node position from all nodes
-void GameSceneManager::recalculatePositions(Vector3d &subtract) {
-	for (std::list<StarSystem *>::iterator i = starSystems.begin(); i != starSystems.end(); ++i)
-		(*i)->recalculatePositions(subtract);
-}
-
 void GameSceneManager::step() {
-	Node *nearest = nearestNode();
-	Vector3d nearest_position = nearest->position;
-	double distance = (camera->position - nearest_position).length();
-
-	// reposition camera
-	Vector3d curpos = camera->position;
-
 	__gpu_mutex__.lock();
 	camera->step();
-	__camvelocity__ = (camera->position - curpos).length()/__dt__;
-	__near__ = 0.001;
-	__far__ = distance * 100000000000.0;
-
-	// step
-	for (std::list<StarSystem *>::iterator i = starSystems.begin(); i != starSystems.end(); ++i) {
-		StarSystem *ss = *i;
-		ss->step();
-	}
-
-	// set camera delta according to nearest node
-	/*
-	camera->position -= nearest_position;
-	recalculatePositions(nearest_position);
-	*/
 	__gpu_mutex__.unlock();
 
 	__camdelta__ = camera->position.length();
@@ -147,6 +73,21 @@ void GameSceneManager::step() {
 
 void GameSceneManager::draw() {
 	__gpu_mutex__.lock();
+	this->drawGalaxy();
+	this->drawSystems();
+
+	drawDebug();
+
+	double curtime = glfwGetTime();
+	__fps__ = 1.0/(curtime - __lastframe__);
+	__lastframe__ = curtime;
+	__gpu_mutex__.unlock();
+}
+
+void GameSceneManager::drawGalaxy() {
+	__near__ = 1.0;
+	__far__ = 80000.0;
+
 	CGLSetCurrentContext(__render_ctx__);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -161,8 +102,7 @@ void GameSceneManager::draw() {
 	// update the view frustum
 	calculateFrustum(this->frustum);
 
-	// got clicks? draw color coded objects to figure out if there
-	// was a hit
+	// got clicks? draw color coded objects to figure out if there was a hit
 	if (__mousebuttons__[0] == 1) {
 		galaxy->drawColored();
 		GLubyte color[3];
@@ -181,37 +121,14 @@ void GameSceneManager::draw() {
 
 		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	}
-
 	// draw galaxy
 	glEnable(GL_POINT_SPRITE);
 	galaxy->draw();
 	glDisable(GL_POINT_SPRITE);
+}
 
-	if (__selectedstar__ != NULL) {
-		Vector3d newpos = Vector3d(__selectedstar__->position);
-		newpos.normalize();
-		newpos = newpos * (__selectedstar__->position.length() - __selectedstar__->m_radius);
-		glColor4f(1.0, 0.0, 0.0, 0.7);
-		glBegin(GL_LINES);
-		glVertex3f(__selectedstar__->position.x(), __selectedstar__->position.y(), __selectedstar__->position.z());
-		glVertex3f(newpos.x(), newpos.y(), newpos.z());
-		glEnd();
-	}
-
-	// draw system
-	/*
-	for (std::list<StarSystem *>::iterator i = starSystems.begin(); i != starSystems.end(); ++i) {
-		StarSystem *ss = *i;
-		ss->draw();
-	}
-	*/
-
-	drawDebug();
-
-	double curtime = glfwGetTime();
-	__fps__ = 1.0/(curtime - __lastframe__);
-	__lastframe__ = curtime;
-	__gpu_mutex__.unlock();
+void GameSceneManager::drawSystems() {
+	// tbi
 }
 
 void GameSceneManager::drawDebug() {
@@ -253,11 +170,9 @@ void GameSceneManager::drawDebug() {
 	Octree *node = this->galaxy->octree->nodeForPosition(camera->position);
 	int count = node->items.size();
 
-	sprintf(debug, "SPS: %.2f FPS: %.2f Camera velocity: %.2f Nearest node: %s Galaxy dist: %.2f Galaxy SMA: %.2f CurrentOctant: %lld OctantStars: %d", 
+	sprintf(debug, "SPS: %.2f FPS: %.2f Galaxy dist: %.2f Galaxy SMA: %.2f CurrentOctant: %lld OctantStars: %d", 
 		1.0/__dt__,
 		__fps__,
-		__camvelocity__,
-		nearestNode()->label.c_str(),
 		(galaxy->m_pos - camera->position).length(),
 		galaxy->m_radGalaxy, node->index, count);
 
