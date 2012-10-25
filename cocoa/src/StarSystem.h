@@ -11,7 +11,7 @@ class Planet;
 
 class StarSystem : public Node {
 public:
-	StarSystem(const libconfig::Setting &system);
+	StarSystem(uint32_t seed);
 	~StarSystem();
 
 	Star *star;

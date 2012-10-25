@@ -4,31 +4,8 @@
 #include <Star.h>
 #include <Planet.h>
 
-StarSystem::StarSystem(const libconfig::Setting &system) {
-	system.lookupValue("name", this->label);
-
-	this->position = Vector3d(system["position"][0], system["position"][1], system["position"][2]);
-	std::cerr << "Star system " << this->label << " initialized at " << this->position << std::endl;
-
-	this->star = new Star(system["star"], this);
-
-	libconfig::Setting &planets = system["planets"];
-	for (int i=0; i<planets.getLength(); i++) {
-		Planet *newPlanet = new Planet(planets[i], this, NULL);
-		this->planets.push_back(newPlanet);
-
-		// does it have moons?
-		bool got_moons = planets[i].exists("moons");
-		if (got_moons) {
-			libconfig::Setting &moons = planets[i]["moons"];
-			for (int i=0; i<moons.getLength(); i++) {
-				Planet *newMoon = new Planet(moons[i], this, newPlanet);
-				newPlanet->moons.push_back(newMoon);
-			}
-		}
-
-		// does it have rings?
-	}
+StarSystem::StarSystem(uint32_t seed) {
+	
 }
 
 StarSystem::~StarSystem() {

@@ -15,7 +15,7 @@ public:
 
 	StarSystem *system;
 
-	Star(const libconfig::Setting &star, StarSystem *system);
+	Star(std::string name, double radius, Vector3d position, StarSystem *system);
 	~Star();
 
 	void draw();
