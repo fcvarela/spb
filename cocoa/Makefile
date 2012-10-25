@@ -12,9 +12,6 @@ CFLAGS = -Isrc -I. -I./SOIL -I./glfw/include
 
 # Linker flags
 LINKFLAGS = SOIL/libsoil.a \
-			/usr/local/lib/libconfig++.a \
-			./libconfig-1.4.9/lib/.libs/libconfig++.a \
-			./libconfig-1.4.9/lib/.libs/libconfig.a \
 			/usr/local/lib/libGLEW.a \
 			/usr/local/lib/libftgl.a \
 			./glfw/lib/cocoa/libglfw.a \
@@ -22,7 +19,7 @@ LINKFLAGS = SOIL/libsoil.a \
 			-lfreetype
 
 # Compile command
-COMPILE = g++ -O3 -g -ggdb -Wall -Werror -Wfatal-errors 
+COMPILE = g++ -O3 -Wall -Werror -Wfatal-errors 
 
 # OS Detection
 OS=$(shell uname -s)

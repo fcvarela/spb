@@ -34,7 +34,7 @@ public:
 	GLuint _atmosphereDisplayList;
 	GLuint _orbitDisplayList;
 
-	Planet(const libconfig::Setting &planet, StarSystem *system, Node *parent);
+	Planet(StarSystem *system, Node *parent);
 	~Planet();
 
 	void draw();

@@ -5,13 +5,14 @@
 #include <Star.h>
 #include <TerrainQuadtree.h>
 
-Planet::Planet(const libconfig::Setting &planet, StarSystem *system, Node *parent) {
+Planet::Planet(/*const libconfig::Setting &planet ,*/StarSystem *system, Node *parent) {
 	this->system = system;
 	this->parent = parent;
 	
 	if (parent == NULL)
 		this->parent = system;
 
+	/*
 	// orbital stuff
 	planet.lookupValue("semimajor_axis", this->semimajor_axis);
 	planet.lookupValue("eccentricity", this->eccentricity);
@@ -27,7 +28,7 @@ Planet::Planet(const libconfig::Setting &planet, StarSystem *system, Node *paren
 
 	// lod
 	planet.lookupValue("maxlod", this->maxlod);
-
+	*/
 	GLUquadric *atmosphere = gluNewQuadric();
 	gluQuadricNormals(atmosphere, GL_SMOOTH);
 

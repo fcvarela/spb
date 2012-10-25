@@ -70,8 +70,14 @@ void Octree::synch() {
 	if (items.size() == 0)
 		return;
 
+	std::cerr << "will request " << items.size() << std::endl;
+
 	this->starCoords = new double[items.size() * 3];
+	if (this->starCoords == NULL)
+		exit(1);
 	this->starColors = new double[items.size() * 3];
+	if (this->starCoords == NULL)
+		exit(1);
 
 	// copy to array
 	unsigned short i=0;

@@ -62,13 +62,14 @@ void GameSceneManager::reshape() {
 
 void GameSceneManager::step() {
 	__gpu_mutex__.lock();
+	
 	camera->step();
-	__gpu_mutex__.unlock();
-
 	__camdelta__ = camera->position.length();
 	if (__selectedstar__ != NULL) {
 		__camdelta__ = (__selectedstar__->position - camera->position).length();
 	}
+
+	__gpu_mutex__.unlock();
 }
 
 void GameSceneManager::draw() {
