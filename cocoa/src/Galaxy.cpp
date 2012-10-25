@@ -375,7 +375,6 @@ void Galaxy::drawStars() {
 
 	this->shader->bind();
 	glUniform1i(glGetUniformLocation(this->shader->program, "texture"), 0);
-	glUniform1f(glGetUniformLocation(this->shader->program, "random"), __dt__);
 	glUniform3f(glGetUniformLocation(this->shader->program, "cameraPos"), c.x(), c.y(), c.z());
 	glBindTexture(GL_TEXTURE_2D, m_texStar);
 	glTexEnvf(GL_POINT_SPRITE, GL_COORD_REPLACE, GL_TRUE);
