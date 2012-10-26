@@ -39,14 +39,7 @@ const Vector3d& GallacticNode::CalcXZ() {
 		0.0,
 		p.z() + (a * cosalpha * sinbeta + b * sinalpha * cosbeta));
 
-	// center bulge allows 90 deg inclinations
-	// edge should fall to 5
-	double factor = 15.0;
-	if (m_a < 6000.0) {
-		double distance = 6000.0 - m_a;
-		factor = 35.0 * (1.0 - distance / 6000.0);
-	}
-	factor = 7.5;
+	double factor = 3.5;
 
 	Quatd nrot = Quatd(Vector3d(1.0, 0.0, 0.0), 0.0);
 	nrot = nrot * Quatd(Vector3d(1.0, 0.0, 0.0), m_inclinationx * factor);
@@ -376,6 +369,7 @@ void Galaxy::drawStars() {
 	this->shader->bind();
 	glUniform1i(glGetUniformLocation(this->shader->program, "texture"), 0);
 	glUniform3f(glGetUniformLocation(this->shader->program, "cameraPos"), c.x(), c.y(), c.z());
+	glUniform1f(glGetUniformLocation(this->shader->program, "random"), __fps__);
 	glBindTexture(GL_TEXTURE_2D, m_texStar);
 	glTexEnvf(GL_POINT_SPRITE, GL_COORD_REPLACE, GL_TRUE);
 	glEnable(GL_POINT_SPRITE);
