@@ -71,11 +71,7 @@ void Octree::synch() {
 		return;
 
 	this->starCoords = new double[items.size() * 3];
-	if (this->starCoords == NULL)
-		exit(1);
 	this->starColors = new double[items.size() * 3];
-	if (this->starCoords == NULL)
-		exit(1);
 
 	// copy to array
 	unsigned short i=0;

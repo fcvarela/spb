@@ -8,18 +8,19 @@ SOURCE_FILES = $(wildcard src/*.cpp)
 objects = $(subst src,build,$(SOURCE_FILES:.cpp=.o))
 
 # Compiler flags
-CFLAGS = -Isrc -I. -I./SOIL -I./glfw/include
+CFLAGS = -Isrc -I. -I./SOIL -I./glfw/include -I./libnoise -I./libnoise/src
 
 # Linker flags
 LINKFLAGS = SOIL/libsoil.a \
 			/usr/local/lib/libGLEW.a \
 			/usr/local/lib/libftgl.a \
 			./glfw/lib/cocoa/libglfw.a \
+			./libnoise/build/src/libnoise.a \
 			-L/usr/X11/lib \
 			-lfreetype
 
 # Compile command
-COMPILE = g++ -O3 -Wall -Werror -Wfatal-errors 
+COMPILE = g++ -O3 -Wall -Wfatal-errors 
 
 # OS Detection
 OS=$(shell uname -s)
