@@ -9,7 +9,7 @@ void main(void) {
 	vec4 position = gl_ModelViewMatrix * gl_Vertex;
     vec4 camera = gl_ModelViewMatrix * vec4(cameraPos, 1.0);
 	float dist = length(position-camera);
-	gl_PointSize = 2.0 + (2.0 * 1280.0) / dist;
+	gl_PointSize = 3.0 + (1.0 * 1280.0) / dist;
 	gl_FrontColor = gl_Color;
 }
 
@@ -21,6 +21,7 @@ uniform sampler2D texture;
 
 void main(void) {
 	gl_FragColor = gl_Color * texture2D(texture, gl_TexCoord[0].st);
+	//gl_FragColor.rgb = normalize(gl_FragColor.rgb);
 }
 
 #endif
