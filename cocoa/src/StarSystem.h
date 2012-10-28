@@ -2,8 +2,6 @@
 #define __STARSYSTEM
 
 #include <list>
-#include <libconfig.h++>
-
 #include <Node.h>
 
 class Star;

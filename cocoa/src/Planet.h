@@ -1,7 +1,6 @@
 #ifndef __PLANET
 #define __PLANET
 
-#include <libconfig.h++>
 #include <list>
 #include <Node.h>
 

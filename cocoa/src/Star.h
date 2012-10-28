@@ -1,7 +1,6 @@
 #ifndef __STAR
 #define __STAR
 
-#include <libconfig.h++>
 #include <Node.h>
 
 class StarSystem;

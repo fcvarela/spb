@@ -1,4 +1,3 @@
-#include <libconfig.h++>
 #include <iostream>
 
 #include <Common.h>

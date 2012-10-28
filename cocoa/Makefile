@@ -31,7 +31,7 @@ ifeq ($(OS), Linux)
     OUTPUT = Vaalbara
 endif
 ifeq ($(OS), Darwin)
-    CFLAGS += -I/usr/local/include -I/usr/X11/include -I/usr/X11/include/freetype2
+    CFLAGS += -I/usr/local/include -I/usr/X11/include -I/usr/X11/include/freetype2 -I/usr/local/include/freetype2
     LINKFLAGS += -L/usr/local/lib -lobjc -framework Cocoa -framework OpenGL -framework IOKit -framework OpenAL
     COMPILE += -arch x86_64 -Dmacosx
     OUTPUT = Vaalbara.app/Contents/MacOS/Vaalbara
