@@ -14,7 +14,7 @@ CFLAGS = -Isrc -I. -I./SOIL -I./glfw/include -I./libnoise -I./libnoise/src
 LINKFLAGS = SOIL/libsoil.a \
 			/usr/local/lib/libGLEW.a \
 			/usr/local/lib/libftgl.a \
-			./glfw/lib/cocoa/libglfw.a \
+			/usr/local/lib/libglfw.a \
 			./libnoise/build/src/libnoise.a \
 			-L/usr/X11/lib \
 			-lfreetype

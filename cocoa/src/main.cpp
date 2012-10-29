@@ -23,9 +23,9 @@ int main(void) {
 	glfwOpenWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_FALSE);
     glfwOpenWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
     */
-    glfwOpenWindowHint(GLFW_WINDOW_NO_RESIZE, GL_TRUE);
-   	
-    GLFWvidmode return_struct;
+	glfwOpenWindowHint(GLFW_WINDOW_NO_RESIZE, GL_TRUE);
+
+	GLFWvidmode return_struct;
 	glfwGetDesktopMode(&return_struct);
 
 	__width__ = return_struct.Width;
