@@ -1,2 +1,2 @@
-/Users/fcvarela/Documents/Projects/libnoise/build/src/CMakeFiles/noise.dir
-/Users/fcvarela/Documents/Projects/libnoise/build/src/CMakeFiles/noise-static.dir
+/Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src/CMakeFiles/noise.dir
+/Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src/CMakeFiles/noise-static.dir

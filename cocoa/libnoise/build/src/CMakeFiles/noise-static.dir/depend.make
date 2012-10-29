@@ -257,3 +257,6 @@ src/CMakeFiles/noise-static.dir/noisegen.cpp.o: ../src/noise/noisegen.h
 src/CMakeFiles/noise-static.dir/noisegen.cpp.o: ../src/noise/vectortable.h
 src/CMakeFiles/noise-static.dir/noisegen.cpp.o: ../src/noisegen.cpp
 
+src/CMakeFiles/noise-static.dir/noiseutils.cpp.o: ../src/noiseutils.cpp
+src/CMakeFiles/noise-static.dir/noiseutils.cpp.o: ../src/noiseutils.h
+

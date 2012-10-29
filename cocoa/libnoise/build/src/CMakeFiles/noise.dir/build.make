@@ -35,10 +35,10 @@ RM = /usr/local/Cellar/cmake/2.8.8/bin/cmake -E remove -f
 CMAKE_EDIT_COMMAND = /usr/local/Cellar/cmake/2.8.8/bin/ccmake
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/fcvarela/Documents/Projects/libnoise
+CMAKE_SOURCE_DIR = /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/fcvarela/Documents/Projects/libnoise/build
+CMAKE_BINARY_DIR = /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build
 
 # Include any dependencies generated for this target.
 include src/CMakeFiles/noise.dir/depend.make
@@ -49,19 +49,42 @@ include src/CMakeFiles/noise.dir/progress.make
 # Include the compile flags for this target's objects.
 include src/CMakeFiles/noise.dir/flags.make
 
+src/CMakeFiles/noise.dir/noiseutils.cpp.o: src/CMakeFiles/noise.dir/flags.make
+src/CMakeFiles/noise.dir/noiseutils.cpp.o: ../src/noiseutils.cpp
+	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_1)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/noise.dir/noiseutils.cpp.o"
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/noiseutils.cpp.o -c /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/noiseutils.cpp
+
+src/CMakeFiles/noise.dir/noiseutils.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/noise.dir/noiseutils.cpp.i"
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/noiseutils.cpp > CMakeFiles/noise.dir/noiseutils.cpp.i
+
+src/CMakeFiles/noise.dir/noiseutils.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/noise.dir/noiseutils.cpp.s"
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/noiseutils.cpp -o CMakeFiles/noise.dir/noiseutils.cpp.s
+
+src/CMakeFiles/noise.dir/noiseutils.cpp.o.requires:
+.PHONY : src/CMakeFiles/noise.dir/noiseutils.cpp.o.requires
+
+src/CMakeFiles/noise.dir/noiseutils.cpp.o.provides: src/CMakeFiles/noise.dir/noiseutils.cpp.o.requires
+	$(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/noiseutils.cpp.o.provides.build
+.PHONY : src/CMakeFiles/noise.dir/noiseutils.cpp.o.provides
+
+src/CMakeFiles/noise.dir/noiseutils.cpp.o.provides.build: src/CMakeFiles/noise.dir/noiseutils.cpp.o
+
 src/CMakeFiles/noise.dir/noisegen.cpp.o: src/CMakeFiles/noise.dir/flags.make
 src/CMakeFiles/noise.dir/noisegen.cpp.o: ../src/noisegen.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_1)
+	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_2)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/noise.dir/noisegen.cpp.o"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/noisegen.cpp.o -c /Users/fcvarela/Documents/Projects/libnoise/src/noisegen.cpp
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/noisegen.cpp.o -c /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/noisegen.cpp
 
 src/CMakeFiles/noise.dir/noisegen.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/noise.dir/noisegen.cpp.i"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/libnoise/src/noisegen.cpp > CMakeFiles/noise.dir/noisegen.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/noisegen.cpp > CMakeFiles/noise.dir/noisegen.cpp.i
 
 src/CMakeFiles/noise.dir/noisegen.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/noise.dir/noisegen.cpp.s"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/libnoise/src/noisegen.cpp -o CMakeFiles/noise.dir/noisegen.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/noisegen.cpp -o CMakeFiles/noise.dir/noisegen.cpp.s
 
 src/CMakeFiles/noise.dir/noisegen.cpp.o.requires:
 .PHONY : src/CMakeFiles/noise.dir/noisegen.cpp.o.requires
@@ -74,17 +97,17 @@ src/CMakeFiles/noise.dir/noisegen.cpp.o.provides.build: src/CMakeFiles/noise.dir
 
 src/CMakeFiles/noise.dir/latlon.cpp.o: src/CMakeFiles/noise.dir/flags.make
 src/CMakeFiles/noise.dir/latlon.cpp.o: ../src/latlon.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_2)
+	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_3)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/noise.dir/latlon.cpp.o"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/latlon.cpp.o -c /Users/fcvarela/Documents/Projects/libnoise/src/latlon.cpp
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/latlon.cpp.o -c /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/latlon.cpp
 
 src/CMakeFiles/noise.dir/latlon.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/noise.dir/latlon.cpp.i"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/libnoise/src/latlon.cpp > CMakeFiles/noise.dir/latlon.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/latlon.cpp > CMakeFiles/noise.dir/latlon.cpp.i
 
 src/CMakeFiles/noise.dir/latlon.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/noise.dir/latlon.cpp.s"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/libnoise/src/latlon.cpp -o CMakeFiles/noise.dir/latlon.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/latlon.cpp -o CMakeFiles/noise.dir/latlon.cpp.s
 
 src/CMakeFiles/noise.dir/latlon.cpp.o.requires:
 .PHONY : src/CMakeFiles/noise.dir/latlon.cpp.o.requires
@@ -97,17 +120,17 @@ src/CMakeFiles/noise.dir/latlon.cpp.o.provides.build: src/CMakeFiles/noise.dir/l
 
 src/CMakeFiles/noise.dir/model/line.cpp.o: src/CMakeFiles/noise.dir/flags.make
 src/CMakeFiles/noise.dir/model/line.cpp.o: ../src/model/line.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_3)
+	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_4)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/noise.dir/model/line.cpp.o"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/model/line.cpp.o -c /Users/fcvarela/Documents/Projects/libnoise/src/model/line.cpp
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/model/line.cpp.o -c /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/model/line.cpp
 
 src/CMakeFiles/noise.dir/model/line.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/noise.dir/model/line.cpp.i"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/libnoise/src/model/line.cpp > CMakeFiles/noise.dir/model/line.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/model/line.cpp > CMakeFiles/noise.dir/model/line.cpp.i
 
 src/CMakeFiles/noise.dir/model/line.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/noise.dir/model/line.cpp.s"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/libnoise/src/model/line.cpp -o CMakeFiles/noise.dir/model/line.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/model/line.cpp -o CMakeFiles/noise.dir/model/line.cpp.s
 
 src/CMakeFiles/noise.dir/model/line.cpp.o.requires:
 .PHONY : src/CMakeFiles/noise.dir/model/line.cpp.o.requires
@@ -120,17 +143,17 @@ src/CMakeFiles/noise.dir/model/line.cpp.o.provides.build: src/CMakeFiles/noise.d
 
 src/CMakeFiles/noise.dir/model/plane.cpp.o: src/CMakeFiles/noise.dir/flags.make
 src/CMakeFiles/noise.dir/model/plane.cpp.o: ../src/model/plane.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_4)
+	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_5)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/noise.dir/model/plane.cpp.o"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/model/plane.cpp.o -c /Users/fcvarela/Documents/Projects/libnoise/src/model/plane.cpp
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/model/plane.cpp.o -c /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/model/plane.cpp
 
 src/CMakeFiles/noise.dir/model/plane.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/noise.dir/model/plane.cpp.i"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/libnoise/src/model/plane.cpp > CMakeFiles/noise.dir/model/plane.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/model/plane.cpp > CMakeFiles/noise.dir/model/plane.cpp.i
 
 src/CMakeFiles/noise.dir/model/plane.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/noise.dir/model/plane.cpp.s"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/libnoise/src/model/plane.cpp -o CMakeFiles/noise.dir/model/plane.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/model/plane.cpp -o CMakeFiles/noise.dir/model/plane.cpp.s
 
 src/CMakeFiles/noise.dir/model/plane.cpp.o.requires:
 .PHONY : src/CMakeFiles/noise.dir/model/plane.cpp.o.requires
@@ -143,17 +166,17 @@ src/CMakeFiles/noise.dir/model/plane.cpp.o.provides.build: src/CMakeFiles/noise.
 
 src/CMakeFiles/noise.dir/model/sphere.cpp.o: src/CMakeFiles/noise.dir/flags.make
 src/CMakeFiles/noise.dir/model/sphere.cpp.o: ../src/model/sphere.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_5)
+	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_6)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/noise.dir/model/sphere.cpp.o"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/model/sphere.cpp.o -c /Users/fcvarela/Documents/Projects/libnoise/src/model/sphere.cpp
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/model/sphere.cpp.o -c /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/model/sphere.cpp
 
 src/CMakeFiles/noise.dir/model/sphere.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/noise.dir/model/sphere.cpp.i"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/libnoise/src/model/sphere.cpp > CMakeFiles/noise.dir/model/sphere.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/model/sphere.cpp > CMakeFiles/noise.dir/model/sphere.cpp.i
 
 src/CMakeFiles/noise.dir/model/sphere.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/noise.dir/model/sphere.cpp.s"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/libnoise/src/model/sphere.cpp -o CMakeFiles/noise.dir/model/sphere.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/model/sphere.cpp -o CMakeFiles/noise.dir/model/sphere.cpp.s
 
 src/CMakeFiles/noise.dir/model/sphere.cpp.o.requires:
 .PHONY : src/CMakeFiles/noise.dir/model/sphere.cpp.o.requires
@@ -166,17 +189,17 @@ src/CMakeFiles/noise.dir/model/sphere.cpp.o.provides.build: src/CMakeFiles/noise
 
 src/CMakeFiles/noise.dir/model/cylinder.cpp.o: src/CMakeFiles/noise.dir/flags.make
 src/CMakeFiles/noise.dir/model/cylinder.cpp.o: ../src/model/cylinder.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_6)
+	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_7)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/noise.dir/model/cylinder.cpp.o"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/model/cylinder.cpp.o -c /Users/fcvarela/Documents/Projects/libnoise/src/model/cylinder.cpp
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/model/cylinder.cpp.o -c /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/model/cylinder.cpp
 
 src/CMakeFiles/noise.dir/model/cylinder.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/noise.dir/model/cylinder.cpp.i"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/libnoise/src/model/cylinder.cpp > CMakeFiles/noise.dir/model/cylinder.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/model/cylinder.cpp > CMakeFiles/noise.dir/model/cylinder.cpp.i
 
 src/CMakeFiles/noise.dir/model/cylinder.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/noise.dir/model/cylinder.cpp.s"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/libnoise/src/model/cylinder.cpp -o CMakeFiles/noise.dir/model/cylinder.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/model/cylinder.cpp -o CMakeFiles/noise.dir/model/cylinder.cpp.s
 
 src/CMakeFiles/noise.dir/model/cylinder.cpp.o.requires:
 .PHONY : src/CMakeFiles/noise.dir/model/cylinder.cpp.o.requires
@@ -189,17 +212,17 @@ src/CMakeFiles/noise.dir/model/cylinder.cpp.o.provides.build: src/CMakeFiles/noi
 
 src/CMakeFiles/noise.dir/module/abs.cpp.o: src/CMakeFiles/noise.dir/flags.make
 src/CMakeFiles/noise.dir/module/abs.cpp.o: ../src/module/abs.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_7)
+	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_8)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/noise.dir/module/abs.cpp.o"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/abs.cpp.o -c /Users/fcvarela/Documents/Projects/libnoise/src/module/abs.cpp
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/abs.cpp.o -c /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/abs.cpp
 
 src/CMakeFiles/noise.dir/module/abs.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/noise.dir/module/abs.cpp.i"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/libnoise/src/module/abs.cpp > CMakeFiles/noise.dir/module/abs.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/abs.cpp > CMakeFiles/noise.dir/module/abs.cpp.i
 
 src/CMakeFiles/noise.dir/module/abs.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/noise.dir/module/abs.cpp.s"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/libnoise/src/module/abs.cpp -o CMakeFiles/noise.dir/module/abs.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/abs.cpp -o CMakeFiles/noise.dir/module/abs.cpp.s
 
 src/CMakeFiles/noise.dir/module/abs.cpp.o.requires:
 .PHONY : src/CMakeFiles/noise.dir/module/abs.cpp.o.requires
@@ -212,17 +235,17 @@ src/CMakeFiles/noise.dir/module/abs.cpp.o.provides.build: src/CMakeFiles/noise.d
 
 src/CMakeFiles/noise.dir/module/add.cpp.o: src/CMakeFiles/noise.dir/flags.make
 src/CMakeFiles/noise.dir/module/add.cpp.o: ../src/module/add.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_8)
+	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_9)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/noise.dir/module/add.cpp.o"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/add.cpp.o -c /Users/fcvarela/Documents/Projects/libnoise/src/module/add.cpp
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/add.cpp.o -c /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/add.cpp
 
 src/CMakeFiles/noise.dir/module/add.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/noise.dir/module/add.cpp.i"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/libnoise/src/module/add.cpp > CMakeFiles/noise.dir/module/add.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/add.cpp > CMakeFiles/noise.dir/module/add.cpp.i
 
 src/CMakeFiles/noise.dir/module/add.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/noise.dir/module/add.cpp.s"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/libnoise/src/module/add.cpp -o CMakeFiles/noise.dir/module/add.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/add.cpp -o CMakeFiles/noise.dir/module/add.cpp.s
 
 src/CMakeFiles/noise.dir/module/add.cpp.o.requires:
 .PHONY : src/CMakeFiles/noise.dir/module/add.cpp.o.requires
@@ -235,17 +258,17 @@ src/CMakeFiles/noise.dir/module/add.cpp.o.provides.build: src/CMakeFiles/noise.d
 
 src/CMakeFiles/noise.dir/module/billow.cpp.o: src/CMakeFiles/noise.dir/flags.make
 src/CMakeFiles/noise.dir/module/billow.cpp.o: ../src/module/billow.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_9)
+	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_10)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/noise.dir/module/billow.cpp.o"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/billow.cpp.o -c /Users/fcvarela/Documents/Projects/libnoise/src/module/billow.cpp
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/billow.cpp.o -c /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/billow.cpp
 
 src/CMakeFiles/noise.dir/module/billow.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/noise.dir/module/billow.cpp.i"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/libnoise/src/module/billow.cpp > CMakeFiles/noise.dir/module/billow.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/billow.cpp > CMakeFiles/noise.dir/module/billow.cpp.i
 
 src/CMakeFiles/noise.dir/module/billow.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/noise.dir/module/billow.cpp.s"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/libnoise/src/module/billow.cpp -o CMakeFiles/noise.dir/module/billow.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/billow.cpp -o CMakeFiles/noise.dir/module/billow.cpp.s
 
 src/CMakeFiles/noise.dir/module/billow.cpp.o.requires:
 .PHONY : src/CMakeFiles/noise.dir/module/billow.cpp.o.requires
@@ -258,17 +281,17 @@ src/CMakeFiles/noise.dir/module/billow.cpp.o.provides.build: src/CMakeFiles/nois
 
 src/CMakeFiles/noise.dir/module/blend.cpp.o: src/CMakeFiles/noise.dir/flags.make
 src/CMakeFiles/noise.dir/module/blend.cpp.o: ../src/module/blend.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_10)
+	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_11)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/noise.dir/module/blend.cpp.o"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/blend.cpp.o -c /Users/fcvarela/Documents/Projects/libnoise/src/module/blend.cpp
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/blend.cpp.o -c /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/blend.cpp
 
 src/CMakeFiles/noise.dir/module/blend.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/noise.dir/module/blend.cpp.i"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/libnoise/src/module/blend.cpp > CMakeFiles/noise.dir/module/blend.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/blend.cpp > CMakeFiles/noise.dir/module/blend.cpp.i
 
 src/CMakeFiles/noise.dir/module/blend.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/noise.dir/module/blend.cpp.s"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/libnoise/src/module/blend.cpp -o CMakeFiles/noise.dir/module/blend.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/blend.cpp -o CMakeFiles/noise.dir/module/blend.cpp.s
 
 src/CMakeFiles/noise.dir/module/blend.cpp.o.requires:
 .PHONY : src/CMakeFiles/noise.dir/module/blend.cpp.o.requires
@@ -281,17 +304,17 @@ src/CMakeFiles/noise.dir/module/blend.cpp.o.provides.build: src/CMakeFiles/noise
 
 src/CMakeFiles/noise.dir/module/cache.cpp.o: src/CMakeFiles/noise.dir/flags.make
 src/CMakeFiles/noise.dir/module/cache.cpp.o: ../src/module/cache.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_11)
+	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_12)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/noise.dir/module/cache.cpp.o"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/cache.cpp.o -c /Users/fcvarela/Documents/Projects/libnoise/src/module/cache.cpp
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/cache.cpp.o -c /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/cache.cpp
 
 src/CMakeFiles/noise.dir/module/cache.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/noise.dir/module/cache.cpp.i"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/libnoise/src/module/cache.cpp > CMakeFiles/noise.dir/module/cache.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/cache.cpp > CMakeFiles/noise.dir/module/cache.cpp.i
 
 src/CMakeFiles/noise.dir/module/cache.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/noise.dir/module/cache.cpp.s"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/libnoise/src/module/cache.cpp -o CMakeFiles/noise.dir/module/cache.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/cache.cpp -o CMakeFiles/noise.dir/module/cache.cpp.s
 
 src/CMakeFiles/noise.dir/module/cache.cpp.o.requires:
 .PHONY : src/CMakeFiles/noise.dir/module/cache.cpp.o.requires
@@ -304,17 +327,17 @@ src/CMakeFiles/noise.dir/module/cache.cpp.o.provides.build: src/CMakeFiles/noise
 
 src/CMakeFiles/noise.dir/module/checkerboard.cpp.o: src/CMakeFiles/noise.dir/flags.make
 src/CMakeFiles/noise.dir/module/checkerboard.cpp.o: ../src/module/checkerboard.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_12)
+	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_13)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/noise.dir/module/checkerboard.cpp.o"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/checkerboard.cpp.o -c /Users/fcvarela/Documents/Projects/libnoise/src/module/checkerboard.cpp
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/checkerboard.cpp.o -c /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/checkerboard.cpp
 
 src/CMakeFiles/noise.dir/module/checkerboard.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/noise.dir/module/checkerboard.cpp.i"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/libnoise/src/module/checkerboard.cpp > CMakeFiles/noise.dir/module/checkerboard.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/checkerboard.cpp > CMakeFiles/noise.dir/module/checkerboard.cpp.i
 
 src/CMakeFiles/noise.dir/module/checkerboard.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/noise.dir/module/checkerboard.cpp.s"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/libnoise/src/module/checkerboard.cpp -o CMakeFiles/noise.dir/module/checkerboard.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/checkerboard.cpp -o CMakeFiles/noise.dir/module/checkerboard.cpp.s
 
 src/CMakeFiles/noise.dir/module/checkerboard.cpp.o.requires:
 .PHONY : src/CMakeFiles/noise.dir/module/checkerboard.cpp.o.requires
@@ -327,17 +350,17 @@ src/CMakeFiles/noise.dir/module/checkerboard.cpp.o.provides.build: src/CMakeFile
 
 src/CMakeFiles/noise.dir/module/clamp.cpp.o: src/CMakeFiles/noise.dir/flags.make
 src/CMakeFiles/noise.dir/module/clamp.cpp.o: ../src/module/clamp.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_13)
+	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_14)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/noise.dir/module/clamp.cpp.o"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/clamp.cpp.o -c /Users/fcvarela/Documents/Projects/libnoise/src/module/clamp.cpp
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/clamp.cpp.o -c /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/clamp.cpp
 
 src/CMakeFiles/noise.dir/module/clamp.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/noise.dir/module/clamp.cpp.i"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/libnoise/src/module/clamp.cpp > CMakeFiles/noise.dir/module/clamp.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/clamp.cpp > CMakeFiles/noise.dir/module/clamp.cpp.i
 
 src/CMakeFiles/noise.dir/module/clamp.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/noise.dir/module/clamp.cpp.s"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/libnoise/src/module/clamp.cpp -o CMakeFiles/noise.dir/module/clamp.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/clamp.cpp -o CMakeFiles/noise.dir/module/clamp.cpp.s
 
 src/CMakeFiles/noise.dir/module/clamp.cpp.o.requires:
 .PHONY : src/CMakeFiles/noise.dir/module/clamp.cpp.o.requires
@@ -350,17 +373,17 @@ src/CMakeFiles/noise.dir/module/clamp.cpp.o.provides.build: src/CMakeFiles/noise
 
 src/CMakeFiles/noise.dir/module/const.cpp.o: src/CMakeFiles/noise.dir/flags.make
 src/CMakeFiles/noise.dir/module/const.cpp.o: ../src/module/const.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_14)
+	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_15)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/noise.dir/module/const.cpp.o"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/const.cpp.o -c /Users/fcvarela/Documents/Projects/libnoise/src/module/const.cpp
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/const.cpp.o -c /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/const.cpp
 
 src/CMakeFiles/noise.dir/module/const.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/noise.dir/module/const.cpp.i"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/libnoise/src/module/const.cpp > CMakeFiles/noise.dir/module/const.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/const.cpp > CMakeFiles/noise.dir/module/const.cpp.i
 
 src/CMakeFiles/noise.dir/module/const.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/noise.dir/module/const.cpp.s"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/libnoise/src/module/const.cpp -o CMakeFiles/noise.dir/module/const.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/const.cpp -o CMakeFiles/noise.dir/module/const.cpp.s
 
 src/CMakeFiles/noise.dir/module/const.cpp.o.requires:
 .PHONY : src/CMakeFiles/noise.dir/module/const.cpp.o.requires
@@ -373,17 +396,17 @@ src/CMakeFiles/noise.dir/module/const.cpp.o.provides.build: src/CMakeFiles/noise
 
 src/CMakeFiles/noise.dir/module/curve.cpp.o: src/CMakeFiles/noise.dir/flags.make
 src/CMakeFiles/noise.dir/module/curve.cpp.o: ../src/module/curve.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_15)
+	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_16)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/noise.dir/module/curve.cpp.o"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/curve.cpp.o -c /Users/fcvarela/Documents/Projects/libnoise/src/module/curve.cpp
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/curve.cpp.o -c /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/curve.cpp
 
 src/CMakeFiles/noise.dir/module/curve.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/noise.dir/module/curve.cpp.i"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/libnoise/src/module/curve.cpp > CMakeFiles/noise.dir/module/curve.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/curve.cpp > CMakeFiles/noise.dir/module/curve.cpp.i
 
 src/CMakeFiles/noise.dir/module/curve.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/noise.dir/module/curve.cpp.s"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/libnoise/src/module/curve.cpp -o CMakeFiles/noise.dir/module/curve.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/curve.cpp -o CMakeFiles/noise.dir/module/curve.cpp.s
 
 src/CMakeFiles/noise.dir/module/curve.cpp.o.requires:
 .PHONY : src/CMakeFiles/noise.dir/module/curve.cpp.o.requires
@@ -396,17 +419,17 @@ src/CMakeFiles/noise.dir/module/curve.cpp.o.provides.build: src/CMakeFiles/noise
 
 src/CMakeFiles/noise.dir/module/cylinders.cpp.o: src/CMakeFiles/noise.dir/flags.make
 src/CMakeFiles/noise.dir/module/cylinders.cpp.o: ../src/module/cylinders.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_16)
+	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_17)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/noise.dir/module/cylinders.cpp.o"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/cylinders.cpp.o -c /Users/fcvarela/Documents/Projects/libnoise/src/module/cylinders.cpp
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/cylinders.cpp.o -c /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/cylinders.cpp
 
 src/CMakeFiles/noise.dir/module/cylinders.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/noise.dir/module/cylinders.cpp.i"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/libnoise/src/module/cylinders.cpp > CMakeFiles/noise.dir/module/cylinders.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/cylinders.cpp > CMakeFiles/noise.dir/module/cylinders.cpp.i
 
 src/CMakeFiles/noise.dir/module/cylinders.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/noise.dir/module/cylinders.cpp.s"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/libnoise/src/module/cylinders.cpp -o CMakeFiles/noise.dir/module/cylinders.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/cylinders.cpp -o CMakeFiles/noise.dir/module/cylinders.cpp.s
 
 src/CMakeFiles/noise.dir/module/cylinders.cpp.o.requires:
 .PHONY : src/CMakeFiles/noise.dir/module/cylinders.cpp.o.requires
@@ -419,17 +442,17 @@ src/CMakeFiles/noise.dir/module/cylinders.cpp.o.provides.build: src/CMakeFiles/n
 
 src/CMakeFiles/noise.dir/module/displace.cpp.o: src/CMakeFiles/noise.dir/flags.make
 src/CMakeFiles/noise.dir/module/displace.cpp.o: ../src/module/displace.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_17)
+	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_18)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/noise.dir/module/displace.cpp.o"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/displace.cpp.o -c /Users/fcvarela/Documents/Projects/libnoise/src/module/displace.cpp
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/displace.cpp.o -c /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/displace.cpp
 
 src/CMakeFiles/noise.dir/module/displace.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/noise.dir/module/displace.cpp.i"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/libnoise/src/module/displace.cpp > CMakeFiles/noise.dir/module/displace.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/displace.cpp > CMakeFiles/noise.dir/module/displace.cpp.i
 
 src/CMakeFiles/noise.dir/module/displace.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/noise.dir/module/displace.cpp.s"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/libnoise/src/module/displace.cpp -o CMakeFiles/noise.dir/module/displace.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/displace.cpp -o CMakeFiles/noise.dir/module/displace.cpp.s
 
 src/CMakeFiles/noise.dir/module/displace.cpp.o.requires:
 .PHONY : src/CMakeFiles/noise.dir/module/displace.cpp.o.requires
@@ -442,17 +465,17 @@ src/CMakeFiles/noise.dir/module/displace.cpp.o.provides.build: src/CMakeFiles/no
 
 src/CMakeFiles/noise.dir/module/exponent.cpp.o: src/CMakeFiles/noise.dir/flags.make
 src/CMakeFiles/noise.dir/module/exponent.cpp.o: ../src/module/exponent.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_18)
+	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_19)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/noise.dir/module/exponent.cpp.o"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/exponent.cpp.o -c /Users/fcvarela/Documents/Projects/libnoise/src/module/exponent.cpp
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/exponent.cpp.o -c /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/exponent.cpp
 
 src/CMakeFiles/noise.dir/module/exponent.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/noise.dir/module/exponent.cpp.i"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/libnoise/src/module/exponent.cpp > CMakeFiles/noise.dir/module/exponent.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/exponent.cpp > CMakeFiles/noise.dir/module/exponent.cpp.i
 
 src/CMakeFiles/noise.dir/module/exponent.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/noise.dir/module/exponent.cpp.s"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/libnoise/src/module/exponent.cpp -o CMakeFiles/noise.dir/module/exponent.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/exponent.cpp -o CMakeFiles/noise.dir/module/exponent.cpp.s
 
 src/CMakeFiles/noise.dir/module/exponent.cpp.o.requires:
 .PHONY : src/CMakeFiles/noise.dir/module/exponent.cpp.o.requires
@@ -465,17 +488,17 @@ src/CMakeFiles/noise.dir/module/exponent.cpp.o.provides.build: src/CMakeFiles/no
 
 src/CMakeFiles/noise.dir/module/invert.cpp.o: src/CMakeFiles/noise.dir/flags.make
 src/CMakeFiles/noise.dir/module/invert.cpp.o: ../src/module/invert.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_19)
+	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_20)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/noise.dir/module/invert.cpp.o"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/invert.cpp.o -c /Users/fcvarela/Documents/Projects/libnoise/src/module/invert.cpp
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/invert.cpp.o -c /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/invert.cpp
 
 src/CMakeFiles/noise.dir/module/invert.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/noise.dir/module/invert.cpp.i"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/libnoise/src/module/invert.cpp > CMakeFiles/noise.dir/module/invert.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/invert.cpp > CMakeFiles/noise.dir/module/invert.cpp.i
 
 src/CMakeFiles/noise.dir/module/invert.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/noise.dir/module/invert.cpp.s"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/libnoise/src/module/invert.cpp -o CMakeFiles/noise.dir/module/invert.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/invert.cpp -o CMakeFiles/noise.dir/module/invert.cpp.s
 
 src/CMakeFiles/noise.dir/module/invert.cpp.o.requires:
 .PHONY : src/CMakeFiles/noise.dir/module/invert.cpp.o.requires
@@ -488,17 +511,17 @@ src/CMakeFiles/noise.dir/module/invert.cpp.o.provides.build: src/CMakeFiles/nois
 
 src/CMakeFiles/noise.dir/module/max.cpp.o: src/CMakeFiles/noise.dir/flags.make
 src/CMakeFiles/noise.dir/module/max.cpp.o: ../src/module/max.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_20)
+	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_21)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/noise.dir/module/max.cpp.o"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/max.cpp.o -c /Users/fcvarela/Documents/Projects/libnoise/src/module/max.cpp
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/max.cpp.o -c /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/max.cpp
 
 src/CMakeFiles/noise.dir/module/max.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/noise.dir/module/max.cpp.i"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/libnoise/src/module/max.cpp > CMakeFiles/noise.dir/module/max.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/max.cpp > CMakeFiles/noise.dir/module/max.cpp.i
 
 src/CMakeFiles/noise.dir/module/max.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/noise.dir/module/max.cpp.s"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/libnoise/src/module/max.cpp -o CMakeFiles/noise.dir/module/max.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/max.cpp -o CMakeFiles/noise.dir/module/max.cpp.s
 
 src/CMakeFiles/noise.dir/module/max.cpp.o.requires:
 .PHONY : src/CMakeFiles/noise.dir/module/max.cpp.o.requires
@@ -511,17 +534,17 @@ src/CMakeFiles/noise.dir/module/max.cpp.o.provides.build: src/CMakeFiles/noise.d
 
 src/CMakeFiles/noise.dir/module/min.cpp.o: src/CMakeFiles/noise.dir/flags.make
 src/CMakeFiles/noise.dir/module/min.cpp.o: ../src/module/min.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_21)
+	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_22)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/noise.dir/module/min.cpp.o"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/min.cpp.o -c /Users/fcvarela/Documents/Projects/libnoise/src/module/min.cpp
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/min.cpp.o -c /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/min.cpp
 
 src/CMakeFiles/noise.dir/module/min.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/noise.dir/module/min.cpp.i"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/libnoise/src/module/min.cpp > CMakeFiles/noise.dir/module/min.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/min.cpp > CMakeFiles/noise.dir/module/min.cpp.i
 
 src/CMakeFiles/noise.dir/module/min.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/noise.dir/module/min.cpp.s"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/libnoise/src/module/min.cpp -o CMakeFiles/noise.dir/module/min.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/min.cpp -o CMakeFiles/noise.dir/module/min.cpp.s
 
 src/CMakeFiles/noise.dir/module/min.cpp.o.requires:
 .PHONY : src/CMakeFiles/noise.dir/module/min.cpp.o.requires
@@ -534,17 +557,17 @@ src/CMakeFiles/noise.dir/module/min.cpp.o.provides.build: src/CMakeFiles/noise.d
 
 src/CMakeFiles/noise.dir/module/modulebase.cpp.o: src/CMakeFiles/noise.dir/flags.make
 src/CMakeFiles/noise.dir/module/modulebase.cpp.o: ../src/module/modulebase.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_22)
+	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_23)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/noise.dir/module/modulebase.cpp.o"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/modulebase.cpp.o -c /Users/fcvarela/Documents/Projects/libnoise/src/module/modulebase.cpp
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/modulebase.cpp.o -c /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/modulebase.cpp
 
 src/CMakeFiles/noise.dir/module/modulebase.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/noise.dir/module/modulebase.cpp.i"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/libnoise/src/module/modulebase.cpp > CMakeFiles/noise.dir/module/modulebase.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/modulebase.cpp > CMakeFiles/noise.dir/module/modulebase.cpp.i
 
 src/CMakeFiles/noise.dir/module/modulebase.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/noise.dir/module/modulebase.cpp.s"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/libnoise/src/module/modulebase.cpp -o CMakeFiles/noise.dir/module/modulebase.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/modulebase.cpp -o CMakeFiles/noise.dir/module/modulebase.cpp.s
 
 src/CMakeFiles/noise.dir/module/modulebase.cpp.o.requires:
 .PHONY : src/CMakeFiles/noise.dir/module/modulebase.cpp.o.requires
@@ -557,17 +580,17 @@ src/CMakeFiles/noise.dir/module/modulebase.cpp.o.provides.build: src/CMakeFiles/
 
 src/CMakeFiles/noise.dir/module/multiply.cpp.o: src/CMakeFiles/noise.dir/flags.make
 src/CMakeFiles/noise.dir/module/multiply.cpp.o: ../src/module/multiply.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_23)
+	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_24)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/noise.dir/module/multiply.cpp.o"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/multiply.cpp.o -c /Users/fcvarela/Documents/Projects/libnoise/src/module/multiply.cpp
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/multiply.cpp.o -c /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/multiply.cpp
 
 src/CMakeFiles/noise.dir/module/multiply.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/noise.dir/module/multiply.cpp.i"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/libnoise/src/module/multiply.cpp > CMakeFiles/noise.dir/module/multiply.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/multiply.cpp > CMakeFiles/noise.dir/module/multiply.cpp.i
 
 src/CMakeFiles/noise.dir/module/multiply.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/noise.dir/module/multiply.cpp.s"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/libnoise/src/module/multiply.cpp -o CMakeFiles/noise.dir/module/multiply.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/multiply.cpp -o CMakeFiles/noise.dir/module/multiply.cpp.s
 
 src/CMakeFiles/noise.dir/module/multiply.cpp.o.requires:
 .PHONY : src/CMakeFiles/noise.dir/module/multiply.cpp.o.requires
@@ -580,17 +603,17 @@ src/CMakeFiles/noise.dir/module/multiply.cpp.o.provides.build: src/CMakeFiles/no
 
 src/CMakeFiles/noise.dir/module/perlin.cpp.o: src/CMakeFiles/noise.dir/flags.make
 src/CMakeFiles/noise.dir/module/perlin.cpp.o: ../src/module/perlin.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_24)
+	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_25)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/noise.dir/module/perlin.cpp.o"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/perlin.cpp.o -c /Users/fcvarela/Documents/Projects/libnoise/src/module/perlin.cpp
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/perlin.cpp.o -c /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/perlin.cpp
 
 src/CMakeFiles/noise.dir/module/perlin.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/noise.dir/module/perlin.cpp.i"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/libnoise/src/module/perlin.cpp > CMakeFiles/noise.dir/module/perlin.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/perlin.cpp > CMakeFiles/noise.dir/module/perlin.cpp.i
 
 src/CMakeFiles/noise.dir/module/perlin.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/noise.dir/module/perlin.cpp.s"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/libnoise/src/module/perlin.cpp -o CMakeFiles/noise.dir/module/perlin.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/perlin.cpp -o CMakeFiles/noise.dir/module/perlin.cpp.s
 
 src/CMakeFiles/noise.dir/module/perlin.cpp.o.requires:
 .PHONY : src/CMakeFiles/noise.dir/module/perlin.cpp.o.requires
@@ -603,17 +626,17 @@ src/CMakeFiles/noise.dir/module/perlin.cpp.o.provides.build: src/CMakeFiles/nois
 
 src/CMakeFiles/noise.dir/module/power.cpp.o: src/CMakeFiles/noise.dir/flags.make
 src/CMakeFiles/noise.dir/module/power.cpp.o: ../src/module/power.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_25)
+	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_26)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/noise.dir/module/power.cpp.o"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/power.cpp.o -c /Users/fcvarela/Documents/Projects/libnoise/src/module/power.cpp
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/power.cpp.o -c /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/power.cpp
 
 src/CMakeFiles/noise.dir/module/power.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/noise.dir/module/power.cpp.i"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/libnoise/src/module/power.cpp > CMakeFiles/noise.dir/module/power.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/power.cpp > CMakeFiles/noise.dir/module/power.cpp.i
 
 src/CMakeFiles/noise.dir/module/power.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/noise.dir/module/power.cpp.s"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/libnoise/src/module/power.cpp -o CMakeFiles/noise.dir/module/power.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/power.cpp -o CMakeFiles/noise.dir/module/power.cpp.s
 
 src/CMakeFiles/noise.dir/module/power.cpp.o.requires:
 .PHONY : src/CMakeFiles/noise.dir/module/power.cpp.o.requires
@@ -626,17 +649,17 @@ src/CMakeFiles/noise.dir/module/power.cpp.o.provides.build: src/CMakeFiles/noise
 
 src/CMakeFiles/noise.dir/module/ridgedmulti.cpp.o: src/CMakeFiles/noise.dir/flags.make
 src/CMakeFiles/noise.dir/module/ridgedmulti.cpp.o: ../src/module/ridgedmulti.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_26)
+	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_27)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/noise.dir/module/ridgedmulti.cpp.o"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/ridgedmulti.cpp.o -c /Users/fcvarela/Documents/Projects/libnoise/src/module/ridgedmulti.cpp
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/ridgedmulti.cpp.o -c /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/ridgedmulti.cpp
 
 src/CMakeFiles/noise.dir/module/ridgedmulti.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/noise.dir/module/ridgedmulti.cpp.i"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/libnoise/src/module/ridgedmulti.cpp > CMakeFiles/noise.dir/module/ridgedmulti.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/ridgedmulti.cpp > CMakeFiles/noise.dir/module/ridgedmulti.cpp.i
 
 src/CMakeFiles/noise.dir/module/ridgedmulti.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/noise.dir/module/ridgedmulti.cpp.s"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/libnoise/src/module/ridgedmulti.cpp -o CMakeFiles/noise.dir/module/ridgedmulti.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/ridgedmulti.cpp -o CMakeFiles/noise.dir/module/ridgedmulti.cpp.s
 
 src/CMakeFiles/noise.dir/module/ridgedmulti.cpp.o.requires:
 .PHONY : src/CMakeFiles/noise.dir/module/ridgedmulti.cpp.o.requires
@@ -649,17 +672,17 @@ src/CMakeFiles/noise.dir/module/ridgedmulti.cpp.o.provides.build: src/CMakeFiles
 
 src/CMakeFiles/noise.dir/module/rotatepoint.cpp.o: src/CMakeFiles/noise.dir/flags.make
 src/CMakeFiles/noise.dir/module/rotatepoint.cpp.o: ../src/module/rotatepoint.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_27)
+	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_28)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/noise.dir/module/rotatepoint.cpp.o"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/rotatepoint.cpp.o -c /Users/fcvarela/Documents/Projects/libnoise/src/module/rotatepoint.cpp
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/rotatepoint.cpp.o -c /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/rotatepoint.cpp
 
 src/CMakeFiles/noise.dir/module/rotatepoint.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/noise.dir/module/rotatepoint.cpp.i"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/libnoise/src/module/rotatepoint.cpp > CMakeFiles/noise.dir/module/rotatepoint.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/rotatepoint.cpp > CMakeFiles/noise.dir/module/rotatepoint.cpp.i
 
 src/CMakeFiles/noise.dir/module/rotatepoint.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/noise.dir/module/rotatepoint.cpp.s"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/libnoise/src/module/rotatepoint.cpp -o CMakeFiles/noise.dir/module/rotatepoint.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/rotatepoint.cpp -o CMakeFiles/noise.dir/module/rotatepoint.cpp.s
 
 src/CMakeFiles/noise.dir/module/rotatepoint.cpp.o.requires:
 .PHONY : src/CMakeFiles/noise.dir/module/rotatepoint.cpp.o.requires
@@ -672,17 +695,17 @@ src/CMakeFiles/noise.dir/module/rotatepoint.cpp.o.provides.build: src/CMakeFiles
 
 src/CMakeFiles/noise.dir/module/scalebias.cpp.o: src/CMakeFiles/noise.dir/flags.make
 src/CMakeFiles/noise.dir/module/scalebias.cpp.o: ../src/module/scalebias.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_28)
+	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_29)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/noise.dir/module/scalebias.cpp.o"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/scalebias.cpp.o -c /Users/fcvarela/Documents/Projects/libnoise/src/module/scalebias.cpp
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/scalebias.cpp.o -c /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/scalebias.cpp
 
 src/CMakeFiles/noise.dir/module/scalebias.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/noise.dir/module/scalebias.cpp.i"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/libnoise/src/module/scalebias.cpp > CMakeFiles/noise.dir/module/scalebias.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/scalebias.cpp > CMakeFiles/noise.dir/module/scalebias.cpp.i
 
 src/CMakeFiles/noise.dir/module/scalebias.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/noise.dir/module/scalebias.cpp.s"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/libnoise/src/module/scalebias.cpp -o CMakeFiles/noise.dir/module/scalebias.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/scalebias.cpp -o CMakeFiles/noise.dir/module/scalebias.cpp.s
 
 src/CMakeFiles/noise.dir/module/scalebias.cpp.o.requires:
 .PHONY : src/CMakeFiles/noise.dir/module/scalebias.cpp.o.requires
@@ -695,17 +718,17 @@ src/CMakeFiles/noise.dir/module/scalebias.cpp.o.provides.build: src/CMakeFiles/n
 
 src/CMakeFiles/noise.dir/module/scalepoint.cpp.o: src/CMakeFiles/noise.dir/flags.make
 src/CMakeFiles/noise.dir/module/scalepoint.cpp.o: ../src/module/scalepoint.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_29)
+	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_30)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/noise.dir/module/scalepoint.cpp.o"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/scalepoint.cpp.o -c /Users/fcvarela/Documents/Projects/libnoise/src/module/scalepoint.cpp
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/scalepoint.cpp.o -c /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/scalepoint.cpp
 
 src/CMakeFiles/noise.dir/module/scalepoint.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/noise.dir/module/scalepoint.cpp.i"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/libnoise/src/module/scalepoint.cpp > CMakeFiles/noise.dir/module/scalepoint.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/scalepoint.cpp > CMakeFiles/noise.dir/module/scalepoint.cpp.i
 
 src/CMakeFiles/noise.dir/module/scalepoint.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/noise.dir/module/scalepoint.cpp.s"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/libnoise/src/module/scalepoint.cpp -o CMakeFiles/noise.dir/module/scalepoint.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/scalepoint.cpp -o CMakeFiles/noise.dir/module/scalepoint.cpp.s
 
 src/CMakeFiles/noise.dir/module/scalepoint.cpp.o.requires:
 .PHONY : src/CMakeFiles/noise.dir/module/scalepoint.cpp.o.requires
@@ -718,17 +741,17 @@ src/CMakeFiles/noise.dir/module/scalepoint.cpp.o.provides.build: src/CMakeFiles/
 
 src/CMakeFiles/noise.dir/module/select.cpp.o: src/CMakeFiles/noise.dir/flags.make
 src/CMakeFiles/noise.dir/module/select.cpp.o: ../src/module/select.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_30)
+	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_31)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/noise.dir/module/select.cpp.o"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/select.cpp.o -c /Users/fcvarela/Documents/Projects/libnoise/src/module/select.cpp
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/select.cpp.o -c /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/select.cpp
 
 src/CMakeFiles/noise.dir/module/select.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/noise.dir/module/select.cpp.i"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/libnoise/src/module/select.cpp > CMakeFiles/noise.dir/module/select.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/select.cpp > CMakeFiles/noise.dir/module/select.cpp.i
 
 src/CMakeFiles/noise.dir/module/select.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/noise.dir/module/select.cpp.s"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/libnoise/src/module/select.cpp -o CMakeFiles/noise.dir/module/select.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/select.cpp -o CMakeFiles/noise.dir/module/select.cpp.s
 
 src/CMakeFiles/noise.dir/module/select.cpp.o.requires:
 .PHONY : src/CMakeFiles/noise.dir/module/select.cpp.o.requires
@@ -741,17 +764,17 @@ src/CMakeFiles/noise.dir/module/select.cpp.o.provides.build: src/CMakeFiles/nois
 
 src/CMakeFiles/noise.dir/module/spheres.cpp.o: src/CMakeFiles/noise.dir/flags.make
 src/CMakeFiles/noise.dir/module/spheres.cpp.o: ../src/module/spheres.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_31)
+	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_32)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/noise.dir/module/spheres.cpp.o"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/spheres.cpp.o -c /Users/fcvarela/Documents/Projects/libnoise/src/module/spheres.cpp
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/spheres.cpp.o -c /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/spheres.cpp
 
 src/CMakeFiles/noise.dir/module/spheres.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/noise.dir/module/spheres.cpp.i"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/libnoise/src/module/spheres.cpp > CMakeFiles/noise.dir/module/spheres.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/spheres.cpp > CMakeFiles/noise.dir/module/spheres.cpp.i
 
 src/CMakeFiles/noise.dir/module/spheres.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/noise.dir/module/spheres.cpp.s"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/libnoise/src/module/spheres.cpp -o CMakeFiles/noise.dir/module/spheres.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/spheres.cpp -o CMakeFiles/noise.dir/module/spheres.cpp.s
 
 src/CMakeFiles/noise.dir/module/spheres.cpp.o.requires:
 .PHONY : src/CMakeFiles/noise.dir/module/spheres.cpp.o.requires
@@ -764,17 +787,17 @@ src/CMakeFiles/noise.dir/module/spheres.cpp.o.provides.build: src/CMakeFiles/noi
 
 src/CMakeFiles/noise.dir/module/terrace.cpp.o: src/CMakeFiles/noise.dir/flags.make
 src/CMakeFiles/noise.dir/module/terrace.cpp.o: ../src/module/terrace.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_32)
+	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_33)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/noise.dir/module/terrace.cpp.o"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/terrace.cpp.o -c /Users/fcvarela/Documents/Projects/libnoise/src/module/terrace.cpp
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/terrace.cpp.o -c /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/terrace.cpp
 
 src/CMakeFiles/noise.dir/module/terrace.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/noise.dir/module/terrace.cpp.i"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/libnoise/src/module/terrace.cpp > CMakeFiles/noise.dir/module/terrace.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/terrace.cpp > CMakeFiles/noise.dir/module/terrace.cpp.i
 
 src/CMakeFiles/noise.dir/module/terrace.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/noise.dir/module/terrace.cpp.s"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/libnoise/src/module/terrace.cpp -o CMakeFiles/noise.dir/module/terrace.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/terrace.cpp -o CMakeFiles/noise.dir/module/terrace.cpp.s
 
 src/CMakeFiles/noise.dir/module/terrace.cpp.o.requires:
 .PHONY : src/CMakeFiles/noise.dir/module/terrace.cpp.o.requires
@@ -787,17 +810,17 @@ src/CMakeFiles/noise.dir/module/terrace.cpp.o.provides.build: src/CMakeFiles/noi
 
 src/CMakeFiles/noise.dir/module/translatepoint.cpp.o: src/CMakeFiles/noise.dir/flags.make
 src/CMakeFiles/noise.dir/module/translatepoint.cpp.o: ../src/module/translatepoint.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_33)
+	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_34)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/noise.dir/module/translatepoint.cpp.o"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/translatepoint.cpp.o -c /Users/fcvarela/Documents/Projects/libnoise/src/module/translatepoint.cpp
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/translatepoint.cpp.o -c /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/translatepoint.cpp
 
 src/CMakeFiles/noise.dir/module/translatepoint.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/noise.dir/module/translatepoint.cpp.i"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/libnoise/src/module/translatepoint.cpp > CMakeFiles/noise.dir/module/translatepoint.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/translatepoint.cpp > CMakeFiles/noise.dir/module/translatepoint.cpp.i
 
 src/CMakeFiles/noise.dir/module/translatepoint.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/noise.dir/module/translatepoint.cpp.s"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/libnoise/src/module/translatepoint.cpp -o CMakeFiles/noise.dir/module/translatepoint.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/translatepoint.cpp -o CMakeFiles/noise.dir/module/translatepoint.cpp.s
 
 src/CMakeFiles/noise.dir/module/translatepoint.cpp.o.requires:
 .PHONY : src/CMakeFiles/noise.dir/module/translatepoint.cpp.o.requires
@@ -810,17 +833,17 @@ src/CMakeFiles/noise.dir/module/translatepoint.cpp.o.provides.build: src/CMakeFi
 
 src/CMakeFiles/noise.dir/module/turbulence.cpp.o: src/CMakeFiles/noise.dir/flags.make
 src/CMakeFiles/noise.dir/module/turbulence.cpp.o: ../src/module/turbulence.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_34)
+	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_35)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/noise.dir/module/turbulence.cpp.o"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/turbulence.cpp.o -c /Users/fcvarela/Documents/Projects/libnoise/src/module/turbulence.cpp
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/turbulence.cpp.o -c /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/turbulence.cpp
 
 src/CMakeFiles/noise.dir/module/turbulence.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/noise.dir/module/turbulence.cpp.i"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/libnoise/src/module/turbulence.cpp > CMakeFiles/noise.dir/module/turbulence.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/turbulence.cpp > CMakeFiles/noise.dir/module/turbulence.cpp.i
 
 src/CMakeFiles/noise.dir/module/turbulence.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/noise.dir/module/turbulence.cpp.s"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/libnoise/src/module/turbulence.cpp -o CMakeFiles/noise.dir/module/turbulence.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/turbulence.cpp -o CMakeFiles/noise.dir/module/turbulence.cpp.s
 
 src/CMakeFiles/noise.dir/module/turbulence.cpp.o.requires:
 .PHONY : src/CMakeFiles/noise.dir/module/turbulence.cpp.o.requires
@@ -833,17 +856,17 @@ src/CMakeFiles/noise.dir/module/turbulence.cpp.o.provides.build: src/CMakeFiles/
 
 src/CMakeFiles/noise.dir/module/voronoi.cpp.o: src/CMakeFiles/noise.dir/flags.make
 src/CMakeFiles/noise.dir/module/voronoi.cpp.o: ../src/module/voronoi.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_35)
+	$(CMAKE_COMMAND) -E cmake_progress_report /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/CMakeFiles $(CMAKE_PROGRESS_36)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/CMakeFiles/noise.dir/module/voronoi.cpp.o"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/voronoi.cpp.o -c /Users/fcvarela/Documents/Projects/libnoise/src/module/voronoi.cpp
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/noise.dir/module/voronoi.cpp.o -c /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/voronoi.cpp
 
 src/CMakeFiles/noise.dir/module/voronoi.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/noise.dir/module/voronoi.cpp.i"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/libnoise/src/module/voronoi.cpp > CMakeFiles/noise.dir/module/voronoi.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/voronoi.cpp > CMakeFiles/noise.dir/module/voronoi.cpp.i
 
 src/CMakeFiles/noise.dir/module/voronoi.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/noise.dir/module/voronoi.cpp.s"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/libnoise/src/module/voronoi.cpp -o CMakeFiles/noise.dir/module/voronoi.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src/module/voronoi.cpp -o CMakeFiles/noise.dir/module/voronoi.cpp.s
 
 src/CMakeFiles/noise.dir/module/voronoi.cpp.o.requires:
 .PHONY : src/CMakeFiles/noise.dir/module/voronoi.cpp.o.requires
@@ -856,6 +879,7 @@ src/CMakeFiles/noise.dir/module/voronoi.cpp.o.provides.build: src/CMakeFiles/noi
 
 # Object files for target noise
 noise_OBJECTS = \
+"CMakeFiles/noise.dir/noiseutils.cpp.o" \
 "CMakeFiles/noise.dir/noisegen.cpp.o" \
 "CMakeFiles/noise.dir/latlon.cpp.o" \
 "CMakeFiles/noise.dir/model/line.cpp.o" \
@@ -895,6 +919,7 @@ noise_OBJECTS = \
 # External object files for target noise
 noise_EXTERNAL_OBJECTS =
 
+src/libnoise.dylib: src/CMakeFiles/noise.dir/noiseutils.cpp.o
 src/libnoise.dylib: src/CMakeFiles/noise.dir/noisegen.cpp.o
 src/libnoise.dylib: src/CMakeFiles/noise.dir/latlon.cpp.o
 src/libnoise.dylib: src/CMakeFiles/noise.dir/model/line.cpp.o
@@ -933,12 +958,13 @@ src/libnoise.dylib: src/CMakeFiles/noise.dir/module/voronoi.cpp.o
 src/libnoise.dylib: src/CMakeFiles/noise.dir/build.make
 src/libnoise.dylib: src/CMakeFiles/noise.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --red --bold "Linking CXX shared library libnoise.dylib"
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/noise.dir/link.txt --verbose=$(VERBOSE)
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/noise.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
 src/CMakeFiles/noise.dir/build: src/libnoise.dylib
 .PHONY : src/CMakeFiles/noise.dir/build
 
+src/CMakeFiles/noise.dir/requires: src/CMakeFiles/noise.dir/noiseutils.cpp.o.requires
 src/CMakeFiles/noise.dir/requires: src/CMakeFiles/noise.dir/noisegen.cpp.o.requires
 src/CMakeFiles/noise.dir/requires: src/CMakeFiles/noise.dir/latlon.cpp.o.requires
 src/CMakeFiles/noise.dir/requires: src/CMakeFiles/noise.dir/model/line.cpp.o.requires
@@ -977,10 +1003,10 @@ src/CMakeFiles/noise.dir/requires: src/CMakeFiles/noise.dir/module/voronoi.cpp.o
 .PHONY : src/CMakeFiles/noise.dir/requires
 
 src/CMakeFiles/noise.dir/clean:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build/src && $(CMAKE_COMMAND) -P CMakeFiles/noise.dir/cmake_clean.cmake
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src && $(CMAKE_COMMAND) -P CMakeFiles/noise.dir/cmake_clean.cmake
 .PHONY : src/CMakeFiles/noise.dir/clean
 
 src/CMakeFiles/noise.dir/depend:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /Users/fcvarela/Documents/Projects/libnoise /Users/fcvarela/Documents/Projects/libnoise/src /Users/fcvarela/Documents/Projects/libnoise/build /Users/fcvarela/Documents/Projects/libnoise/build/src /Users/fcvarela/Documents/Projects/libnoise/build/src/CMakeFiles/noise.dir/DependInfo.cmake --color=$(COLOR)
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/src /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src/CMakeFiles/noise.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : src/CMakeFiles/noise.dir/depend
 

@@ -7,6 +7,7 @@
 #include <Shader.h>
 
 class CumulativeDistributionFunction;
+class StarSystem;
 
 struct Color {
 	double r;
@@ -28,7 +29,6 @@ public:
 	double m_b;				// major semiaxis
 	double m_temp;			// star temperature
 	double m_mag;			// brigtness;
-	double m_radius;		// radius
 	Color color;
 	Vector3d  m_center;		// center of the elliptical orbit
 };
@@ -82,7 +82,7 @@ public:
 	int m_numberByRad[100];  ///< Historgramm showing distribution of stars
 
 	Vector3d m_pos;             ///< Center of the galaxy
-	GallacticNode *m_pStars;          ///< Pointer to an array of star data
+	StarSystem *m_pStars;          ///< Pointer to an array of star data
 	GallacticNode *m_pDust;           ///< Pointer to an array of dusty areas
 	GallacticNode *m_pH2;
 

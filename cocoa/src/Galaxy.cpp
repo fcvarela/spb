@@ -11,6 +11,7 @@
 #include "CumulativeDistributionFunction.h"
 #include "specrend.h"
 #include <GameSceneManager.h>
+#include <StarSystemGenerator.h>
 
 GallacticNode::GallacticNode() {
 	m_theta = 0.0;
@@ -132,7 +133,7 @@ double Galaxy::GetAngularOffset(double rad) const {
 
 void Galaxy::InitStars(double sigma) {
 	m_pDust = new GallacticNode[m_numDust];
-	m_pStars = new GallacticNode[m_numStars];
+	m_pStars = new StarSystem[m_numStars];
 	m_pH2 = new GallacticNode[m_numH2];
 
 	m_pDustCoords = new double[m_numDust * 3];
@@ -189,12 +190,6 @@ void Galaxy::InitStars(double sigma) {
 		m_pStars[i].m_center = Vector3d(0,0,0);
 		m_pStars[i].m_temp = 6000.0 + (6000.0 * my_random()) - 3000.0;
 		m_pStars[i].m_mag = 0.1 + 0.4 * my_random();
-
-		// up to 1000 solar radii converted to light years
-		double min = 0.1;
-		double max = 1000.0;
-		m_pStars[i].m_radius = (max - min) * ((double)rand()/(double)RAND_MAX) + min;
-		m_pStars[i].m_radius *= 6.955E8 * 1.05702341E-16;
 		int idx = std::min(1.0/dh * (m_pStars[i].m_a + m_pStars[i].m_b)/2.0, 99.0);
 		m_numberByRad[idx]++;
 	}
@@ -267,6 +262,7 @@ void Galaxy::InitStars(double sigma) {
 	SingleTimeStep(100000);
 
 	for (int i=0; i<m_numStars; i++) {
+		m_pStars[i].seed = i;
 		m_pStars[i].coloridToLabel();
 		Octree *inserthere = this->octree->nodeForPosition(m_pStars[i].position);
 		inserthere->insertItem(&m_pStars[i]);

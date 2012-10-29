@@ -1,4 +1,5 @@
 FILE(REMOVE_RECURSE
+  "CMakeFiles/noise-static.dir/noiseutils.cpp.o"
   "CMakeFiles/noise-static.dir/noisegen.cpp.o"
   "CMakeFiles/noise-static.dir/latlon.cpp.o"
   "CMakeFiles/noise-static.dir/model/line.cpp.o"

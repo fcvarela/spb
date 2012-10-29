@@ -2,10 +2,9 @@
 #include <Star.h>
 #include <StarSystem.h>
 
-Star::Star(std::string name, double radius, Vector3d position, StarSystem *system) {
-	this->label = name;
+Star::Star(StarSystem *system, double radius) {
 	this->radius = radius;
-	this->position = system->position + position;
+	this->position = system->position;
 
 	// create the display list for this sphere
 	GLUquadric *starq  = gluNewQuadric();

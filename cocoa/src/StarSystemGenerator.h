@@ -4,6 +4,8 @@
 #include <noise/noise.h>
 #include <noiseutils.h>
 
+class StarSystem;
+
 class StarSystemGenerator {
 public:
 	module::Perlin generatorModule;
@@ -13,8 +15,7 @@ public:
 	StarSystemGenerator();
 	~StarSystemGenerator();
 
-	void generateSystem(uint32_t index);
-
+	void generateSystem(StarSystem *system);
 };
 
 #endif

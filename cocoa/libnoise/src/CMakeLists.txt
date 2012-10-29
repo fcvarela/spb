@@ -5,6 +5,7 @@ SET(PROJECT_NAME libnoise)
 INCLUDE_DIRECTORIES (noise)
 
 set(libSrcs ${libSrcs}
+    noiseutils.cpp
     noisegen.cpp
     latlon.cpp
 

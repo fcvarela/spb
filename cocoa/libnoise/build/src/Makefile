@@ -39,10 +39,10 @@ RM = /usr/local/Cellar/cmake/2.8.8/bin/cmake -E remove -f
 CMAKE_EDIT_COMMAND = /usr/local/Cellar/cmake/2.8.8/bin/ccmake
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/fcvarela/Documents/Projects/libnoise
+CMAKE_SOURCE_DIR = /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/fcvarela/Documents/Projects/libnoise/build
+CMAKE_BINARY_DIR = /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -110,14 +110,14 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(CMAKE_COMMAND) -E cmake_progress_start /Users/fcvarela/Documents/Projects/libnoise/build/CMakeFiles /Users/fcvarela/Documents/Projects/libnoise/build/src/CMakeFiles/progress.marks
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f CMakeFiles/Makefile2 src/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/fcvarela/Documents/Projects/libnoise/build/CMakeFiles 0
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(CMAKE_COMMAND) -E cmake_progress_start /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/CMakeFiles /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/src/CMakeFiles/progress.marks
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f CMakeFiles/Makefile2 src/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f CMakeFiles/Makefile2 src/clean
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f CMakeFiles/Makefile2 src/clean
 .PHONY : clean
 
 # The main clean target
@@ -126,22 +126,22 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f CMakeFiles/Makefile2 src/preinstall
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f CMakeFiles/Makefile2 src/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f CMakeFiles/Makefile2 src/preinstall
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f CMakeFiles/Makefile2 src/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
 src/CMakeFiles/noise.dir/rule:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f CMakeFiles/Makefile2 src/CMakeFiles/noise.dir/rule
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f CMakeFiles/Makefile2 src/CMakeFiles/noise.dir/rule
 .PHONY : src/CMakeFiles/noise.dir/rule
 
 # Convenience name for target.
@@ -150,12 +150,12 @@ noise: src/CMakeFiles/noise.dir/rule
 
 # fast build rule for target.
 noise/fast:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/build
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/build
 .PHONY : noise/fast
 
 # Convenience name for target.
 src/CMakeFiles/noise-static.dir/rule:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f CMakeFiles/Makefile2 src/CMakeFiles/noise-static.dir/rule
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f CMakeFiles/Makefile2 src/CMakeFiles/noise-static.dir/rule
 .PHONY : src/CMakeFiles/noise-static.dir/rule
 
 # Convenience name for target.
@@ -164,7 +164,7 @@ noise-static: src/CMakeFiles/noise-static.dir/rule
 
 # fast build rule for target.
 noise-static/fast:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/build
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/build
 .PHONY : noise-static/fast
 
 latlon.o: latlon.cpp.o
@@ -172,8 +172,8 @@ latlon.o: latlon.cpp.o
 
 # target to build an object file
 latlon.cpp.o:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/latlon.cpp.o
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/latlon.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/latlon.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/latlon.cpp.o
 .PHONY : latlon.cpp.o
 
 latlon.i: latlon.cpp.i
@@ -181,8 +181,8 @@ latlon.i: latlon.cpp.i
 
 # target to preprocess a source file
 latlon.cpp.i:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/latlon.cpp.i
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/latlon.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/latlon.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/latlon.cpp.i
 .PHONY : latlon.cpp.i
 
 latlon.s: latlon.cpp.s
@@ -190,8 +190,8 @@ latlon.s: latlon.cpp.s
 
 # target to generate assembly for a file
 latlon.cpp.s:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/latlon.cpp.s
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/latlon.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/latlon.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/latlon.cpp.s
 .PHONY : latlon.cpp.s
 
 model/cylinder.o: model/cylinder.cpp.o
@@ -199,8 +199,8 @@ model/cylinder.o: model/cylinder.cpp.o
 
 # target to build an object file
 model/cylinder.cpp.o:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/model/cylinder.cpp.o
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/model/cylinder.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/model/cylinder.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/model/cylinder.cpp.o
 .PHONY : model/cylinder.cpp.o
 
 model/cylinder.i: model/cylinder.cpp.i
@@ -208,8 +208,8 @@ model/cylinder.i: model/cylinder.cpp.i
 
 # target to preprocess a source file
 model/cylinder.cpp.i:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/model/cylinder.cpp.i
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/model/cylinder.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/model/cylinder.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/model/cylinder.cpp.i
 .PHONY : model/cylinder.cpp.i
 
 model/cylinder.s: model/cylinder.cpp.s
@@ -217,8 +217,8 @@ model/cylinder.s: model/cylinder.cpp.s
 
 # target to generate assembly for a file
 model/cylinder.cpp.s:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/model/cylinder.cpp.s
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/model/cylinder.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/model/cylinder.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/model/cylinder.cpp.s
 .PHONY : model/cylinder.cpp.s
 
 model/line.o: model/line.cpp.o
@@ -226,8 +226,8 @@ model/line.o: model/line.cpp.o
 
 # target to build an object file
 model/line.cpp.o:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/model/line.cpp.o
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/model/line.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/model/line.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/model/line.cpp.o
 .PHONY : model/line.cpp.o
 
 model/line.i: model/line.cpp.i
@@ -235,8 +235,8 @@ model/line.i: model/line.cpp.i
 
 # target to preprocess a source file
 model/line.cpp.i:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/model/line.cpp.i
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/model/line.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/model/line.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/model/line.cpp.i
 .PHONY : model/line.cpp.i
 
 model/line.s: model/line.cpp.s
@@ -244,8 +244,8 @@ model/line.s: model/line.cpp.s
 
 # target to generate assembly for a file
 model/line.cpp.s:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/model/line.cpp.s
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/model/line.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/model/line.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/model/line.cpp.s
 .PHONY : model/line.cpp.s
 
 model/plane.o: model/plane.cpp.o
@@ -253,8 +253,8 @@ model/plane.o: model/plane.cpp.o
 
 # target to build an object file
 model/plane.cpp.o:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/model/plane.cpp.o
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/model/plane.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/model/plane.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/model/plane.cpp.o
 .PHONY : model/plane.cpp.o
 
 model/plane.i: model/plane.cpp.i
@@ -262,8 +262,8 @@ model/plane.i: model/plane.cpp.i
 
 # target to preprocess a source file
 model/plane.cpp.i:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/model/plane.cpp.i
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/model/plane.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/model/plane.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/model/plane.cpp.i
 .PHONY : model/plane.cpp.i
 
 model/plane.s: model/plane.cpp.s
@@ -271,8 +271,8 @@ model/plane.s: model/plane.cpp.s
 
 # target to generate assembly for a file
 model/plane.cpp.s:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/model/plane.cpp.s
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/model/plane.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/model/plane.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/model/plane.cpp.s
 .PHONY : model/plane.cpp.s
 
 model/sphere.o: model/sphere.cpp.o
@@ -280,8 +280,8 @@ model/sphere.o: model/sphere.cpp.o
 
 # target to build an object file
 model/sphere.cpp.o:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/model/sphere.cpp.o
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/model/sphere.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/model/sphere.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/model/sphere.cpp.o
 .PHONY : model/sphere.cpp.o
 
 model/sphere.i: model/sphere.cpp.i
@@ -289,8 +289,8 @@ model/sphere.i: model/sphere.cpp.i
 
 # target to preprocess a source file
 model/sphere.cpp.i:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/model/sphere.cpp.i
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/model/sphere.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/model/sphere.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/model/sphere.cpp.i
 .PHONY : model/sphere.cpp.i
 
 model/sphere.s: model/sphere.cpp.s
@@ -298,8 +298,8 @@ model/sphere.s: model/sphere.cpp.s
 
 # target to generate assembly for a file
 model/sphere.cpp.s:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/model/sphere.cpp.s
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/model/sphere.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/model/sphere.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/model/sphere.cpp.s
 .PHONY : model/sphere.cpp.s
 
 module/abs.o: module/abs.cpp.o
@@ -307,8 +307,8 @@ module/abs.o: module/abs.cpp.o
 
 # target to build an object file
 module/abs.cpp.o:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/abs.cpp.o
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/abs.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/abs.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/abs.cpp.o
 .PHONY : module/abs.cpp.o
 
 module/abs.i: module/abs.cpp.i
@@ -316,8 +316,8 @@ module/abs.i: module/abs.cpp.i
 
 # target to preprocess a source file
 module/abs.cpp.i:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/abs.cpp.i
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/abs.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/abs.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/abs.cpp.i
 .PHONY : module/abs.cpp.i
 
 module/abs.s: module/abs.cpp.s
@@ -325,8 +325,8 @@ module/abs.s: module/abs.cpp.s
 
 # target to generate assembly for a file
 module/abs.cpp.s:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/abs.cpp.s
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/abs.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/abs.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/abs.cpp.s
 .PHONY : module/abs.cpp.s
 
 module/add.o: module/add.cpp.o
@@ -334,8 +334,8 @@ module/add.o: module/add.cpp.o
 
 # target to build an object file
 module/add.cpp.o:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/add.cpp.o
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/add.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/add.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/add.cpp.o
 .PHONY : module/add.cpp.o
 
 module/add.i: module/add.cpp.i
@@ -343,8 +343,8 @@ module/add.i: module/add.cpp.i
 
 # target to preprocess a source file
 module/add.cpp.i:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/add.cpp.i
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/add.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/add.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/add.cpp.i
 .PHONY : module/add.cpp.i
 
 module/add.s: module/add.cpp.s
@@ -352,8 +352,8 @@ module/add.s: module/add.cpp.s
 
 # target to generate assembly for a file
 module/add.cpp.s:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/add.cpp.s
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/add.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/add.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/add.cpp.s
 .PHONY : module/add.cpp.s
 
 module/billow.o: module/billow.cpp.o
@@ -361,8 +361,8 @@ module/billow.o: module/billow.cpp.o
 
 # target to build an object file
 module/billow.cpp.o:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/billow.cpp.o
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/billow.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/billow.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/billow.cpp.o
 .PHONY : module/billow.cpp.o
 
 module/billow.i: module/billow.cpp.i
@@ -370,8 +370,8 @@ module/billow.i: module/billow.cpp.i
 
 # target to preprocess a source file
 module/billow.cpp.i:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/billow.cpp.i
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/billow.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/billow.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/billow.cpp.i
 .PHONY : module/billow.cpp.i
 
 module/billow.s: module/billow.cpp.s
@@ -379,8 +379,8 @@ module/billow.s: module/billow.cpp.s
 
 # target to generate assembly for a file
 module/billow.cpp.s:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/billow.cpp.s
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/billow.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/billow.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/billow.cpp.s
 .PHONY : module/billow.cpp.s
 
 module/blend.o: module/blend.cpp.o
@@ -388,8 +388,8 @@ module/blend.o: module/blend.cpp.o
 
 # target to build an object file
 module/blend.cpp.o:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/blend.cpp.o
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/blend.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/blend.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/blend.cpp.o
 .PHONY : module/blend.cpp.o
 
 module/blend.i: module/blend.cpp.i
@@ -397,8 +397,8 @@ module/blend.i: module/blend.cpp.i
 
 # target to preprocess a source file
 module/blend.cpp.i:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/blend.cpp.i
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/blend.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/blend.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/blend.cpp.i
 .PHONY : module/blend.cpp.i
 
 module/blend.s: module/blend.cpp.s
@@ -406,8 +406,8 @@ module/blend.s: module/blend.cpp.s
 
 # target to generate assembly for a file
 module/blend.cpp.s:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/blend.cpp.s
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/blend.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/blend.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/blend.cpp.s
 .PHONY : module/blend.cpp.s
 
 module/cache.o: module/cache.cpp.o
@@ -415,8 +415,8 @@ module/cache.o: module/cache.cpp.o
 
 # target to build an object file
 module/cache.cpp.o:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/cache.cpp.o
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/cache.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/cache.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/cache.cpp.o
 .PHONY : module/cache.cpp.o
 
 module/cache.i: module/cache.cpp.i
@@ -424,8 +424,8 @@ module/cache.i: module/cache.cpp.i
 
 # target to preprocess a source file
 module/cache.cpp.i:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/cache.cpp.i
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/cache.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/cache.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/cache.cpp.i
 .PHONY : module/cache.cpp.i
 
 module/cache.s: module/cache.cpp.s
@@ -433,8 +433,8 @@ module/cache.s: module/cache.cpp.s
 
 # target to generate assembly for a file
 module/cache.cpp.s:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/cache.cpp.s
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/cache.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/cache.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/cache.cpp.s
 .PHONY : module/cache.cpp.s
 
 module/checkerboard.o: module/checkerboard.cpp.o
@@ -442,8 +442,8 @@ module/checkerboard.o: module/checkerboard.cpp.o
 
 # target to build an object file
 module/checkerboard.cpp.o:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/checkerboard.cpp.o
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/checkerboard.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/checkerboard.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/checkerboard.cpp.o
 .PHONY : module/checkerboard.cpp.o
 
 module/checkerboard.i: module/checkerboard.cpp.i
@@ -451,8 +451,8 @@ module/checkerboard.i: module/checkerboard.cpp.i
 
 # target to preprocess a source file
 module/checkerboard.cpp.i:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/checkerboard.cpp.i
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/checkerboard.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/checkerboard.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/checkerboard.cpp.i
 .PHONY : module/checkerboard.cpp.i
 
 module/checkerboard.s: module/checkerboard.cpp.s
@@ -460,8 +460,8 @@ module/checkerboard.s: module/checkerboard.cpp.s
 
 # target to generate assembly for a file
 module/checkerboard.cpp.s:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/checkerboard.cpp.s
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/checkerboard.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/checkerboard.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/checkerboard.cpp.s
 .PHONY : module/checkerboard.cpp.s
 
 module/clamp.o: module/clamp.cpp.o
@@ -469,8 +469,8 @@ module/clamp.o: module/clamp.cpp.o
 
 # target to build an object file
 module/clamp.cpp.o:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/clamp.cpp.o
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/clamp.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/clamp.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/clamp.cpp.o
 .PHONY : module/clamp.cpp.o
 
 module/clamp.i: module/clamp.cpp.i
@@ -478,8 +478,8 @@ module/clamp.i: module/clamp.cpp.i
 
 # target to preprocess a source file
 module/clamp.cpp.i:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/clamp.cpp.i
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/clamp.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/clamp.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/clamp.cpp.i
 .PHONY : module/clamp.cpp.i
 
 module/clamp.s: module/clamp.cpp.s
@@ -487,8 +487,8 @@ module/clamp.s: module/clamp.cpp.s
 
 # target to generate assembly for a file
 module/clamp.cpp.s:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/clamp.cpp.s
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/clamp.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/clamp.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/clamp.cpp.s
 .PHONY : module/clamp.cpp.s
 
 module/const.o: module/const.cpp.o
@@ -496,8 +496,8 @@ module/const.o: module/const.cpp.o
 
 # target to build an object file
 module/const.cpp.o:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/const.cpp.o
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/const.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/const.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/const.cpp.o
 .PHONY : module/const.cpp.o
 
 module/const.i: module/const.cpp.i
@@ -505,8 +505,8 @@ module/const.i: module/const.cpp.i
 
 # target to preprocess a source file
 module/const.cpp.i:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/const.cpp.i
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/const.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/const.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/const.cpp.i
 .PHONY : module/const.cpp.i
 
 module/const.s: module/const.cpp.s
@@ -514,8 +514,8 @@ module/const.s: module/const.cpp.s
 
 # target to generate assembly for a file
 module/const.cpp.s:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/const.cpp.s
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/const.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/const.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/const.cpp.s
 .PHONY : module/const.cpp.s
 
 module/curve.o: module/curve.cpp.o
@@ -523,8 +523,8 @@ module/curve.o: module/curve.cpp.o
 
 # target to build an object file
 module/curve.cpp.o:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/curve.cpp.o
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/curve.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/curve.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/curve.cpp.o
 .PHONY : module/curve.cpp.o
 
 module/curve.i: module/curve.cpp.i
@@ -532,8 +532,8 @@ module/curve.i: module/curve.cpp.i
 
 # target to preprocess a source file
 module/curve.cpp.i:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/curve.cpp.i
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/curve.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/curve.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/curve.cpp.i
 .PHONY : module/curve.cpp.i
 
 module/curve.s: module/curve.cpp.s
@@ -541,8 +541,8 @@ module/curve.s: module/curve.cpp.s
 
 # target to generate assembly for a file
 module/curve.cpp.s:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/curve.cpp.s
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/curve.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/curve.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/curve.cpp.s
 .PHONY : module/curve.cpp.s
 
 module/cylinders.o: module/cylinders.cpp.o
@@ -550,8 +550,8 @@ module/cylinders.o: module/cylinders.cpp.o
 
 # target to build an object file
 module/cylinders.cpp.o:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/cylinders.cpp.o
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/cylinders.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/cylinders.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/cylinders.cpp.o
 .PHONY : module/cylinders.cpp.o
 
 module/cylinders.i: module/cylinders.cpp.i
@@ -559,8 +559,8 @@ module/cylinders.i: module/cylinders.cpp.i
 
 # target to preprocess a source file
 module/cylinders.cpp.i:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/cylinders.cpp.i
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/cylinders.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/cylinders.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/cylinders.cpp.i
 .PHONY : module/cylinders.cpp.i
 
 module/cylinders.s: module/cylinders.cpp.s
@@ -568,8 +568,8 @@ module/cylinders.s: module/cylinders.cpp.s
 
 # target to generate assembly for a file
 module/cylinders.cpp.s:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/cylinders.cpp.s
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/cylinders.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/cylinders.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/cylinders.cpp.s
 .PHONY : module/cylinders.cpp.s
 
 module/displace.o: module/displace.cpp.o
@@ -577,8 +577,8 @@ module/displace.o: module/displace.cpp.o
 
 # target to build an object file
 module/displace.cpp.o:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/displace.cpp.o
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/displace.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/displace.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/displace.cpp.o
 .PHONY : module/displace.cpp.o
 
 module/displace.i: module/displace.cpp.i
@@ -586,8 +586,8 @@ module/displace.i: module/displace.cpp.i
 
 # target to preprocess a source file
 module/displace.cpp.i:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/displace.cpp.i
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/displace.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/displace.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/displace.cpp.i
 .PHONY : module/displace.cpp.i
 
 module/displace.s: module/displace.cpp.s
@@ -595,8 +595,8 @@ module/displace.s: module/displace.cpp.s
 
 # target to generate assembly for a file
 module/displace.cpp.s:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/displace.cpp.s
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/displace.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/displace.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/displace.cpp.s
 .PHONY : module/displace.cpp.s
 
 module/exponent.o: module/exponent.cpp.o
@@ -604,8 +604,8 @@ module/exponent.o: module/exponent.cpp.o
 
 # target to build an object file
 module/exponent.cpp.o:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/exponent.cpp.o
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/exponent.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/exponent.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/exponent.cpp.o
 .PHONY : module/exponent.cpp.o
 
 module/exponent.i: module/exponent.cpp.i
@@ -613,8 +613,8 @@ module/exponent.i: module/exponent.cpp.i
 
 # target to preprocess a source file
 module/exponent.cpp.i:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/exponent.cpp.i
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/exponent.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/exponent.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/exponent.cpp.i
 .PHONY : module/exponent.cpp.i
 
 module/exponent.s: module/exponent.cpp.s
@@ -622,8 +622,8 @@ module/exponent.s: module/exponent.cpp.s
 
 # target to generate assembly for a file
 module/exponent.cpp.s:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/exponent.cpp.s
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/exponent.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/exponent.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/exponent.cpp.s
 .PHONY : module/exponent.cpp.s
 
 module/invert.o: module/invert.cpp.o
@@ -631,8 +631,8 @@ module/invert.o: module/invert.cpp.o
 
 # target to build an object file
 module/invert.cpp.o:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/invert.cpp.o
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/invert.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/invert.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/invert.cpp.o
 .PHONY : module/invert.cpp.o
 
 module/invert.i: module/invert.cpp.i
@@ -640,8 +640,8 @@ module/invert.i: module/invert.cpp.i
 
 # target to preprocess a source file
 module/invert.cpp.i:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/invert.cpp.i
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/invert.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/invert.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/invert.cpp.i
 .PHONY : module/invert.cpp.i
 
 module/invert.s: module/invert.cpp.s
@@ -649,8 +649,8 @@ module/invert.s: module/invert.cpp.s
 
 # target to generate assembly for a file
 module/invert.cpp.s:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/invert.cpp.s
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/invert.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/invert.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/invert.cpp.s
 .PHONY : module/invert.cpp.s
 
 module/max.o: module/max.cpp.o
@@ -658,8 +658,8 @@ module/max.o: module/max.cpp.o
 
 # target to build an object file
 module/max.cpp.o:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/max.cpp.o
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/max.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/max.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/max.cpp.o
 .PHONY : module/max.cpp.o
 
 module/max.i: module/max.cpp.i
@@ -667,8 +667,8 @@ module/max.i: module/max.cpp.i
 
 # target to preprocess a source file
 module/max.cpp.i:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/max.cpp.i
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/max.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/max.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/max.cpp.i
 .PHONY : module/max.cpp.i
 
 module/max.s: module/max.cpp.s
@@ -676,8 +676,8 @@ module/max.s: module/max.cpp.s
 
 # target to generate assembly for a file
 module/max.cpp.s:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/max.cpp.s
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/max.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/max.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/max.cpp.s
 .PHONY : module/max.cpp.s
 
 module/min.o: module/min.cpp.o
@@ -685,8 +685,8 @@ module/min.o: module/min.cpp.o
 
 # target to build an object file
 module/min.cpp.o:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/min.cpp.o
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/min.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/min.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/min.cpp.o
 .PHONY : module/min.cpp.o
 
 module/min.i: module/min.cpp.i
@@ -694,8 +694,8 @@ module/min.i: module/min.cpp.i
 
 # target to preprocess a source file
 module/min.cpp.i:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/min.cpp.i
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/min.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/min.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/min.cpp.i
 .PHONY : module/min.cpp.i
 
 module/min.s: module/min.cpp.s
@@ -703,8 +703,8 @@ module/min.s: module/min.cpp.s
 
 # target to generate assembly for a file
 module/min.cpp.s:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/min.cpp.s
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/min.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/min.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/min.cpp.s
 .PHONY : module/min.cpp.s
 
 module/modulebase.o: module/modulebase.cpp.o
@@ -712,8 +712,8 @@ module/modulebase.o: module/modulebase.cpp.o
 
 # target to build an object file
 module/modulebase.cpp.o:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/modulebase.cpp.o
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/modulebase.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/modulebase.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/modulebase.cpp.o
 .PHONY : module/modulebase.cpp.o
 
 module/modulebase.i: module/modulebase.cpp.i
@@ -721,8 +721,8 @@ module/modulebase.i: module/modulebase.cpp.i
 
 # target to preprocess a source file
 module/modulebase.cpp.i:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/modulebase.cpp.i
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/modulebase.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/modulebase.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/modulebase.cpp.i
 .PHONY : module/modulebase.cpp.i
 
 module/modulebase.s: module/modulebase.cpp.s
@@ -730,8 +730,8 @@ module/modulebase.s: module/modulebase.cpp.s
 
 # target to generate assembly for a file
 module/modulebase.cpp.s:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/modulebase.cpp.s
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/modulebase.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/modulebase.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/modulebase.cpp.s
 .PHONY : module/modulebase.cpp.s
 
 module/multiply.o: module/multiply.cpp.o
@@ -739,8 +739,8 @@ module/multiply.o: module/multiply.cpp.o
 
 # target to build an object file
 module/multiply.cpp.o:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/multiply.cpp.o
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/multiply.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/multiply.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/multiply.cpp.o
 .PHONY : module/multiply.cpp.o
 
 module/multiply.i: module/multiply.cpp.i
@@ -748,8 +748,8 @@ module/multiply.i: module/multiply.cpp.i
 
 # target to preprocess a source file
 module/multiply.cpp.i:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/multiply.cpp.i
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/multiply.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/multiply.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/multiply.cpp.i
 .PHONY : module/multiply.cpp.i
 
 module/multiply.s: module/multiply.cpp.s
@@ -757,8 +757,8 @@ module/multiply.s: module/multiply.cpp.s
 
 # target to generate assembly for a file
 module/multiply.cpp.s:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/multiply.cpp.s
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/multiply.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/multiply.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/multiply.cpp.s
 .PHONY : module/multiply.cpp.s
 
 module/perlin.o: module/perlin.cpp.o
@@ -766,8 +766,8 @@ module/perlin.o: module/perlin.cpp.o
 
 # target to build an object file
 module/perlin.cpp.o:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/perlin.cpp.o
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/perlin.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/perlin.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/perlin.cpp.o
 .PHONY : module/perlin.cpp.o
 
 module/perlin.i: module/perlin.cpp.i
@@ -775,8 +775,8 @@ module/perlin.i: module/perlin.cpp.i
 
 # target to preprocess a source file
 module/perlin.cpp.i:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/perlin.cpp.i
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/perlin.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/perlin.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/perlin.cpp.i
 .PHONY : module/perlin.cpp.i
 
 module/perlin.s: module/perlin.cpp.s
@@ -784,8 +784,8 @@ module/perlin.s: module/perlin.cpp.s
 
 # target to generate assembly for a file
 module/perlin.cpp.s:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/perlin.cpp.s
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/perlin.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/perlin.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/perlin.cpp.s
 .PHONY : module/perlin.cpp.s
 
 module/power.o: module/power.cpp.o
@@ -793,8 +793,8 @@ module/power.o: module/power.cpp.o
 
 # target to build an object file
 module/power.cpp.o:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/power.cpp.o
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/power.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/power.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/power.cpp.o
 .PHONY : module/power.cpp.o
 
 module/power.i: module/power.cpp.i
@@ -802,8 +802,8 @@ module/power.i: module/power.cpp.i
 
 # target to preprocess a source file
 module/power.cpp.i:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/power.cpp.i
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/power.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/power.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/power.cpp.i
 .PHONY : module/power.cpp.i
 
 module/power.s: module/power.cpp.s
@@ -811,8 +811,8 @@ module/power.s: module/power.cpp.s
 
 # target to generate assembly for a file
 module/power.cpp.s:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/power.cpp.s
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/power.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/power.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/power.cpp.s
 .PHONY : module/power.cpp.s
 
 module/ridgedmulti.o: module/ridgedmulti.cpp.o
@@ -820,8 +820,8 @@ module/ridgedmulti.o: module/ridgedmulti.cpp.o
 
 # target to build an object file
 module/ridgedmulti.cpp.o:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/ridgedmulti.cpp.o
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/ridgedmulti.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/ridgedmulti.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/ridgedmulti.cpp.o
 .PHONY : module/ridgedmulti.cpp.o
 
 module/ridgedmulti.i: module/ridgedmulti.cpp.i
@@ -829,8 +829,8 @@ module/ridgedmulti.i: module/ridgedmulti.cpp.i
 
 # target to preprocess a source file
 module/ridgedmulti.cpp.i:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/ridgedmulti.cpp.i
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/ridgedmulti.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/ridgedmulti.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/ridgedmulti.cpp.i
 .PHONY : module/ridgedmulti.cpp.i
 
 module/ridgedmulti.s: module/ridgedmulti.cpp.s
@@ -838,8 +838,8 @@ module/ridgedmulti.s: module/ridgedmulti.cpp.s
 
 # target to generate assembly for a file
 module/ridgedmulti.cpp.s:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/ridgedmulti.cpp.s
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/ridgedmulti.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/ridgedmulti.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/ridgedmulti.cpp.s
 .PHONY : module/ridgedmulti.cpp.s
 
 module/rotatepoint.o: module/rotatepoint.cpp.o
@@ -847,8 +847,8 @@ module/rotatepoint.o: module/rotatepoint.cpp.o
 
 # target to build an object file
 module/rotatepoint.cpp.o:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/rotatepoint.cpp.o
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/rotatepoint.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/rotatepoint.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/rotatepoint.cpp.o
 .PHONY : module/rotatepoint.cpp.o
 
 module/rotatepoint.i: module/rotatepoint.cpp.i
@@ -856,8 +856,8 @@ module/rotatepoint.i: module/rotatepoint.cpp.i
 
 # target to preprocess a source file
 module/rotatepoint.cpp.i:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/rotatepoint.cpp.i
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/rotatepoint.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/rotatepoint.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/rotatepoint.cpp.i
 .PHONY : module/rotatepoint.cpp.i
 
 module/rotatepoint.s: module/rotatepoint.cpp.s
@@ -865,8 +865,8 @@ module/rotatepoint.s: module/rotatepoint.cpp.s
 
 # target to generate assembly for a file
 module/rotatepoint.cpp.s:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/rotatepoint.cpp.s
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/rotatepoint.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/rotatepoint.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/rotatepoint.cpp.s
 .PHONY : module/rotatepoint.cpp.s
 
 module/scalebias.o: module/scalebias.cpp.o
@@ -874,8 +874,8 @@ module/scalebias.o: module/scalebias.cpp.o
 
 # target to build an object file
 module/scalebias.cpp.o:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/scalebias.cpp.o
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/scalebias.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/scalebias.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/scalebias.cpp.o
 .PHONY : module/scalebias.cpp.o
 
 module/scalebias.i: module/scalebias.cpp.i
@@ -883,8 +883,8 @@ module/scalebias.i: module/scalebias.cpp.i
 
 # target to preprocess a source file
 module/scalebias.cpp.i:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/scalebias.cpp.i
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/scalebias.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/scalebias.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/scalebias.cpp.i
 .PHONY : module/scalebias.cpp.i
 
 module/scalebias.s: module/scalebias.cpp.s
@@ -892,8 +892,8 @@ module/scalebias.s: module/scalebias.cpp.s
 
 # target to generate assembly for a file
 module/scalebias.cpp.s:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/scalebias.cpp.s
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/scalebias.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/scalebias.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/scalebias.cpp.s
 .PHONY : module/scalebias.cpp.s
 
 module/scalepoint.o: module/scalepoint.cpp.o
@@ -901,8 +901,8 @@ module/scalepoint.o: module/scalepoint.cpp.o
 
 # target to build an object file
 module/scalepoint.cpp.o:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/scalepoint.cpp.o
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/scalepoint.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/scalepoint.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/scalepoint.cpp.o
 .PHONY : module/scalepoint.cpp.o
 
 module/scalepoint.i: module/scalepoint.cpp.i
@@ -910,8 +910,8 @@ module/scalepoint.i: module/scalepoint.cpp.i
 
 # target to preprocess a source file
 module/scalepoint.cpp.i:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/scalepoint.cpp.i
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/scalepoint.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/scalepoint.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/scalepoint.cpp.i
 .PHONY : module/scalepoint.cpp.i
 
 module/scalepoint.s: module/scalepoint.cpp.s
@@ -919,8 +919,8 @@ module/scalepoint.s: module/scalepoint.cpp.s
 
 # target to generate assembly for a file
 module/scalepoint.cpp.s:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/scalepoint.cpp.s
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/scalepoint.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/scalepoint.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/scalepoint.cpp.s
 .PHONY : module/scalepoint.cpp.s
 
 module/select.o: module/select.cpp.o
@@ -928,8 +928,8 @@ module/select.o: module/select.cpp.o
 
 # target to build an object file
 module/select.cpp.o:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/select.cpp.o
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/select.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/select.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/select.cpp.o
 .PHONY : module/select.cpp.o
 
 module/select.i: module/select.cpp.i
@@ -937,8 +937,8 @@ module/select.i: module/select.cpp.i
 
 # target to preprocess a source file
 module/select.cpp.i:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/select.cpp.i
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/select.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/select.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/select.cpp.i
 .PHONY : module/select.cpp.i
 
 module/select.s: module/select.cpp.s
@@ -946,8 +946,8 @@ module/select.s: module/select.cpp.s
 
 # target to generate assembly for a file
 module/select.cpp.s:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/select.cpp.s
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/select.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/select.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/select.cpp.s
 .PHONY : module/select.cpp.s
 
 module/spheres.o: module/spheres.cpp.o
@@ -955,8 +955,8 @@ module/spheres.o: module/spheres.cpp.o
 
 # target to build an object file
 module/spheres.cpp.o:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/spheres.cpp.o
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/spheres.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/spheres.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/spheres.cpp.o
 .PHONY : module/spheres.cpp.o
 
 module/spheres.i: module/spheres.cpp.i
@@ -964,8 +964,8 @@ module/spheres.i: module/spheres.cpp.i
 
 # target to preprocess a source file
 module/spheres.cpp.i:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/spheres.cpp.i
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/spheres.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/spheres.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/spheres.cpp.i
 .PHONY : module/spheres.cpp.i
 
 module/spheres.s: module/spheres.cpp.s
@@ -973,8 +973,8 @@ module/spheres.s: module/spheres.cpp.s
 
 # target to generate assembly for a file
 module/spheres.cpp.s:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/spheres.cpp.s
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/spheres.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/spheres.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/spheres.cpp.s
 .PHONY : module/spheres.cpp.s
 
 module/terrace.o: module/terrace.cpp.o
@@ -982,8 +982,8 @@ module/terrace.o: module/terrace.cpp.o
 
 # target to build an object file
 module/terrace.cpp.o:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/terrace.cpp.o
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/terrace.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/terrace.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/terrace.cpp.o
 .PHONY : module/terrace.cpp.o
 
 module/terrace.i: module/terrace.cpp.i
@@ -991,8 +991,8 @@ module/terrace.i: module/terrace.cpp.i
 
 # target to preprocess a source file
 module/terrace.cpp.i:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/terrace.cpp.i
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/terrace.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/terrace.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/terrace.cpp.i
 .PHONY : module/terrace.cpp.i
 
 module/terrace.s: module/terrace.cpp.s
@@ -1000,8 +1000,8 @@ module/terrace.s: module/terrace.cpp.s
 
 # target to generate assembly for a file
 module/terrace.cpp.s:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/terrace.cpp.s
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/terrace.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/terrace.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/terrace.cpp.s
 .PHONY : module/terrace.cpp.s
 
 module/translatepoint.o: module/translatepoint.cpp.o
@@ -1009,8 +1009,8 @@ module/translatepoint.o: module/translatepoint.cpp.o
 
 # target to build an object file
 module/translatepoint.cpp.o:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/translatepoint.cpp.o
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/translatepoint.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/translatepoint.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/translatepoint.cpp.o
 .PHONY : module/translatepoint.cpp.o
 
 module/translatepoint.i: module/translatepoint.cpp.i
@@ -1018,8 +1018,8 @@ module/translatepoint.i: module/translatepoint.cpp.i
 
 # target to preprocess a source file
 module/translatepoint.cpp.i:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/translatepoint.cpp.i
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/translatepoint.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/translatepoint.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/translatepoint.cpp.i
 .PHONY : module/translatepoint.cpp.i
 
 module/translatepoint.s: module/translatepoint.cpp.s
@@ -1027,8 +1027,8 @@ module/translatepoint.s: module/translatepoint.cpp.s
 
 # target to generate assembly for a file
 module/translatepoint.cpp.s:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/translatepoint.cpp.s
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/translatepoint.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/translatepoint.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/translatepoint.cpp.s
 .PHONY : module/translatepoint.cpp.s
 
 module/turbulence.o: module/turbulence.cpp.o
@@ -1036,8 +1036,8 @@ module/turbulence.o: module/turbulence.cpp.o
 
 # target to build an object file
 module/turbulence.cpp.o:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/turbulence.cpp.o
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/turbulence.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/turbulence.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/turbulence.cpp.o
 .PHONY : module/turbulence.cpp.o
 
 module/turbulence.i: module/turbulence.cpp.i
@@ -1045,8 +1045,8 @@ module/turbulence.i: module/turbulence.cpp.i
 
 # target to preprocess a source file
 module/turbulence.cpp.i:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/turbulence.cpp.i
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/turbulence.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/turbulence.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/turbulence.cpp.i
 .PHONY : module/turbulence.cpp.i
 
 module/turbulence.s: module/turbulence.cpp.s
@@ -1054,8 +1054,8 @@ module/turbulence.s: module/turbulence.cpp.s
 
 # target to generate assembly for a file
 module/turbulence.cpp.s:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/turbulence.cpp.s
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/turbulence.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/turbulence.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/turbulence.cpp.s
 .PHONY : module/turbulence.cpp.s
 
 module/voronoi.o: module/voronoi.cpp.o
@@ -1063,8 +1063,8 @@ module/voronoi.o: module/voronoi.cpp.o
 
 # target to build an object file
 module/voronoi.cpp.o:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/voronoi.cpp.o
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/voronoi.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/voronoi.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/voronoi.cpp.o
 .PHONY : module/voronoi.cpp.o
 
 module/voronoi.i: module/voronoi.cpp.i
@@ -1072,8 +1072,8 @@ module/voronoi.i: module/voronoi.cpp.i
 
 # target to preprocess a source file
 module/voronoi.cpp.i:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/voronoi.cpp.i
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/voronoi.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/voronoi.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/voronoi.cpp.i
 .PHONY : module/voronoi.cpp.i
 
 module/voronoi.s: module/voronoi.cpp.s
@@ -1081,8 +1081,8 @@ module/voronoi.s: module/voronoi.cpp.s
 
 # target to generate assembly for a file
 module/voronoi.cpp.s:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/voronoi.cpp.s
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/voronoi.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/module/voronoi.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/module/voronoi.cpp.s
 .PHONY : module/voronoi.cpp.s
 
 noisegen.o: noisegen.cpp.o
@@ -1090,8 +1090,8 @@ noisegen.o: noisegen.cpp.o
 
 # target to build an object file
 noisegen.cpp.o:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/noisegen.cpp.o
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/noisegen.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/noisegen.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/noisegen.cpp.o
 .PHONY : noisegen.cpp.o
 
 noisegen.i: noisegen.cpp.i
@@ -1099,8 +1099,8 @@ noisegen.i: noisegen.cpp.i
 
 # target to preprocess a source file
 noisegen.cpp.i:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/noisegen.cpp.i
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/noisegen.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/noisegen.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/noisegen.cpp.i
 .PHONY : noisegen.cpp.i
 
 noisegen.s: noisegen.cpp.s
@@ -1108,9 +1108,36 @@ noisegen.s: noisegen.cpp.s
 
 # target to generate assembly for a file
 noisegen.cpp.s:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/noisegen.cpp.s
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/noisegen.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/noisegen.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/noisegen.cpp.s
 .PHONY : noisegen.cpp.s
+
+noiseutils.o: noiseutils.cpp.o
+.PHONY : noiseutils.o
+
+# target to build an object file
+noiseutils.cpp.o:
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/noiseutils.cpp.o
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/noiseutils.cpp.o
+.PHONY : noiseutils.cpp.o
+
+noiseutils.i: noiseutils.cpp.i
+.PHONY : noiseutils.i
+
+# target to preprocess a source file
+noiseutils.cpp.i:
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/noiseutils.cpp.i
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/noiseutils.cpp.i
+.PHONY : noiseutils.cpp.i
+
+noiseutils.s: noiseutils.cpp.s
+.PHONY : noiseutils.s
+
+# target to generate assembly for a file
+noiseutils.cpp.s:
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise.dir/build.make src/CMakeFiles/noise.dir/noiseutils.cpp.s
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(MAKE) -f src/CMakeFiles/noise-static.dir/build.make src/CMakeFiles/noise-static.dir/noiseutils.cpp.s
+.PHONY : noiseutils.cpp.s
 
 # Help Target
 help:
@@ -1231,6 +1258,9 @@ help:
 	@echo "... noisegen.o"
 	@echo "... noisegen.i"
 	@echo "... noisegen.s"
+	@echo "... noiseutils.o"
+	@echo "... noiseutils.i"
+	@echo "... noiseutils.s"
 .PHONY : help
 
 
@@ -1242,6 +1272,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /Users/fcvarela/Documents/Projects/libnoise/build && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/build && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

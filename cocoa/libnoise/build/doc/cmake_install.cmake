@@ -1,4 +1,4 @@
-# Install script for directory: /Users/fcvarela/Documents/Projects/libnoise/doc
+# Install script for directory: /Users/fcvarela/Documents/Projects/spb/cocoa/libnoise/doc
 
 # Set the install prefix
 IF(NOT DEFINED CMAKE_INSTALL_PREFIX)

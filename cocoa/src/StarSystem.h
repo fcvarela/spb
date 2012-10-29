@@ -2,13 +2,15 @@
 #define __STARSYSTEM
 
 #include <list>
-#include <Node.h>
+#include <Galaxy.h>
 
 class Star;
 class Planet;
 
-class StarSystem : public Node {
+class StarSystem : public GallacticNode {
 public:
+	uint32_t seed;
+
 	StarSystem(uint32_t seed);
 	~StarSystem();
 

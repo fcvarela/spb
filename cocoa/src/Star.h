@@ -11,10 +11,9 @@ private:
 
 public:
 	double radius;
-
 	StarSystem *system;
 
-	Star(std::string name, double radius, Vector3d position, StarSystem *system);
+	Star(StarSystem *system, double radius);
 	~Star();
 
 	void draw();

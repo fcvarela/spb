@@ -8,6 +8,7 @@
 #include <tinythread.h>
 #include <Node.h>
 #include <Galaxy.h>
+#include <StarSystemGenerator.h>
 
 extern double __dt__;
 extern double __lasttime__;
@@ -29,6 +30,7 @@ extern FTFont *__font__;
 extern int __running__;
 extern Node *__selectednode__;
 extern GallacticNode *__selectedstar__;
+extern StarSystemGenerator *__systemgenerator__;
 
 extern CGLContextObj __procedural_gen_ctx__;
 extern CGLContextObj __render_ctx__;

@@ -4,14 +4,7 @@
 #include <GameSceneManager.h>
 #include <tinythread.h>
 
-#include <StarSystemGenerator.h>
-
 int main(void) {
-	StarSystemGenerator mainGen;
-	
-	return 1;
-
-
 	// init glfw
 	if (!glfwInit())
 		exit(EXIT_FAILURE);
