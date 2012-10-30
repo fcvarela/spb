@@ -18,10 +18,10 @@ StarSystemGenerator::~StarSystemGenerator() {
 
 }
 
-void StarSystemGenerator::generateSystem(StarSystem *system) {
+void StarSystemGenerator::generateSystem(StarSystem *system, uint32_t seed) {
 	// get this system's seed
-	uint32_t y = system->seed / 768; 
-	uint32_t x = system->seed % 768;
+	uint32_t y = seed / 768; 
+	uint32_t x = seed % 768;
 	float value = systemMap.GetValue(x, y);
 
 	value = 1.0 + fabs(value);

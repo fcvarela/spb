@@ -15,8 +15,6 @@ public:
 	uint8_t colorid[3];
 	std::string label;
 
-	Shader *shader;
-
 	Node();
 	void coloridToLabel();
 	

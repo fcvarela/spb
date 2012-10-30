@@ -4,16 +4,13 @@
 #include <Planet.h>
 #include <Common.h>
 
-StarSystem::StarSystem(uint32_t seed) {
-	this->seed = seed;
-	__systemgenerator__.generate(this);
-}
+StarSystem::StarSystem() {}
 
 StarSystem::~StarSystem() {
 	std::cerr << "StarSystem cleanup" << std::endl;
 
 	delete star;
-	delete planets;
+	//delete planets;
 }
 
 // returns nearest node from node given

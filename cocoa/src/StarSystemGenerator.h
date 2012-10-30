@@ -15,7 +15,7 @@ public:
 	StarSystemGenerator();
 	~StarSystemGenerator();
 
-	void generateSystem(StarSystem *system);
+	void generateSystem(StarSystem *system, uint32_t seed);
 };
 
 #endif

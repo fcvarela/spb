@@ -9,9 +9,7 @@ class Planet;
 
 class StarSystem : public GallacticNode {
 public:
-	uint32_t seed;
-
-	StarSystem(uint32_t seed);
+	StarSystem();
 	~StarSystem();
 
 	Star *star;

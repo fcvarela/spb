@@ -26,7 +26,7 @@ double __camdelta__ = 0.0;
 int __running__ = GL_TRUE;
 Node *__selectednode__;
 GallacticNode *__selectedstar__;
-StarSystemGenerator *__systemgenerator__;
+StarSystemGenerator __systemgenerator__;
 FTFont *__font__;
 
 CGLContextObj __procedural_gen_ctx__;
