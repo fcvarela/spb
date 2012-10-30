@@ -44,15 +44,20 @@ COMPILE += $(CFLAGS)
 
 vaalbara: $(objects)
 	$(COMPILE) -o $(OUTPUT) $(objects) $(LINKFLAGS)
-	./bundle.sh $(OUTPUT)
-	cp -r conf $(OUTPUT).app/Contents/Resources
-	cp -r data $(OUTPUT).app/Contents/Resources
-	cp -r iconstuff/myIcon.icns $(OUTPUT).app/Contents/Resources/Icon.icns
-	mv $(OUTPUT) $(OUTPUT).app/Contents/MacOS/
+ifeq ($(OS), Darwin)
+	./bundle.sh build/product/$(OUTPUT) $(OUTPUT)
+	cp -r data build/product/$(OUTPUT).app/Contents/Resources
+	cp -r iconstuff/myIcon.icns build/product/$(OUTPUT).app/Contents/Resources/Icon.icns
+	mv $(OUTPUT) build/product/$(OUTPUT).app/Contents/MacOS/
+endif
+ifeq ($(OS), Linux)
+	mv $(OUTPUT) build/product
+	cp -r data build/product
+endif
 
 $(objects): build/%.o: src/%.cpp $(INCLUDE_FILES) Makefile
 	$(COMPILE) $< -c -o $@
 
 clean:
-	rm -rf Vaalbara.app
+	rm -rf build/product/*
 	rm -r build/*.o
