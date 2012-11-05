@@ -22,8 +22,8 @@
 
 #include <fstream>
 
-#include <noise/interp.h>
-#include <noise/mathconsts.h>
+#include "noise/interp.h"
+#include "noise/mathconsts.h"
 
 #include "noiseutils.h"
 
