@@ -24,7 +24,7 @@ echo "done"
 echo "libnoise..."
 mkdir -p libnoise/build
 cd libnoise/build
-cmake ..
+/usr/local/bin/cmake ..
 make
 cd ..
 echo "done"
