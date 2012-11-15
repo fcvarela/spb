@@ -14,7 +14,9 @@ cd libcdf
 ./build.sh
 cd ..
 
+mkdir -p libnoise/build
 cd libnoise/build
+cmake ..
 make
 cd ..
 
