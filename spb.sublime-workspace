@@ -459,6 +459,38 @@
 	},
 	"buffers":
 	[
+		{
+			"file": "src/Planet.cpp",
+			"settings":
+			{
+				"buffer_size": 8818,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/Shader.h",
+			"settings":
+			{
+				"buffer_size": 381,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/StarSystemGenerator.cpp",
+			"settings":
+			{
+				"buffer_size": 1451,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/TerrainQuadtree.cpp",
+			"settings":
+			{
+				"buffer_size": 14696,
+				"line_ending": "Unix"
+			}
+		}
 	],
 	"build_system": "",
 	"command_palette":
@@ -564,6 +596,12 @@
 	},
 	"file_history":
 	[
+		"/Users/fcvarela/Documents/Projects/Personal/spb/src/Camera.cpp",
+		"/Users/fcvarela/Documents/Projects/Personal/spb/src/Common.cpp",
+		"/Users/fcvarela/Documents/Projects/Personal/spb/src/Galaxy.h",
+		"/Users/fcvarela/Documents/Projects/Personal/spb/src/GameSceneManager.cpp",
+		"/Users/fcvarela/Documents/Projects/Personal/spb/src/Node.h",
+		"/Users/fcvarela/Documents/Projects/Personal/spb/src/Octree.cpp",
 		"/Users/fcvarela/Documents/Projects/EF/teachertestlib/teacher.rb",
 		"/Users/fcvarela/Desktop/student.py",
 		"/Users/fcvarela/Documents/Projects/EF/SMARTClassroom/SMARTClassroom/functional_tests/features/support/automated_teacher.rb",
@@ -685,13 +723,7 @@
 		"/Users/fcvarela/Documents/Projects/Personal/tese/desenhoterrenos.tex",
 		"/Users/fcvarela/Documents/Projects/Personal/tese/modelofisico.tex",
 		"/Users/fcvarela/Documents/Projects/Personal/tese/futuro.tex",
-		"/Users/fcvarela/Documents/Projects/Personal/tese/abs.tex",
-		"/Users/fcvarela/Documents/Projects/Personal/tese/perguntas.rtf",
-		"/Users/fcvarela/Documents/Projects/EF/SMARTMiddleware/smart-middleware-package/smart_middleware/feedbackservice/feedbackobjects.py",
-		"/Users/fcvarela/Documents/Projects/EF/SMARTMiddleware/smart-middleware-package/smart_middleware/authservice/__init__.py",
-		"/Users/fcvarela/Documents/Projects/EF/SMARTMiddleware/smart-middleware-package/smart_middleware/feedbackservice/__init__.pt",
-		"/Applications/Vagrant/embedded/gems/gems/log4r-1.1.10/examples/gmail.yaml",
-		"/Users/fcvarela/Desktop/filters.txt"
+		"/Users/fcvarela/Documents/Projects/Personal/tese/abs.tex"
 	],
 	"find":
 	{
@@ -903,8 +935,129 @@
 	"groups":
 	[
 		{
+			"selected": 0,
 			"sheets":
 			[
+				{
+					"buffer": 0,
+					"file": "src/Planet.cpp",
+					"settings":
+					{
+						"buffer_size": 8818,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								328,
+								326
+							]
+						],
+						"settings":
+						{
+							"glsv_configured": true,
+							"glsv_enabled": 1.0,
+							"glsv_spec": 0.0,
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 1304.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "src/Shader.h",
+					"settings":
+					{
+						"buffer_size": 381,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								339,
+								339
+							]
+						],
+						"settings":
+						{
+							"glsv_configured": true,
+							"glsv_enabled": 1.0,
+							"glsv_spec": 0.0,
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "src/StarSystemGenerator.cpp",
+					"settings":
+					{
+						"buffer_size": 1451,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1427,
+								1427
+							]
+						],
+						"settings":
+						{
+							"glsv_configured": true,
+							"glsv_enabled": 1.0,
+							"glsv_spec": 0.0,
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "src/TerrainQuadtree.cpp",
+					"settings":
+					{
+						"buffer_size": 14696,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2206,
+								2206
+							]
+						],
+						"settings":
+						{
+							"glsv_configured": true,
+							"glsv_enabled": 1.0,
+							"glsv_spec": 0.0,
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				}
 			]
 		}
 	],
@@ -976,6 +1129,6 @@
 	"show_open_files": false,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 163.0,
+	"side_bar_width": 192.0,
 	"status_bar_visible": true
 }
