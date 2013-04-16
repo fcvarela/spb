@@ -17,7 +17,7 @@ public:
 
 	Node();
 	void coloridToLabel();
-	
+
 	virtual void step();
 	virtual void draw();
 };

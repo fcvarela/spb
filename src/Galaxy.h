@@ -61,7 +61,7 @@ public:
 	Shader *shader;
 
 	void InitStars(double sigma);
-	
+
 	double m_elEx1;          ///< Excentricity of the innermost ellipse
 	double m_elEx2;          ///< Excentricity of the outermost ellipse
 	double m_velOrigin;      ///< Velovity at the innermost core in km/s

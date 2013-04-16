@@ -11,7 +11,7 @@ Camera::~Camera() {}
 
 void Camera::step() {
 	Vector3d direction = Vector3d(0.0, 0.0, 0.0);
-	
+
 	if (__keys__['W'] == 1)
 		direction += Vector3d(0.0, 0.0, -1.0);
 

@@ -20,7 +20,7 @@ StarSystemGenerator::~StarSystemGenerator() {
 
 void StarSystemGenerator::generateSystem(StarSystem *system, uint32_t seed) {
 	// get this system's seed
-	uint32_t y = seed / 768; 
+	uint32_t y = seed / 768;
 	uint32_t x = seed % 768;
 	float value = systemMap.GetValue(x, y);
 
@@ -47,7 +47,7 @@ void StarSystemGenerator::generateSystem(StarSystem *system, uint32_t seed) {
 	// more than 6? small rocks near star, middle 6 equals before, small rocks after last. telluric near, gas far
 
 	// for each planet
-	// mass, radius, semimajor axis, eccentricity, orbital period, orbital plane tilt, 
+	// mass, radius, semimajor axis, eccentricity, orbital period, orbital plane tilt,
 
 	// number of moons
 }

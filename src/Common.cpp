@@ -63,11 +63,11 @@ void proceduralGenLoop(void *arg) {
 		if (node != NULL) {
 			// set our context appropriately
 			CGLSetCurrentContext(__procedural_gen_ctx__);
-			double start = glfwGetTime();
+			//double start = glfwGetTime();
 			node->init();
-			double end = glfwGetTime();
-			double span = end-start;
-			span += 0.0;
+			//double end = glfwGetTime();
+			//double span = end-start;
+			//span += 0.0;
 			CGLFlushDrawable(__procedural_gen_ctx__);
 			//std::cerr << "took " << end-start << "seconds" << std::endl;
 		}

@@ -92,7 +92,7 @@ void TerrainQuadtree::init() {
 void TerrainQuadtree::generateTextures() {
 	// prepare viewport and projection
 	//glDisable(GL_DEPTH_TEST);
-	
+
 	// do not setup the proj more than once
 	if (this->parent == NULL) {
 		glViewport(0, 0, this->textureSize, this->textureSize);
@@ -123,7 +123,7 @@ void TerrainQuadtree::generateTextures() {
 	glBindFramebuffer(GL_FRAMEBUFFER, this->framebuffer);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->topoTexture->id, 0);
 	this->positionTexture->bind(GL_TEXTURE0);
-	
+
 	this->generatorShader->bind();
 	glUniform1i(glGetUniformLocation(this->generatorShader->program, "positionTexture"), 0);
 	glCallList(generationScreenList);
@@ -186,7 +186,7 @@ void TerrainQuadtree::generateVertices() {
 	this->botleft = Vector3d(
 		vertices[u*this->gridSizep1*3+v*3+0],
 		vertices[u*this->gridSizep1*3+v*3+1],
-		vertices[u*this->gridSizep1*3+v*3+2]);	
+		vertices[u*this->gridSizep1*3+v*3+2]);
 
 	v = this->gridSize;
 	this->botright = Vector3d(
@@ -217,7 +217,7 @@ void TerrainQuadtree::finishVertices() {
 	if (this->indexBufferObject == 0) {
 		uint16_t added_indexes = 0;
 		std::list<uint16_t> v_indexes;
-	
+
 		for (uint8_t y=0; y<this->gridSize; y++) {
 			for (uint8_t x=0; x<this->gridSizep1; x++) {
 				v_indexes.push_back(y * this->gridSizep1 + x);
@@ -254,7 +254,7 @@ void TerrainQuadtree::finishVertices() {
 	}
 
 	// skirts missing for now
-	
+
 	// build our texture coordinates
 	std::list<double> v_texcoords;
 	if (this->texturecoordBufferObject == 0) {
@@ -417,7 +417,7 @@ void TerrainQuadtree::buildQuadtreeElementd(double *mesh, uint8_t size, uint8_t 
 
 			// normalize
 			coord.normalize();
-			
+
 			if (reverse == 1)
 				upos = (gsize-1.0-u)*(gsize)*3.0;
 			else
@@ -448,7 +448,7 @@ void TerrainQuadtree::buildQuadtreeElementf(float *mesh, uint8_t size, uint8_t r
 
 			// normalize
 			coord.normalize();
-			
+
 			if (reverse == 1)
 				upos = (gsize-1.0-u)*(gsize)*3.0;
 			else

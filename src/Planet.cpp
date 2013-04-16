@@ -8,7 +8,7 @@
 Planet::Planet(/*const libconfig::Setting &planet ,*/StarSystem *system, Node *parent) {
 	this->system = system;
 	this->parent = parent;
-	
+
 	if (parent == NULL)
 		this->parent = system;
 
@@ -39,7 +39,7 @@ Planet::Planet(/*const libconfig::Setting &planet ,*/StarSystem *system, Node *p
 	glNewList(_atmosphereDisplayList, GL_COMPILE);
 	gluSphere(atmosphere, this->atmosphere_radius, 100, 100);
 	glEndList();
-	
+
 	// orbit
 	glNewList(_orbitDisplayList, GL_COMPILE);
 	glBegin(GL_LINE_LOOP);
@@ -48,7 +48,7 @@ Planet::Planet(/*const libconfig::Setting &planet ,*/StarSystem *system, Node *p
 	for (int i=0; i<360; i++) {
 		// compute mean anomaly
 		double mean_anomaly = i * 0.01745;
-	
+
 		// compute eccentric anomaly (five iterations unrolled)
 		double eccentric_anomaly;
 		eccentric_anomaly = mean_anomaly - eccentricity * sin(mean_anomaly);
@@ -56,18 +56,18 @@ Planet::Planet(/*const libconfig::Setting &planet ,*/StarSystem *system, Node *p
 		eccentric_anomaly = mean_anomaly - eccentricity * sin(eccentric_anomaly);
 		eccentric_anomaly = mean_anomaly - eccentricity * sin(eccentric_anomaly);
 		eccentric_anomaly = mean_anomaly - eccentricity * sin(eccentric_anomaly);
-	
+
 		// compute true anomaly
 		double tan_half_ta = sqrt((1.0+eccentricity)/(1.0-eccentricity)) * tan(eccentric_anomaly/2.0);
 		double true_anomaly = 2.0 * atan(tan_half_ta);
 
 		// compute heliocentric distance
 		double radius = semimajor_axis * (1.0 + eccentricity * cos(true_anomaly));
-	
+
 		// map to carthesian
 		double c = cos(eccentric_anomaly);
 		double s = sin(eccentric_anomaly);
-	
+
 		// update position
 		Vector3d curpos = Vector3d(radius * sqrt(1.0-eccentricity*eccentricity)*s, 0.0, radius * c-eccentricity);
 		nrot.rotate(curpos);
@@ -188,7 +188,7 @@ void Planet::drawDebug() {
 	// draw our orbit
 	glPushMatrix();
 	glTranslated(parent->position.x(), parent->position.y(), parent->position.z());
-	
+
 	glColor4f(0.0, 1.0, 0.0, 0.4);
 	glCallList(_orbitDisplayList);
 	glPopMatrix();
@@ -245,7 +245,7 @@ void Planet::drawAtmosphere() {
 void Planet::drawSurface() {
 	glPushMatrix();
 	glTranslated(position.x(), position.y(), position.z());
-	
+
 	// draw surface
 	this->surfaceShader->bind();
 	GLuint shader = this->surfaceShader->program;
@@ -262,7 +262,6 @@ void Planet::drawSurface() {
 	glUniform1i(glGetUniformLocation(shader, "colorTexture"), 1);
 	glUniform1i(glGetUniformLocation(shader, "topoTexture"), 2);
 
-        
     // tile parent textures
 	glUniform1i(glGetUniformLocation(shader, "pnormalTexture"), 3);
 	glUniform1i(glGetUniformLocation(shader, "pcolorTexture"), 4);

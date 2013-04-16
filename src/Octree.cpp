@@ -8,7 +8,7 @@ Octree::Octree(Octree *parent, uint64_t index, Vector3d &center, double size, un
 	this->center = Vector3d(center);
 	this->size = size;
 	this->maxItemsPerNode = maxItemsPerNode;
-	
+
 	if (parent == NULL) {
 		this->parent = NULL;
 		this->index = 0;
@@ -198,39 +198,39 @@ void Octree::drawDebug() {
 
 	glVertex3d(minx, miny, minz);
 	glVertex3d(minx, miny, maxz);
-	
+
 	glVertex3d(minx, maxy, minz);
 	glVertex3d(minx, maxy, maxz);
-	
+
 	glVertex3d(maxx, miny, minz);
 	glVertex3d(maxx, miny, maxz);
-	
+
 	glVertex3d(maxx, maxy, minz);
 	glVertex3d(maxx, maxy, maxz);
-	
-	
+
+
 	glVertex3d(minx, miny, minz);
 	glVertex3d(maxx, miny, minz);
-	
+
 	glVertex3d(minx, maxy, minz);
 	glVertex3d(maxx, maxy, minz);
-	
+
 	glVertex3d(minx, maxy, maxz);
 	glVertex3d(maxx, maxy, maxz);
-	
+
 	glVertex3d(minx, miny, maxz);
 	glVertex3d(maxx, miny, maxz);
-	
-	
+
+
 	glVertex3d(minx, miny, minz);
 	glVertex3d(minx, maxy, minz);
-	
+
 	glVertex3d(maxx, miny, minz);
 	glVertex3d(maxx, maxy, minz);
-	
+
 	glVertex3d(minx, miny, maxz);
 	glVertex3d(minx, maxy, maxz);
-	
+
 	glVertex3d(maxx, miny, maxz);
 	glVertex3d(maxx, maxy, maxz);
 
